@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<resources>
+	<application name="PleaseWork">
+		<serviceProfile
+				id="/sample/hello"
+				name="myapplication"
+				role="consumer"
+				serviceImpl="com.example.myapplication.ProviderService"
+				version="1.0"
+				serviceLimit="ANY"
+				serviceTimeout="10">
+			<supportedTransports>
+				<transport type="TRANSPORT_BT" />
+				<transport type="TRANSPORT_WIFI" />
+			</supportedTransports>
+			<serviceChannel
+					id="104"
+					dataRate="high"
+					priority="high"
+					reliability= "enable"/>
+		</serviceProfile>
+	</application>
+</resources>
+
+
+<!--<resources>
+	<application name="WearableFitnessWatch">
+		<serviceProfile
+				id="/org/joonspetproject/fit"
+				name="WearableFitnessApp"
+				role="consumer"
+				serviceImpl="com.joonspetproject.WearableFitnessApp.ProviderService"
+				version="1.0"
+				serviceLimit="ANY"
+				serviceTimeout="10">
+			<supportedTransports>
+				<transport type="TRANSPORT_BT" />
+				<transport type="TRANSPORT_WIFI" />
+			</supportedTransports>
+			<serviceChannel
+					id="104"
+					dataRate="high"
+					priority="high"
+					reliability= "enable"/>
+		</serviceProfile>
+	</application>
+</resources>-->
