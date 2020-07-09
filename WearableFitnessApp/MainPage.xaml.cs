@@ -31,7 +31,7 @@ namespace WearableFitnessApp
             try
             {
                 //Agent = await Agent.GetAgent("/org/joonspetproject/fit");
-                Agent = await Agent.GetAgent("/sample/hello");
+                Agent = await Agent.GetAgent("/joonspetproject/fit");
                 var peers = await Agent.FindPeers();
                 if (peers.Count() > 0)
                 {

@@ -8,9 +8,11 @@
 
     <StackLayout>
         <!-- Place new controls here -->
-        <Label Text="Welcome to Xamarin.Forms!" 
-           HorizontalOptions="Center"
-           VerticalOptions="CenterAndExpand" />
+        <Entry WidthRequest="300" HeightRequest="100" x:Name="entry" />
+        <Button Text="Close Conn" WidthRequest="200" HeightRequest="50" Clicked="Connect_Clicked" />
+        <Button Text="Send" WidthRequest="200" HeightRequest="50" Clicked="Send_Clicked" />
+
+        <Label x:Name="lblStatus" FontSize="Micro" TextColor="Red"/>
     </StackLayout>
 
 </ContentPage>

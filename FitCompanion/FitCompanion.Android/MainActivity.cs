@@ -29,5 +29,11 @@ namespace FitCompanion.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+        public void StartService()
+        {
+            var intent = new Android.Content.Intent(this, typeof(ProviderService));
+            StartService(intent);
+        }
     }
 }

@@ -13,9 +13,37 @@ namespace FitCompanion
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
+        public IProviderService provider { get; set; }
+
         public MainPage()
         {
             InitializeComponent();
+        }
+        private void Connect_Clicked(object sender, EventArgs e)
+        {
+            provider.CloseConnection();
+        }
+
+        private void Send_Clicked(object sender, EventArgs e)
+        {
+
+            try
+            {
+
+                provider = DependencyService.Get<IProviderService>();
+                provider.FindPeers(entry.Text);
+            }
+            catch (Exception ex)
+            {
+
+
+            }
+        }
+
+        private async void OnDataReceived(object sender, EventArgs e)
+        {
+            var sapargs = e as SAPDataReceivedEventArgs;
+            await DisplayAlert("message", sapargs.Message, cancel: "ok");
         }
     }
 }

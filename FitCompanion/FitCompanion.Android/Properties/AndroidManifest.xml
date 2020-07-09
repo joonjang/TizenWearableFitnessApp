@@ -1,6 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.fitcompanion">
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="28" />
-    <application android:label="FitCompanion.Android"></application>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
+	<uses-permission android:name="com.samsung.accessory.permission.ACCESSORY_FRAMEWORK" />
+	<uses-permission android:name="com.samsung.wmanager.APP" />
+	<uses-permission android:name="com.samsung.wmanager.ENABLE_NOTIFICATION" />
+	<uses-permission android:name="android.permission.BLUETOOTH" />
+	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+	<uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+	<application android:label="FitCompanion.Droid">
+		<service android:name="FitCompanion.Droid.ProviderService" />
+		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
+			<intent-filter>
+				<action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
+			</intent-filter>
+		</receiver>
+		<receiver android:name="com.samsung.android.sdk.accessory.ServiceConnectionIndicationBroadcastReceiver">
+			<intent-filter>
+				<action android:name="com.samsung.accessory.action.SERVICE_CONNECTION_REQUESTED" />
+			</intent-filter>
+		</receiver>
+		<meta-data android:name="AccessoryServicesLocation" android:value="/res/xml/accessoryservices.xml" />
+	</application>
 </manifest>

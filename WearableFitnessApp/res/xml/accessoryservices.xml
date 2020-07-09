@@ -3,10 +3,10 @@
 <resources>
 	<application name="PleaseWork">
 		<serviceProfile
-				id="/sample/hello"
-				name="myapplication"
+				id="/joonspetproject/fit"
+				name="WearableFitnessApp"
 				role="consumer"
-				serviceImpl="com.example.myapplication.ProviderService"
+				serviceImpl="com.joonspetproject.WearableFitnessApp.ProviderService"
 				version="1.0"
 				serviceLimit="ANY"
 				serviceTimeout="10">

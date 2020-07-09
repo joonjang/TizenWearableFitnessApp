@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+	<application name="FitCompanion">
+		<serviceProfile
+					id="/joonspetproject/fit"
+					name="WearableFitnessApp"
+					role="provider"
+					serviceImpl="FitCompanion.Droid.ProviderService"
+					version="1.0"
+					serviceLimit="ANY"
+					serviceTimeout="10">
+			<supportedTransports>
+				<transport type="TRANSPORT_BT" />
+				<transport type="TRANSPORT_WIFI" />
+			</supportedTransports>
+			<serviceChannel
+						  id="104"
+						  dataRate="high"
+						  priority="high"
+						  reliability= "enable"/>
+		</serviceProfile>
+	</application>
+</resources>
