@@ -21,7 +21,7 @@ using Java.Interop;
 
 namespace FitCompanion.Droid
 {
-    [Service(Exported = true, Name = "FitCompanion.Droid.ProviderService")]
+    [Service(Exported = true, Name = "FitCompanion.Android.ProviderService")]
     public class ProviderService : SAAgent
     {
         public static readonly string TAG = typeof(ProviderService).Name;

@@ -1,7 +1,7 @@
 using System;
 using Xamarin.Forms;
 
-namespace WearableFitnessApp
+namespace FitWatch
 {
     class Program : global::Xamarin.Forms.Platform.Tizen.FormsApplication
     {

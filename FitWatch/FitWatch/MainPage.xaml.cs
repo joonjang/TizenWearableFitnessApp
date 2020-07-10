@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Tizen.Wearable.CircularUI.Forms;
-using Xamarin.Forms.Platform.Tizen;
 using Samsung.Sap;
-using System.Windows.Input;
 
-namespace WearableFitnessApp
+namespace FitWatch
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : ContentPage
@@ -32,6 +30,7 @@ namespace WearableFitnessApp
             {
                 //Agent = await Agent.GetAgent("/org/joonspetproject/fit");
                 Agent = await Agent.GetAgent("/joonspetproject/fit");
+                //Agent = await Agent.GetAgent("/sample/hello");
                 var peers = await Agent.FindPeers();
                 if (peers.Count() > 0)
                 {
@@ -66,10 +65,17 @@ namespace WearableFitnessApp
             //}));
 
             Connect();
+            ReceivedMessage = "SUCCESS!";
+        }
 
+        private string receivedMessage;
+        public string ReceivedMessage
+        {
+            get { return receivedMessage; }
+            set
+            {
+                OnPropertyChanged(nameof(ReceivedMessage));
+            }
         }
     }
-
-    
-
 }

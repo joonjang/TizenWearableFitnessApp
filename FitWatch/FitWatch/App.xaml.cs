@@ -1,26 +1,22 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tizen;
-using Tizen.Wearable.CircularUI.Forms;
+
 using Xamarin.Forms;
-using Xamarin.Forms.Platform.Tizen;
 using Xamarin.Forms.Xaml;
 
-namespace WearableFitnessApp
+namespace FitWatch
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class App : Application
     {
-
         public App()
         {
             InitializeComponent();
 
-            MainPage = new WearableFitnessApp.MainPage();
+            MainPage = new FitWatch.MainPage();
         }
 
         protected override void OnStart()

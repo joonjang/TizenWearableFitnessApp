@@ -5,7 +5,7 @@
 					id="/joonspetproject/fit"
 					name="WearableFitnessApp"
 					role="provider"
-					serviceImpl="FitCompanion.Droid.ProviderService"
+					serviceImpl="FitCompanion.Anroid.ProviderService"
 					version="1.0"
 					serviceLimit="ANY"
 					serviceTimeout="10">

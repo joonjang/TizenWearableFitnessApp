@@ -11,8 +11,8 @@
 	<uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
-	<application android:label="FitCompanion.Droid">
-		<service android:name="FitCompanion.Droid.ProviderService" />
+	<application android:label="FitCompanion.Android">
+		<service android:name="FitCompanion.Android.ProviderService" />
 		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
 			<intent-filter>
 				<action android:name="com.samsung.accessory.action.REGISTER_AGENT" />
