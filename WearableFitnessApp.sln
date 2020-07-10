@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WearableFitnessApp", "WearableFitnessApp\WearableFitnessApp.csproj", "{1F29A341-B84C-48A8-BC6D-7624E920C5B2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitCompanion.Android", "FitCompanion\FitCompanion.Android\FitCompanion.Android.csproj", "{40E3D3F2-0847-44A6-9E40-49F53CBB034B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitCompanion", "FitCompanion\FitCompanion\FitCompanion.csproj", "{F8E86D1B-5A77-4A44-9D17-4463BE5EA71A}"
@@ -19,18 +17,6 @@ Global
 		Release|iPhoneSimulator = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|iPhone.Build.0 = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|iPhone.Build.0 = Release|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
-		{1F29A341-B84C-48A8-BC6D-7624E920C5B2}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{40E3D3F2-0847-44A6-9E40-49F53CBB034B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40E3D3F2-0847-44A6-9E40-49F53CBB034B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40E3D3F2-0847-44A6-9E40-49F53CBB034B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU

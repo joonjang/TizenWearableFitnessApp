@@ -21,7 +21,7 @@ using Java.Interop;
 
 namespace FitCompanion.Droid
 {
-    [Service(Exported = true, Name = "FitCompanion.Android.ProviderService")]
+    [Service(Exported = true, Name = "FitCompanion.Droid.ProviderService")]
     public class ProviderService : SAAgent
     {
         public static readonly string TAG = typeof(ProviderService).Name;
@@ -33,6 +33,7 @@ namespace FitCompanion.Droid
         private readonly Task _task;
         private static readonly int CHANNEL_ID = 104;
 
+        [Export(SuperArgumentsString = "\"ProviderService\", ProviderService_ProviderServiceSocket.class")]
         public ProviderService() : base("ProviderService", SASOCKET_CLASS)
         {
 

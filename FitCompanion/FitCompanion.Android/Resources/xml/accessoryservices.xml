@@ -3,9 +3,9 @@
 	<application name="FitCompanion">
 		<serviceProfile
 					id="/joonspetproject/fit"
-					name="WearableFitnessApp"
+					name="FitCompanion"
 					role="provider"
-					serviceImpl="FitCompanion.Anroid.ProviderService"
+					serviceImpl="FitCompanion.Droid.ProviderService"
 					version="1.0"
 					serviceLimit="ANY"
 					serviceTimeout="10">

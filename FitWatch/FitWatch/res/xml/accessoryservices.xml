@@ -3,7 +3,7 @@
 	<application name="FitWatch">
 		<serviceProfile
 				id="/joonspetproject/fit"
-				name="WearableFitnessApp"
+				name="FitWatch"
 				role="consumer"
 				serviceImpl="com.joonspetproject.FitWatch.ProviderService"
 				version="1.0"
