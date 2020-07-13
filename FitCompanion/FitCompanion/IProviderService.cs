@@ -7,6 +7,7 @@ namespace FitCompanion
     public interface IProviderService
     {
         bool CloseConnection();
-        void FindPeers(string msg);
+        void SendData(string msg);
+
     }
 }

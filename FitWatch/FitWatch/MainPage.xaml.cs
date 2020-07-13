@@ -16,6 +16,7 @@ namespace FitWatch
     {
         private Agent Agent;
         private Connection Connection;
+        private Peer Peer;
 
         public MainPage()
         {
@@ -28,8 +29,7 @@ namespace FitWatch
         {
             try
             {
-                //Agent = await Agent.GetAgent("/org/joonspetproject/fit");
-                Agent = await Agent.GetAgent("/joonspetproject/fit");
+                Agent = await Agent.GetAgent("/joonspetproject/fit", onMessage: OnMessage);
                 //Agent = await Agent.GetAgent("/sample/hello");
                 var peers = await Agent.FindPeers();
                 if (peers.Count() > 0)
@@ -50,10 +50,23 @@ namespace FitWatch
                 Toast.DisplayText("Error: " + ex.Message);
             }
         }
+
+        private void OnMessage(Peer peer, byte[] content)
+        {
+            //ShowMessage("Received data: " + Encoding.UTF8.GetString(content));
+            ReceivedMessage = Encoding.UTF8.GetString(content);
+            
+        }
+
+
+
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
 
-            Toast.DisplayText(e.Peer.DeviceName);
+            //Toast.DisplayText(e.Peer.DeviceName);
+            var receivedInfo = System.Text.Encoding.ASCII.GetString(e.Data);
+            
+            ReceivedMessage = receivedInfo;
 
         }
 
@@ -63,9 +76,16 @@ namespace FitWatch
             //{
             //    Connect();
             //}));
-
-            Connect();
             ReceivedMessage = "SUCCESS!";
+            Connect();
+            //SendMessage();
+            
+        }
+
+        private async void SendMessage()
+        {
+            // todo: adjust privilge to allow sending message
+            await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
         }
 
         private string receivedMessage;
@@ -74,6 +94,7 @@ namespace FitWatch
             get { return receivedMessage; }
             set
             {
+                receivedMessage = value;
                 OnPropertyChanged(nameof(ReceivedMessage));
             }
         }

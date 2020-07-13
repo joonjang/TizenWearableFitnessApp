@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+
 namespace FitCompanion
 {
     // Learn more about making custom code visible in the Xamarin.Forms previewer
@@ -13,10 +14,12 @@ namespace FitCompanion
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        public IProviderService provider { get; set; }
+        public IProviderService provider;
+        public static object deviceInfo;
 
         public MainPage()
         {
+            provider = DependencyService.Get<IProviderService>();
             InitializeComponent();
         }
         private void Connect_Clicked(object sender, EventArgs e)
@@ -30,8 +33,8 @@ namespace FitCompanion
             try
             {
 
-                provider = DependencyService.Get<IProviderService>();
-                provider.FindPeers(entry.Text);
+                
+                provider.SendData(entry.Text);
             }
             catch (Exception ex)
             {
@@ -44,6 +47,11 @@ namespace FitCompanion
         {
             var sapargs = e as SAPDataReceivedEventArgs;
             await DisplayAlert("message", sapargs.Message, cancel: "ok");
+        }
+
+        private void deviceInfoTxt_Clicked(object sender, EventArgs e)
+        {
+            deviceInfoTxt.Text = deviceInfo.ToString();
         }
     }
 }

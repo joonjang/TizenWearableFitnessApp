@@ -9,7 +9,7 @@ namespace FitCompanion
         public App()
         {
             InitializeComponent();
-
+            // DependencyService.Register<ProviderService>();
             MainPage = new MainPage();
         }
 

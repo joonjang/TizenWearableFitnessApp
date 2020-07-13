@@ -19,19 +19,22 @@ using Com.Samsung.Android.Sdk;
 using Com.Samsung.Android.Sdk.Accessory;
 using Java.Interop;
 
+
+[assembly: Xamarin.Forms.Dependency(typeof(FitCompanion.Droid.ProviderService))]
 namespace FitCompanion.Droid
 {
     [Service(Exported = true, Name = "FitCompanion.Droid.ProviderService")]
-    public class ProviderService : SAAgent
+    public class ProviderService : SAAgent, IProviderService
     {
         public static readonly string TAG = typeof(ProviderService).Name;
         public IBinder mBinder { get; private set; }
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
-        public ProviderServiceSocket mSocketServiceProvider = null;
+        public ProviderServiceSocket mSocketServiceProvider;
         private bool _isRunning;
         private Context _context;
         private readonly Task _task;
         private static readonly int CHANNEL_ID = 104;
+        
 
         [Export(SuperArgumentsString = "\"ProviderService\", ProviderService_ProviderServiceSocket.class")]
         public ProviderService() : base("ProviderService", SASOCKET_CLASS)
@@ -146,6 +149,7 @@ namespace FitCompanion.Droid
                 */
                 StopSelf();
             }
+            
 
             bool isFeatureEnabled = mAccessory.IsFeatureEnabled(SA.DeviceAccessory);
 
@@ -170,6 +174,25 @@ namespace FitCompanion.Droid
         //        StopSelf();
         //    }
         //}
+
+        public void SendData(string msg)
+        {
+            // todo: debug and try to send message, the socket is null after connection
+
+            mSocketServiceProvider = (ProviderServiceSocket) MainPage.deviceInfo ;
+
+            if (mSocketServiceProvider != null)
+            {
+                try
+                {
+                    mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(msg));
+                }
+                catch
+                {
+
+                }
+            }
+        }
 
 
         public string Message { get; set; } = "hello";
@@ -197,6 +220,7 @@ namespace FitCompanion.Droid
             }
         }
 
+
         protected override void OnServiceConnectionResponse(SAPeerAgent p0, SASocket socket, int result)
         {
             // Cache(socket);
@@ -205,7 +229,8 @@ namespace FitCompanion.Droid
                 if ((socket != null))
                 {
                     mSocketServiceProvider = ((ProviderServiceSocket)(socket));
-                    mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
+                    MainPage.deviceInfo = mSocketServiceProvider as ProviderServiceSocket;
+                    // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
 
             }
@@ -271,7 +296,7 @@ namespace FitCompanion.Droid
 
         }
 
-
+        
 
         public class AgentBinder : Binder
         {
