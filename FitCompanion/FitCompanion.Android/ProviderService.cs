@@ -27,9 +27,9 @@ namespace FitCompanion.Droid
     public class ProviderService : SAAgent, IProviderService
     {
         public static readonly string TAG = typeof(ProviderService).Name;
-        public IBinder mBinder { get; private set; }
+        public static IBinder mBinder { get; private set; }
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
-        public ProviderServiceSocket mSocketServiceProvider;
+        public static ProviderServiceSocket mSocketServiceProvider;
         private bool _isRunning;
         private Context _context;
         private readonly Task _task;
@@ -87,10 +87,10 @@ namespace FitCompanion.Droid
             if ((Build.VERSION.SdkInt >= BuildVersionCodes.O))
             {
                 NotificationManager notificationManager = null;
-                string channel_id = "fit_channel_01";
+                string channel_id = "sample_channel_01";
                 if ((notificationManager == null))
                 {
-                    string channel_name = "Accessory_SDK_Fit";
+                    string channel_name = "Accessory_SDK_Sample";
                     notificationManager = ((NotificationManager)(GetSystemService(Context.NotificationService)));
                     var notiChannel = new NotificationChannel(channel_id, channel_name, Android.App.NotificationImportance.Low);
                     notificationManager.CreateNotificationChannel(notiChannel);
@@ -177,9 +177,8 @@ namespace FitCompanion.Droid
 
         public void SendData(string msg)
         {
-            // todo: debug and try to send message, the socket is null after connection
 
-            mSocketServiceProvider = (ProviderServiceSocket) MainPage.deviceInfo ;
+            //mSocketServiceProvider = (ProviderServiceSocket) MainPage.deviceSocketInfo ;
 
             if (mSocketServiceProvider != null)
             {
@@ -187,27 +186,27 @@ namespace FitCompanion.Droid
                 {
                     mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(msg));
                 }
-                catch
+                catch(Exception e)
                 {
 
                 }
             }
         }
-
-
-        public string Message { get; set; } = "hello";
+        
 
         protected override void OnFindPeerAgentsResponse(SAPeerAgent[] p0, int result)
         {
 #if DEBUG
             Console.WriteLine(TAG, "onFindPeerAgentResponse : result =" + result);
 #endif
+
             if (result == PeerAgentFound)
             {
                 foreach (SAPeerAgent peerAgent in p0)
                 {
                     //  Cache(peerAgent);
                     RequestServiceConnection(peerAgent);
+                   
                 }
             }
         }
@@ -217,10 +216,11 @@ namespace FitCompanion.Droid
             if (p0 != null)
             {
                 AcceptServiceConnectionRequest(p0);
+                
             }
         }
 
-
+        // this is where the connection socket is called
         protected override void OnServiceConnectionResponse(SAPeerAgent p0, SASocket socket, int result)
         {
             // Cache(socket);
@@ -228,8 +228,9 @@ namespace FitCompanion.Droid
             {
                 if ((socket != null))
                 {
-                    mSocketServiceProvider = ((ProviderServiceSocket)(socket));
-                    MainPage.deviceInfo = mSocketServiceProvider as ProviderServiceSocket;
+                    mSocketServiceProvider = (ProviderServiceSocket)(socket);
+
+                    MainPage.deviceSocketInfo = mSocketServiceProvider;
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
 
@@ -241,6 +242,8 @@ namespace FitCompanion.Droid
 #endif
 
             }
+
+            var socketConnection = mSocketServiceProvider.IsConnected;
 
         }
 
@@ -305,24 +308,30 @@ namespace FitCompanion.Droid
             public ProviderService Service { get; private set; }
         }
 
+        // the connection between watch and android
         public class ProviderServiceSocket : SASocket
         {
             [Export(SuperArgumentsString = "\"ProviderServiceSocket\"")]
             public ProviderServiceSocket() : base(p0: "ProviderServiceSocket")
             {
-
+                
             }
 
 
             public override void OnReceive(int channelId, byte[] bytes)
             {
                 // Check received data 
+                
+                
+
                 string message = System.Text.Encoding.UTF8.GetString(bytes);
+                MainPage.receivedMsg = message;
 #if DEBUG
                 Console.WriteLine("Received: ", message);
 
+                }
 #endif
-            }
+            
 
             protected override void OnServiceConnectionLost(int p0) =>
                 // ResetCache();

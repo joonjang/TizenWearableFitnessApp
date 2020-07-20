@@ -5,7 +5,7 @@
 				id="/joonspetproject/fit"
 				name="FitWatch"
 				role="consumer"
-				serviceImpl="com.joonspetproject.FitWatch.ProviderService"
+				
 				version="1.0"
 				serviceLimit="ANY"
 				serviceTimeout="10">

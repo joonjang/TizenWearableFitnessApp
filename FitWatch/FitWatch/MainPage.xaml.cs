@@ -29,13 +29,13 @@ namespace FitWatch
         {
             try
             {
-                Agent = await Agent.GetAgent("/joonspetproject/fit", onMessage: OnMessage);
+                Agent = await Agent.GetAgent("/joonspetproject/fit");
                 //Agent = await Agent.GetAgent("/sample/hello");
                 var peers = await Agent.FindPeers();
                 if (peers.Count() > 0)
                 {
-                    var peer = peers.First();
-                    Connection = peer.Connection;
+                    Peer = peers.First();
+                    Connection = Peer.Connection;
                     Connection.DataReceived -= Connection_DataReceived;
                     Connection.DataReceived += Connection_DataReceived;
                     await Connection.Open();
@@ -59,7 +59,7 @@ namespace FitWatch
         }
 
 
-
+        // broadcaster that looks for messages
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
 
@@ -78,7 +78,7 @@ namespace FitWatch
             //}));
             ReceivedMessage = "SUCCESS!";
             Connect();
-            //SendMessage();
+            // SendMessage();
             
         }
 
@@ -86,8 +86,10 @@ namespace FitWatch
         {
             // todo: adjust privilge to allow sending message
             await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
+
         }
 
+        // string bind to xaml label to display message from android companion
         private string receivedMessage;
         public string ReceivedMessage
         {
@@ -97,6 +99,11 @@ namespace FitWatch
                 receivedMessage = value;
                 OnPropertyChanged(nameof(ReceivedMessage));
             }
+        }
+
+        private void Button_Clicked_1(object sender, EventArgs e)
+        {
+            SendMessage();
         }
     }
 }

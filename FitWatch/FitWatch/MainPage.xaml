@@ -7,6 +7,7 @@
         <StackLayout VerticalOptions="Center">
             <Label Text="{Binding ReceivedMessage}"/>
             <Button Text="XAML" Clicked="Button_Clicked"/>
+            <Button Text="Send message" Clicked="Button_Clicked_1"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

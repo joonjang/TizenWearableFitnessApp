@@ -12,6 +12,7 @@
         <Button Text="Close Conn" WidthRequest="200" HeightRequest="50" Clicked="Connect_Clicked" />
         <Button Text="Send" WidthRequest="200" HeightRequest="50" Clicked="Send_Clicked" />
         <Button x:Name="deviceInfoTxt" Clicked="deviceInfoTxt_Clicked"/>
+        <Button Text="From watch" x:Name="watchMessage" Clicked="watchMessage_Clicked"/>
         <Label x:Name="lblStatus" FontSize="Micro" TextColor="Red"/>
     </StackLayout>
 

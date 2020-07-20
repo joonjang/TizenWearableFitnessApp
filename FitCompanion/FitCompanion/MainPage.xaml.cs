@@ -14,12 +14,13 @@ namespace FitCompanion
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        public IProviderService provider;
-        public static object deviceInfo;
+        public IProviderService provider { get; set; }
+        public static object deviceSocketInfo;
+        public static string receivedMsg;
 
         public MainPage()
         {
-            provider = DependencyService.Get<IProviderService>();
+           provider = DependencyService.Get<IProviderService>();
             InitializeComponent();
         }
         private void Connect_Clicked(object sender, EventArgs e)
@@ -51,7 +52,12 @@ namespace FitCompanion
 
         private void deviceInfoTxt_Clicked(object sender, EventArgs e)
         {
-            deviceInfoTxt.Text = deviceInfo.ToString();
+            deviceInfoTxt.Text = deviceSocketInfo.ToString();
+        }
+
+        private void watchMessage_Clicked(object sender, EventArgs e)
+        {
+            watchMessage.Text = receivedMsg;
         }
     }
 }
