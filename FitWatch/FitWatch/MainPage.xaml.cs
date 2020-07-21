@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using Tizen.Wearable.CircularUI.Forms;
 using Samsung.Sap;
+using Tizen;
 
 namespace FitWatch
 {
@@ -17,6 +18,7 @@ namespace FitWatch
         private Agent Agent;
         private Connection Connection;
         private Peer Peer;
+        private Channel ChannelId;
 
         public MainPage()
         {
@@ -32,8 +34,10 @@ namespace FitWatch
                 Agent = await Agent.GetAgent("/joonspetproject/fit");
                 //Agent = await Agent.GetAgent("/sample/hello");
                 var peers = await Agent.FindPeers();
+                ChannelId = Agent.Channels.First().Value;
                 if (peers.Count() > 0)
                 {
+
                     Peer = peers.First();
                     Connection = Peer.Connection;
                     Connection.DataReceived -= Connection_DataReceived;
@@ -82,10 +86,21 @@ namespace FitWatch
             
         }
 
-        private async void SendMessage()
+        private void SendMessage()
         {
             // todo: adjust privilge to allow sending message
-            await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
+            Log.Debug("WINNING", "MESSAGE SENT SAP sap ENTERED");
+            try
+            {
+                // await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
+                Log.Debug("WINNING", "connection send channel id: " + ChannelId );
+                Connection.Send(ChannelId, Encoding.UTF8.GetBytes("connection hello msg"));
+            }
+            catch(Exception e)
+            {
+                Log.Debug("WINNING", "MESSAGE SAP CATCH: " + e);
+            }
+            Log.Debug("WINNING", "MESSAGE SENT SAP sap EXIT");
 
         }
 
@@ -103,7 +118,9 @@ namespace FitWatch
 
         private void Button_Clicked_1(object sender, EventArgs e)
         {
+            Log.Debug("WINNING", "button clicked");
             SendMessage();
+            Log.Debug("WINNING", "button function ended and exiting");
         }
     }
 }
