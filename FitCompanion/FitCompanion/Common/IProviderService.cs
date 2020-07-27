@@ -9,5 +9,6 @@ namespace FitCompanion
         bool CloseConnection();
         void SendData(string msg);
 
+
     }
 }

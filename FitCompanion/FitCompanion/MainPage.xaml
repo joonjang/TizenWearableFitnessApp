@@ -3,17 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:FitCompanion.ViewModel"
              mc:Ignorable="d"
              x:Class="FitCompanion.MainPage">
 
-    <StackLayout>
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="40" WidthRequest="400">
         <!-- Place new controls here -->
-        <Entry WidthRequest="300" HeightRequest="100" x:Name="entry" />
-        <Button Text="Close Conn" WidthRequest="200" HeightRequest="50" Clicked="Connect_Clicked" />
-        <Button Text="Send" WidthRequest="200" HeightRequest="50" Clicked="Send_Clicked" />
-        <Button x:Name="deviceInfoTxt" Clicked="deviceInfoTxt_Clicked"/>
-        <Button Text="From watch" x:Name="watchMessage" Clicked="watchMessage_Clicked"/>
-        <Label x:Name="lblStatus" FontSize="Micro" TextColor="Red"/>
+
+        <Button Text="Refresh" Command="{Binding RefreshCommand}" BackgroundColor="White"/>
+        <Label BackgroundColor="LightSkyBlue" Text="{Binding DeviceSocketInfo}"/>
+        <Label BackgroundColor="HotPink" Text="{Binding ReceivedMsg}"/>
+        
+        <Entry x:Name="entry" Placeholder="Send Message To Watch"/>
+        <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
+        <Button Text="Send" BackgroundColor="White"
+                Command="{Binding SendMessageCommand}" 
+                CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"/>
+        
+        
+       
     </StackLayout>
 
 </ContentPage>

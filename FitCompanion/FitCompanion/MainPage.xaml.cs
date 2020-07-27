@@ -14,50 +14,13 @@ namespace FitCompanion
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-        public IProviderService provider { get; set; }
-        public static object deviceSocketInfo;
-        public static string receivedMsg;
+        public static string DeviceInfoSocket;
+        public static string ReceivedMessage;
 
         public MainPage()
         {
-           provider = DependencyService.Get<IProviderService>();
             InitializeComponent();
         }
-        private void Connect_Clicked(object sender, EventArgs e)
-        {
-            provider.CloseConnection();
-        }
-
-        private void Send_Clicked(object sender, EventArgs e)
-        {
-
-            try
-            {
-
-                
-                provider.SendData(entry.Text);
-            }
-            catch (Exception ex)
-            {
-
-
-            }
-        }
-
-        private async void OnDataReceived(object sender, EventArgs e)
-        {
-            var sapargs = e as SAPDataReceivedEventArgs;
-            await DisplayAlert("message", sapargs.Message, cancel: "ok");
-        }
-
-        private void deviceInfoTxt_Clicked(object sender, EventArgs e)
-        {
-            deviceInfoTxt.Text = deviceSocketInfo.ToString();
-        }
-
-        private void watchMessage_Clicked(object sender, EventArgs e)
-        {
-            watchMessage.Text = receivedMsg;
-        }
+        
     }
 }

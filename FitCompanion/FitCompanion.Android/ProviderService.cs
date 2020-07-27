@@ -84,6 +84,9 @@ namespace FitCompanion.Droid
         {
             base.OnCreate();
 
+            //the reason the notification wont go away
+            //https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/foreground-services
+
             if ((Build.VERSION.SdkInt >= BuildVersionCodes.O))
             {
                 NotificationManager notificationManager = null;
@@ -188,7 +191,7 @@ namespace FitCompanion.Droid
                 }
                 catch(Exception e)
                 {
-
+                    Console.WriteLine("SendData error: " + e);
                 }
             }
         }
@@ -206,7 +209,7 @@ namespace FitCompanion.Droid
                 {
                     //  Cache(peerAgent);
                     RequestServiceConnection(peerAgent);
-                   
+                  
                 }
             }
         }
@@ -220,6 +223,7 @@ namespace FitCompanion.Droid
             }
         }
 
+
         // this is where the connection socket is called
         protected override void OnServiceConnectionResponse(SAPeerAgent p0, SASocket socket, int result)
         {
@@ -230,7 +234,8 @@ namespace FitCompanion.Droid
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
 
-                    MainPage.deviceSocketInfo = mSocketServiceProvider;
+
+                    MainPage.DeviceInfoSocket = mSocketServiceProvider.ToString();
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
 
@@ -290,6 +295,11 @@ namespace FitCompanion.Droid
             {
                 mSocketServiceProvider.Close();
                 mSocketServiceProvider = null;
+                MainPage.DeviceInfoSocket = (mSocketServiceProvider == null ? "Empty" : mSocketServiceProvider.ToString()) ;
+
+                Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
+                Application.Context.StopService(serviceIntent);
+
                 return true;
             }
             else
@@ -325,7 +335,7 @@ namespace FitCompanion.Droid
                 
 
                 string message = System.Text.Encoding.UTF8.GetString(bytes);
-                MainPage.receivedMsg = message;
+                MainPage.ReceivedMessage = message;
 #if DEBUG
                 Console.WriteLine("Received: ", message);
 
