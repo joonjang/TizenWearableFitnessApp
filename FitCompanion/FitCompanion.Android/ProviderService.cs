@@ -224,6 +224,7 @@ namespace FitCompanion.Droid
         }
 
 
+
         // this is where the connection socket is called
         protected override void OnServiceConnectionResponse(SAPeerAgent p0, SASocket socket, int result)
         {
@@ -233,9 +234,9 @@ namespace FitCompanion.Droid
                 if ((socket != null))
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
-
-
                     MainPage.DeviceInfoSocket = mSocketServiceProvider.ToString();
+                    MainPage.InfoFromAndroid();
+
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
 
@@ -331,11 +332,11 @@ namespace FitCompanion.Droid
             public override void OnReceive(int channelId, byte[] bytes)
             {
                 // Check received data 
-                
-                
 
                 string message = System.Text.Encoding.UTF8.GetString(bytes);
+
                 MainPage.ReceivedMessage = message;
+                MainPage.InfoFromAndroid();
 #if DEBUG
                 Console.WriteLine("Received: ", message);
 

@@ -14,6 +14,7 @@ namespace FitCompanion
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
+        // public static code is the buffer between the android activity and viewmodel
         public static string DeviceInfoSocket;
         public static string ReceivedMessage;
 
@@ -21,6 +22,10 @@ namespace FitCompanion
         {
             InitializeComponent();
         }
-        
+
+        public static void InfoFromAndroid()
+        {
+            MessagingCenter.Send<object>(Application.Current, "Update");
+        }
     }
 }

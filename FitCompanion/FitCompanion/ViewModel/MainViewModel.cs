@@ -18,7 +18,7 @@ namespace FitCompanion.ViewModel
         public ICommand CloseConnectionCommand { get; }
 
         public IProviderService provider { get; set; }
-       
+
 
         public MainViewModel()
         {
@@ -27,6 +27,10 @@ namespace FitCompanion.ViewModel
             SendMessageCommand = new Command<string>(SendMessage);
             CloseConnectionCommand = new Command(CloseConnection);
 
+            MessagingCenter.Subscribe<object>(Application.Current, "Update", (s) => 
+            {
+                RefreshMsgSocket();
+            });
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
