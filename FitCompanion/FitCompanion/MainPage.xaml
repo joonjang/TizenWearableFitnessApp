@@ -11,7 +11,7 @@
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
 
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Padding="40" WidthRequest="400">
+    <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40" WidthRequest="400">
         <!-- Place new controls here -->
 
         <Button Text="Refresh" Command="{Binding RefreshCommand}" BackgroundColor="White"/>
@@ -23,9 +23,20 @@
         <Button Text="Send" BackgroundColor="White"
                 Command="{Binding SendMessageCommand}" 
                 CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"/>
+
+        <Label Text="WORKOUT" FontAttributes="Bold" FontSize="Title"/>
+
         
         
-       
+        <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
+                Text="{Binding SpreadsheetUrl}"/>
+        <Button Text="Spreadsheet GET" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
+
+
+        <Button Text="Submit" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
+        <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
+
+
     </StackLayout>
 
 </ContentPage>
