@@ -21,11 +21,13 @@ namespace FitWatch.ViewModel
         List<string> weights;
 
         public Command NextCommand { get; }
+        public Command PreviousCommand { get; }
 
         public WorkoutViewModel()
         {
-            NextCommand = new Command(NextWorkoutInfo);
-         
+            NextCommand = new Command(On_NextWorkoutInfo, (x) => CanGoNext);
+            PreviousCommand = new Command(On_PreviousWorkoutInfo, (x) => CanGoBack);
+
             MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
             {
                 ParseJson();
@@ -35,6 +37,38 @@ namespace FitWatch.ViewModel
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void On_NextWorkoutInfo(object obj)
+        {
+            NextWorkoutInfo();
+        }
+
+        private bool canGoNext = true;
+        public bool CanGoNext
+        {
+            get=>canGoNext;
+            set
+            {
+                canGoNext = value;
+                ((Command)NextCommand).ChangeCanExecute();
+            }
+        }
+
+        private void On_PreviousWorkoutInfo(object obj)
+        {
+            PreviousWorkoutInfo();
+        }
+
+        private bool canGoBack = false;
+        public bool CanGoBack
+        {
+            get => canGoBack;
+            set
+            {
+                canGoBack = value;
+                ((Command)PreviousCommand).ChangeCanExecute();
+            }
         }
 
         public void ParseJson()
@@ -91,11 +125,11 @@ namespace FitWatch.ViewModel
         {
            
             weightInt++;
-
+            CanGoBack = true;
             if (weightInt == ((jsonObject.Sets.Count * workouts.Count)-1))
             {
                 NextBtnString = "Done";
-
+                CanGoNext = false;
             }
 
             WeightString = weights[weightInt];
@@ -108,14 +142,49 @@ namespace FitWatch.ViewModel
                 
             }
 
-            RegisterNewWeight();
+            RegisterNewWeight(true);
+        }
+
+        //todo: fix ordering of iteration
+
+        void PreviousWorkoutInfo()
+        {
+
+            if (weightInt % 6 == 0)
+            {
+                if (!(workAndRepInt <= 0))
+                {
+                    workAndRepInt--;
+                }
+                WorkoutTitletString = workouts[workAndRepInt];
+                RepString = reps[workAndRepInt];
+
+            }
+
+            weightInt--;
+            CanGoNext = true;
+
+            if (weightInt <= 0)
+            {
+                NextBtnString = "Done";
+                CanGoBack = false;
+            }
+
+            WeightString = weights[weightInt];
+
+            
+
+            RegisterNewWeight(false);
         }
 
         List<string> NewWeightList = new List<string>();
-        void RegisterNewWeight()
+        void RegisterNewWeight(bool AddOrDelete)
         {
             //todo: add option to go back, delete previous number
-            NewWeightList.Add(NewWeightString);
+            if (AddOrDelete)
+                NewWeightList.Add(NewWeightString);
+            else
+                NewWeightList.Remove(NewWeightString);
         }
 
         private string newWeightString;

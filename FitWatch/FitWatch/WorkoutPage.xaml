@@ -35,7 +35,7 @@
     </w:TwoButtonPage.Content>
     
     <w:TwoButtonPage.FirstButton>
-        <MenuItem Command="{Binding NextCommand}" Icon="image/back.png" />
+        <MenuItem Command="{Binding PreviousCommand}" Icon="image/back.png" />
     </w:TwoButtonPage.FirstButton>
     <w:TwoButtonPage.SecondButton>
         <MenuItem Command="{Binding NextCommand}" Icon="image/forward.png"  />
