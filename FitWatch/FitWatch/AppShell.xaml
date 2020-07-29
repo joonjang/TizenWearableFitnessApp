@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<w:CircularShell xmlns="http://xamarin.com/schemas/2014/forms"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                 xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:w="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms" 
+                 xmlns:local="clr-namespace:FitWatch"
+                 mc:Ignorable="d"
+                 x:Class="FitWatch.AppShell">
+    
+    <ShellContent Route="MainPage" Title="Sync with phone">
+        <local:MainPage/>
+    </ShellContent>
+
+    <ShellContent Route="WorkoutPage" Title="Workout">
+        <local:WorkoutPage/>
+    </ShellContent>
+    
+</w:CircularShell>

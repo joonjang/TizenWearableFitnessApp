@@ -16,13 +16,8 @@ namespace FitWatch
         public App()
         {
             InitializeComponent();
-            CarouselPage carouselPage = new CarouselPage();
-            
-            carouselPage.Children.Add(new MainPage());
-            carouselPage.Children.Add(new WorkoutPage());
 
-
-            MainPage = carouselPage;
+            MainPage = new AppShell();
         }
 
         protected override void OnStart()

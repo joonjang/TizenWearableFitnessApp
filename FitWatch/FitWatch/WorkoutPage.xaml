@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<w:TwoButtonPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="FitWatch.WorkoutPage"
              xmlns:vm="clr-namespace:FitWatch.ViewModel"
-             xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
+             xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core"
+             xmlns:w="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms">
 
-    <ContentPage.BindingContext>
+    <w:TwoButtonPage.BindingContext>
         <vm:WorkoutViewModel/>
-    </ContentPage.BindingContext>
-
-    <ContentPage.Content>
+    </w:TwoButtonPage.BindingContext>
 
 
+    <w:TwoButtonPage.Content>
 
         <StackLayout>
 
@@ -27,18 +27,17 @@
             <Label Text="{Binding WeightString}" 
                    VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand"/>
-            <Entry Text="{Binding NewWeightString}" 
+            <!--<Entry Text="{Binding NewWeightString}" 
                    VerticalOptions="CenterAndExpand" 
-                   HorizontalOptions="CenterAndExpand"/>
-
-
-            <Button Text="{Binding NextBtnString}" 
-                    Command="{Binding NextCommand}" 
-                    tizen:VisualElement.Style="bottom" 
-                    VerticalOptions="EndAndExpand"/>
+                   HorizontalOptions="CenterAndExpand"/>-->
 
         </StackLayout>
-            
-
-    </ContentPage.Content>
-</ContentPage>
+    </w:TwoButtonPage.Content>
+    
+    <w:TwoButtonPage.FirstButton>
+        <MenuItem Command="{Binding NextCommand}" Icon="image/back.png" />
+    </w:TwoButtonPage.FirstButton>
+    <w:TwoButtonPage.SecondButton>
+        <MenuItem Command="{Binding NextCommand}" Icon="image/forward.png"  />
+    </w:TwoButtonPage.SecondButton>
+</w:TwoButtonPage>

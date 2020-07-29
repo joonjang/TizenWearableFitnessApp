@@ -11,6 +11,7 @@
     
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+
             <Label Text="{Binding ReceivedMessage}"
                    VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>

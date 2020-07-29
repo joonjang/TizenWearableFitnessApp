@@ -10,11 +10,12 @@ using Xamarin.Forms.Xaml;
 namespace FitWatch
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class WorkoutPage : TwoButtonPage
+    public partial class AppShell : CircularShell
     {
-        public WorkoutPage()
+        public AppShell()
         {
             InitializeComponent();
+          
         }
     }
 }
