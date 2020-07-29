@@ -6,21 +6,15 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Tizen.Wearable.CircularUI.Forms;
-using Samsung.Sap;
-using Tizen;
 
 namespace FitWatch
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : ContentPage
+    public partial class WorkoutPage : ContentPage
     {
-
-        public MainPage()
+        public WorkoutPage()
         {
             InitializeComponent();
-            
         }
-
     }
 }

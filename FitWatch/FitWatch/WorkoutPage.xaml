@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="FitWatch.WorkoutPage"
+             xmlns:vm="clr-namespace:FitWatch.ViewModel"
+             xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
+
+    <ContentPage.BindingContext>
+        <vm:WorkoutViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+
+
+
+        <StackLayout>
+
+            <Label Text="{Binding WorkoutTitletString}" 
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Text="{Binding RepString}" 
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"/>
+            <Label Text="{Binding WeightString}" 
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"/>
+            <Entry Text="{Binding NewWeightString}" 
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"/>
+
+
+            <Button Text="{Binding NextBtnString}" 
+                    Command="{Binding NextCommand}" 
+                    tizen:VisualElement.Style="bottom" 
+                    VerticalOptions="EndAndExpand"/>
+
+        </StackLayout>
+            
+
+    </ContentPage.Content>
+</ContentPage>

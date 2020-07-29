@@ -1,13 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:c="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms"
+             xmlns:c="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms" 
+             xmlns:vm="clr-namespace:FitWatch.ViewModel"
              x:Class="FitWatch.MainPage">
+
+    <ContentPage.BindingContext>
+        <vm:MainViewModel/>
+    </ContentPage.BindingContext>
+    
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center">
-            <Label Text="{Binding ReceivedMessage}"/>
-            <Button Text="XAML" Clicked="Button_Clicked"/>
-            <Button Text="Send message" Clicked="Button_Clicked_1"/>
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+            <Label Text="{Binding ReceivedMessage}"
+                   VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand"/>
+            <Button Text="Connect" 
+                    Command="{Binding ConnectCommand}" 
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand"/>
+            <Button Text="Send" 
+                    Command="{Binding SendMessageCommand}" 
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
