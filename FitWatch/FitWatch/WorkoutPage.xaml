@@ -25,7 +25,8 @@
             
 
             <StackLayout Orientation="Horizontal" 
-                         HorizontalOptions="CenterAndExpand">
+                         HorizontalOptions="CenterAndExpand"
+                         IsVisible="{Binding UiVisible}">
 
                 <StackLayout Orientation="Vertical" 
                              HorizontalOptions="CenterAndExpand">
@@ -63,6 +64,12 @@
                             CommandParameter="1"/>
                 </StackLayout>
 
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" 
+                         HorizontalOptions="CenterAndExpand"
+                         IsVisible="{Binding RestVisible}">
+                <Label Text="---"/>
             </StackLayout>
 
             <Label Text="{Binding RepString}" 

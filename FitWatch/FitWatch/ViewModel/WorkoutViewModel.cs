@@ -229,21 +229,64 @@ namespace FitWatch.ViewModel
             }
         }
 
+        private bool uiVisible = true;
+        public bool UiVisible
+        {
+            get => uiVisible;
+            set
+            {
+                uiVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool restVisible = false;
+        public bool RestVisible
+        {
+            get => restVisible;
+            set
+            {
+                restVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
         List<List<string>> DataArrayList = new List<List<string>>();
         List<string> NewWeightList = new List<string>();
+        List<string> SavedNextWeight = new List<string>();
         void RegisterNewWeight(bool AddOrDelete)
         {
 
             if (AddOrDelete)
             {
                 NewWeightList.Add(NewWeightInt.ToString());
+                oldWeightInt = NewWeightInt;
             }
             else
             {
                 if((NewWeightList.Count - 1 ) >= 0)
                 {
-                    NewWeightList.RemoveAt(NewWeightList.Count - 1);
+                    NewWeightList.RemoveAt(NewWeightList.Count - 1);   
                 }
+                //if (SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+                //{
+                //    SavedNextWeight[weightInt] = oldWeightInt.ToString();
+                //}
+            }
+
+            HistoryOfEntry();
+        }
+
+        void HistoryOfEntry()
+        {
+            if(weightInt == SavedNextWeight.Count)
+            {   
+                SavedNextWeight.Add(oldWeightInt.ToString());
+            }
+            if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+            {
+                
+                SavedNextWeight[weightInt] = oldWeightInt.ToString();
             }
         }
         void NextWorkoutInfo()
@@ -271,12 +314,31 @@ namespace FitWatch.ViewModel
                 NewWeightList = new List<string>();
                 
             }
-
             // start of new weight entry
-            NewWeightInt = 0;
-            OneWeight = 0;
-            TenWeight = 0;
-            HundredWeight = 0;
+            if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+            {
+                NewWeightInt = Int32.Parse(SavedNextWeight[weightInt]);
+                ShowPrevious(SavedNextWeight[weightInt]);
+            }
+            else
+            {
+                NewWeightInt = 0;
+                OneWeight = 0;
+                TenWeight = 0;
+                HundredWeight = 0;
+            }
+            
+            if (weights[weightInt] == "8888")
+            {
+                UiVisible = false;
+                RestVisible = true;
+                NewWeightInt = 8888;
+            }
+            else
+            {
+                UiVisible = true;
+                RestVisible = false;
+            }
             
         }
 
@@ -286,7 +348,7 @@ namespace FitWatch.ViewModel
             // populate views
             if (weightInt % 6 != 0)
             {
-                ShowPrevious();
+                ShowPrevious(NewWeightList[NewWeightList.Count - 1]);
             }
                 
 
@@ -306,7 +368,7 @@ namespace FitWatch.ViewModel
                 // remove top array item
                 // make removed list the current
                 NewWeightList = DataArrayList[DataArrayList.Count - 1];
-                ShowPrevious();
+                ShowPrevious(NewWeightList[NewWeightList.Count - 1]);
                 DataArrayList.RemoveAt(DataArrayList.Count - 1);
                 NewWeightList.RemoveAt(NewWeightList.Count - 1);
             }
@@ -326,31 +388,46 @@ namespace FitWatch.ViewModel
             
         }
 
-        void ShowPrevious()
+        int oldWeightInt;
+
+        void ShowPrevious(string CurrentWeight)
         {
-            string currentWeightInList = NewWeightList[NewWeightList.Count - 1];
-            NewWeightInt = Int32.Parse(currentWeightInList);
-            HundredWeight = (int)Math.Truncate((double)(newWeightInt / 100));
-            try
+            string currentWeightInList = CurrentWeight;
+
+            // ui visibility
+            if(currentWeightInList == "8888")
             {
-                TenWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 2].ToString());
-                OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+                UiVisible = false;
+                RestVisible = true;
             }
-            catch
-            {
+            else
+            {  
+                UiVisible = true;
+                RestVisible = false;
+                oldWeightInt = NewWeightInt;
+                NewWeightInt = Int32.Parse(currentWeightInList);
+                HundredWeight = (int)Math.Truncate((double)(newWeightInt / 100));
                 try
                 {
-                    TenWeight = 0;
+                    TenWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 2].ToString());
                     OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
                 }
                 catch
                 {
-                    TenWeight = 0;
-                    OneWeight = 0;
+                    try
+                    {
+                        TenWeight = 0;
+                        OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+                    }
+                    catch
+                    {
+                        TenWeight = 0;
+                        OneWeight = 0;
+                    }
                 }
-                
             }
-            
+
+
         }
 
         // binding label information -----------------------------
