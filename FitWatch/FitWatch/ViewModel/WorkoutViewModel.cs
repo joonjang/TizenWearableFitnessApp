@@ -164,38 +164,9 @@ namespace FitWatch.ViewModel
             }
         }
 
-        private int hundredWeight = 0;
-        public int HundredWeight
-        {
-            get => hundredWeight;
-            set
-            {
-                hundredWeight = value;
-                OnPropertyChanged();
-            }
-        }
+        
 
-        private int tenWeight = 0;
-        public int TenWeight
-        {
-            get => tenWeight;
-            set
-            {
-                tenWeight = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private int oneWeight = 0;
-        public int OneWeight
-        {
-            get => oneWeight;
-            set
-            {
-                oneWeight = value;
-                OnPropertyChanged();
-            }
-        }
+        // two button ui logic ===============================
 
         private void On_NextWorkoutInfo(object obj)
         {
@@ -274,7 +245,14 @@ namespace FitWatch.ViewModel
                 //}
             }
 
+
+            
             HistoryOfEntry();
+        }
+
+        void SetCount()
+        {
+            SetString = ((weightInt % 6)+1).ToString();
         }
 
         void HistoryOfEntry()
@@ -295,10 +273,12 @@ namespace FitWatch.ViewModel
 
             weightInt++;
             CanGoBack = true;
-            if (weightInt == ((jsonObject.Sets.Count * workouts.Count)-1))
+            if (weightInt == ((jsonObject.Sets.Count * workouts.Count)))
             {
-                
+
+                DataArrayList.Add(NewWeightList);
                 CanGoNext = false;
+                return;
             }
 
             WeightString = weights[weightInt];
@@ -339,7 +319,7 @@ namespace FitWatch.ViewModel
                 UiVisible = true;
                 RestVisible = false;
             }
-            
+            SetCount();
         }
 
         void PreviousWorkoutInfo()
@@ -384,8 +364,8 @@ namespace FitWatch.ViewModel
 
             WeightString = weights[weightInt];
 
-            
-            
+
+            SetCount();
         }
 
         int oldWeightInt;
@@ -465,6 +445,49 @@ namespace FitWatch.ViewModel
             }
         }
 
-        
+        private int hundredWeight = 0;
+        public int HundredWeight
+        {
+            get => hundredWeight;
+            set
+            {
+                hundredWeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int tenWeight = 0;
+        public int TenWeight
+        {
+            get => tenWeight;
+            set
+            {
+                tenWeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int oneWeight = 0;
+        public int OneWeight
+        {
+            get => oneWeight;
+            set
+            {
+                oneWeight = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string setString = "Set: 1";
+        public string SetString
+        {
+            get => setString;
+            set
+            {
+                setString = "Set: " + value;
+                OnPropertyChanged();
+            }
+        }
+
     }
 }

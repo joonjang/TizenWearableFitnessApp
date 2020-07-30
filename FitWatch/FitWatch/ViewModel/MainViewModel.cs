@@ -70,7 +70,8 @@ namespace FitWatch.ViewModel
 
 
             // for debugging goes through the logic of getting json
-            jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
+            // jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
+            jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
             MessagingCenter.Send<object>(Application.Current, "Parse");
         }
 
