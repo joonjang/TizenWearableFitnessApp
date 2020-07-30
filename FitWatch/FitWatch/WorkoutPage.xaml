@@ -24,24 +24,43 @@
                    HorizontalOptions="CenterAndExpand"/>
             
 
-            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+            <StackLayout Orientation="Horizontal" 
+                         HorizontalOptions="CenterAndExpand">
 
-                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
-                    <Button Text="+"/>
-                    <Label Text="0" HorizontalTextAlignment="Center"/>
-                    <Button Text="-"/>
+                <StackLayout Orientation="Vertical" 
+                             HorizontalOptions="CenterAndExpand">
+                    <Button Text="+" 
+                            Command="{Binding AddCommand}" 
+                            CommandParameter="100"/>
+                    <Label Text="{Binding HundredWeight}" 
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="-"
+                            Command="{Binding SubtractCommand}"
+                            CommandParameter="100"/>
                 </StackLayout>
 
-                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
-                    <Button Text="+"/>
-                    <Label Text="0" HorizontalTextAlignment="Center"/>
-                    <Button Text="-"/>
+                <StackLayout Orientation="Vertical" 
+                             HorizontalOptions="CenterAndExpand">
+                    <Button Text="+"
+                            Command="{Binding AddCommand}" 
+                            CommandParameter="10"/>
+                    <Label Text="{Binding TenWeight}" 
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="-"
+                            Command="{Binding SubtractCommand}"
+                            CommandParameter="10"/>
                 </StackLayout>
 
-                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
-                    <Button Text="+"/>
-                    <Label Text="0" HorizontalTextAlignment="Center"/>
-                    <Button Text="-" />
+                <StackLayout Orientation="Vertical" 
+                             HorizontalOptions="CenterAndExpand">
+                    <Button Text="+"
+                            Command="{Binding AddCommand}" 
+                            CommandParameter="1"/>
+                    <Label Text="{Binding OneWeight}" 
+                           HorizontalTextAlignment="Center"/>
+                    <Button Text="-" 
+                            Command="{Binding SubtractCommand}"
+                            CommandParameter="1"/>
                 </StackLayout>
 
             </StackLayout>
@@ -64,9 +83,11 @@
     </w:TwoButtonPage.Content>
     
     <w:TwoButtonPage.FirstButton>
-        <MenuItem Command="{Binding PreviousCommand}" Icon="image/back.png" />
+        <MenuItem Command="{Binding PreviousCommand}" 
+                  Icon="image/back.png" />
     </w:TwoButtonPage.FirstButton>
     <w:TwoButtonPage.SecondButton>
-        <MenuItem Command="{Binding NextCommand}" Icon="image/forward.png"  />
+        <MenuItem Command="{Binding NextCommand}" 
+                  Icon="image/forward.png"  />
     </w:TwoButtonPage.SecondButton>
 </w:TwoButtonPage>
