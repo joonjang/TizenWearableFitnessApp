@@ -42,36 +42,36 @@ namespace FitWatch.ViewModel
 
         private async void Connect()
         {
-            // commented out for debugging, this is the final production code for watch to android connection
-            //try
-            //{
-            //    Agent = await Agent.GetAgent("/joonspetproject/fit");
-            //    //Agent = await Agent.GetAgent("/sample/hello");
-            //    var peers = await Agent.FindPeers();
-            //    ChannelId = Agent.Channels.First().Value;
-            //    if (peers.Count() > 0)
-            //    {
+            //commented out for debugging, this is the final production code for watch to android connection
+            try
+                    {
+                        Agent = await Agent.GetAgent("/joonspetproject/fit");
+                        //Agent = await Agent.GetAgent("/sample/hello");
+                        var peers = await Agent.FindPeers();
+                        ChannelId = Agent.Channels.First().Value;
+                        if (peers.Count() > 0)
+                        {
 
-            //        Peer = peers.First();
-            //        Connection = Peer.Connection;
-            //        Connection.DataReceived -= Connection_DataReceived;
-            //        Connection.DataReceived += Connection_DataReceived;
-            //        await Connection.Open();
-            //    }
-            //    else
-            //    {
-            //        Toast.DisplayText("No peer found");
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    Toast.DisplayText("Error: " + ex.Message);
-            //}
+                            Peer = peers.First();
+                            Connection = Peer.Connection;
+                            Connection.DataReceived -= Connection_DataReceived;
+                            Connection.DataReceived += Connection_DataReceived;
+                            await Connection.Open();
+                        }
+                        else
+                        {
+                            Toast.DisplayText("No peer found");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Toast.DisplayText("Error: " + ex.Message);
+                    }
 
 
             // for debugging goes through the logic of getting json
             // jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
+            //jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
             MessagingCenter.Send<object>(Application.Current, "Parse");
         }
 
@@ -95,7 +95,7 @@ namespace FitWatch.ViewModel
             {
                 // await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
                 Log.Debug("WINNING", "connection send channel id: " + ChannelId);
-                Connection.Send(ChannelId, Encoding.UTF8.GetBytes("connection hello msg"));
+                Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
             }
             catch (Exception e)
             {

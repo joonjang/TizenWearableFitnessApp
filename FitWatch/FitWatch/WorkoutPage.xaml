@@ -18,8 +18,14 @@
 
         <StackLayout Margin="0, 20, 0, 0">
 
+            <StackLayout IsVisible="{Binding DoneVisible}">
+                <Button Text="Done"
+                        Command="{Binding DoneCommand}"
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalOptions="CenterAndExpand"/>
+            </StackLayout>
             
-            <StackLayout>
+            <StackLayout IsVisible="{Binding MasterUIVisible}">
                 <Label Text="{Binding WorkoutTitletString}"
                        FontAttributes="Bold"
                        VerticalOptions="Center" 
@@ -85,19 +91,19 @@
                        HorizontalOptions="CenterAndExpand"
                        IsVisible="{Binding UiVisible}"/>
 
-                
-                
+
+
 
                 <StackLayout Orientation="Horizontal" 
                              HorizontalOptions="CenterAndExpand"
                              VerticalOptions="CenterAndExpand"
                              IsVisible="{Binding RestVisible}">
-                    <Label Text="---"/>
+                    <Label Text="---"
+                           HorizontalOptions="CenterAndExpand"
+                           VerticalOptions="CenterAndExpand"/>
                 </StackLayout>
-
-                
-
             </StackLayout>
+            
         </StackLayout>
     </w:TwoButtonPage.Content>
     

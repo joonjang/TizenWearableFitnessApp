@@ -15,6 +15,8 @@ namespace FitWatch.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public static string SendJsonString;
+
         WatchModel jsonObject;
         List<string> workouts;
         List<string> reps;
@@ -24,6 +26,7 @@ namespace FitWatch.ViewModel
         public Command PreviousCommand { get; }
         public Command<string> AddCommand { get; }
         public Command<string> SubtractCommand { get; }
+        public Command DoneCommand { get; }
 
         public WorkoutViewModel()
         {
@@ -32,6 +35,8 @@ namespace FitWatch.ViewModel
 
             AddCommand = new Command<string>(IncreaseWeight);
             SubtractCommand = new Command<string>(SubtractWeight);
+
+            DoneCommand = new Command(DoneFunction);
 
             MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
             {
@@ -45,6 +50,15 @@ namespace FitWatch.ViewModel
         }
 
         // json logic -----------------------
+
+        void DoneFunction()
+        {
+            var model = new DataArrayModel()
+            {
+                DataArray = DataArrayList
+            };
+            SendJsonString = JsonConvert.SerializeObject(model);
+        }
 
         public void ParseJson()
         {
@@ -273,9 +287,12 @@ namespace FitWatch.ViewModel
 
             weightInt++;
             CanGoBack = true;
+
+            // final user input entry
             if (weightInt == ((jsonObject.Sets.Count * workouts.Count)))
             {
-
+                DoneVisible = true;
+                MasterUIVisible = false;
                 DataArrayList.Add(NewWeightList);
                 CanGoNext = false;
                 return;
@@ -324,6 +341,8 @@ namespace FitWatch.ViewModel
 
         void PreviousWorkoutInfo()
         {
+            DoneVisible = false;
+            MasterUIVisible = true;
 
             // populate views
             if (weightInt % 6 != 0)
@@ -411,6 +430,28 @@ namespace FitWatch.ViewModel
         }
 
         // binding label information -----------------------------
+
+        private bool doneVisible = false;
+        public bool DoneVisible
+        {
+            get => doneVisible;
+            set
+            {
+                doneVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool masterUIVisbile = true;
+        public bool MasterUIVisible
+        {
+            get => masterUIVisbile;
+            set
+            {
+                masterUIVisbile = value;
+                OnPropertyChanged();
+            }
+        }
 
         private string workoutTitleString;
         public string WorkoutTitletString
