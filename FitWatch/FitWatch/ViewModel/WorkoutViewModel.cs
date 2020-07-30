@@ -215,7 +215,7 @@ namespace FitWatch.ViewModel
             get => repString;
             set
             {
-                repString = value;
+                repString = "Reps: " + value;
                 OnPropertyChanged();
             }
         }
@@ -226,7 +226,7 @@ namespace FitWatch.ViewModel
             get => weightString;
             set
             {
-                weightString = value;
+                weightString = "Previous: " + value;
                 OnPropertyChanged();
             }
         }

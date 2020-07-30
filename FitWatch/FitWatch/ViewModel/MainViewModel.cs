@@ -31,6 +31,8 @@ namespace FitWatch.ViewModel
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
 
+            // for debugging
+            Connect();
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

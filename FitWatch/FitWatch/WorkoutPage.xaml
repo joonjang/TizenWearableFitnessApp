@@ -16,20 +16,49 @@
 
     <w:TwoButtonPage.Content>
 
-        <StackLayout>
+        <StackLayout Margin="0, 20, 0, 0">
 
-            <Label Text="{Binding WorkoutTitletString}" 
-                   VerticalOptions="CenterAndExpand" 
+            <Label Text="{Binding WorkoutTitletString}"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" 
                    HorizontalOptions="CenterAndExpand"/>
+            
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                    <Button Text="+"/>
+                    <Label Text="0" HorizontalTextAlignment="Center"/>
+                    <Button Text="-"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                    <Button Text="+"/>
+                    <Label Text="0" HorizontalTextAlignment="Center"/>
+                    <Button Text="-"/>
+                </StackLayout>
+
+                <StackLayout Orientation="Vertical" HorizontalOptions="CenterAndExpand">
+                    <Button Text="+"/>
+                    <Label Text="0" HorizontalTextAlignment="Center"/>
+                    <Button Text="-" />
+                </StackLayout>
+
+            </StackLayout>
+
             <Label Text="{Binding RepString}" 
-                   VerticalOptions="CenterAndExpand" 
+                   FontSize="8"
+                   VerticalOptions="Center" 
                    HorizontalOptions="CenterAndExpand"/>
             <Label Text="{Binding WeightString}" 
-                   VerticalOptions="CenterAndExpand" 
+                   FontSize="8"
+                   VerticalOptions="Center" 
                    HorizontalOptions="CenterAndExpand"/>
+
             <!--<Entry Text="{Binding NewWeightString}" 
                    VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand"/>-->
+            
 
         </StackLayout>
     </w:TwoButtonPage.Content>
