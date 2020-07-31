@@ -12,15 +12,19 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
-            <Label Text="{Binding ReceivedMessage}"
+            <!--<Label Text="{Binding ReceivedMessage}"
                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>
+                    HorizontalOptions="CenterAndExpand"/>-->
             <Button Text="Connect" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>
             <Button Text="Send" 
                     Command="{Binding SendMessageCommand}" 
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand"/>
+            <Button Text="Parse" 
+                    Command="{Binding ParseCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>
         </StackLayout>

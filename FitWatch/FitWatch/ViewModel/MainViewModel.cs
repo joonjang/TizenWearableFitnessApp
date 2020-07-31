@@ -1,4 +1,6 @@
-﻿using Samsung.Sap;
+﻿using FitWatch.Model;
+using Newtonsoft.Json;
+using Samsung.Sap;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,14 +27,16 @@ namespace FitWatch.ViewModel
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
+        public ICommand ParseCommand { get; }
 
         public MainViewModel()
         {
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
+            ParseCommand = new Command(ParseFunction);
 
             // for debugging
-            Connect();
+            // Connect();
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -72,7 +76,7 @@ namespace FitWatch.ViewModel
             // for debugging goes through the logic of getting json
             // jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
             //jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            MessagingCenter.Send<object>(Application.Current, "Parse");
+            
         }
 
 
@@ -85,9 +89,16 @@ namespace FitWatch.ViewModel
 
             ReceivedMessage = receivedInfo;
 
+
         }
 
-        private void SendMessage()
+        void ParseFunction()
+        {
+            jsonString = ReceivedMessage;
+            MessagingCenter.Send<object>(Application.Current, "Parse");
+        }
+
+        void SendMessage()
         {
             
             Log.Debug("WINNING", "MESSAGE SENT SAP sap ENTERED");
@@ -95,6 +106,9 @@ namespace FitWatch.ViewModel
             {
                 // await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
                 Log.Debug("WINNING", "connection send channel id: " + ChannelId);
+
+
+
                 Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
             }
             catch (Exception e)

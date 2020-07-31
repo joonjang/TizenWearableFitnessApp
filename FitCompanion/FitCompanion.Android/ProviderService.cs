@@ -235,7 +235,7 @@ namespace FitCompanion.Droid
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
                     MainPage.DeviceInfoSocket = mSocketServiceProvider.ToString();
-                    MainPage.InfoFromAndroid();
+                    //MainPage.InfoFromAndroid();
 
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
@@ -249,7 +249,7 @@ namespace FitCompanion.Droid
 
             }
 
-            var socketConnection = mSocketServiceProvider.IsConnected;
+            // var socketConnection = mSocketServiceProvider.IsConnected;
 
         }
 

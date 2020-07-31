@@ -24,9 +24,9 @@ namespace FitCompanion.ViewModel
         public IProviderService provider { get; set; }
 
         // json object
-        string[][] setArray;
         string jsonString;
         WatchModel watchModel;
+        DataArrayModel dataArrayModel;
 
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
@@ -43,8 +43,6 @@ namespace FitCompanion.ViewModel
                 RefreshMsgSocket();
             });
 
-
-            setArray = new string[5][];
             SubmitJsonCommand = new Command(ApplyJsonToSheet);
             GetJsonCommand = new Command(GetSpreadsheetJson);
         }
@@ -73,12 +71,22 @@ namespace FitCompanion.ViewModel
         {
             OnPropertyChanged(nameof(DeviceSocketInfo));
             OnPropertyChanged(nameof(ReceivedMsg));
+
+            MakeObjectFromJson();
+        }
+
+        void MakeObjectFromJson()
+        {
+            dataArrayModel = null;
+            dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(ReceivedMsg);
+
+            ApplyJsonToSheet();
         }
 
         void CloseConnection()
         {
             provider.CloseConnection();
-            RefreshMsgSocket();
+            //RefreshMsgSocket();
         }
 
 
@@ -108,14 +116,9 @@ namespace FitCompanion.ViewModel
             var client = new HttpClient();
 
 
-            var model = new DataArrayModel()
-            {
-                DataArray = setArray
-            };
-
             // todo: for debugging where this Json data is sent to google sheet, make it user entered url
             var uri = "https://script.google.com/macros/s/AKfycby2BGbNJwvzgqp4hay1CR0V3cznlND4u3Ra2-mysvdELCbO3II/exec";
-            var jsonString = JsonConvert.SerializeObject(model);
+            var jsonString = JsonConvert.SerializeObject(dataArrayModel);
 
 
             // from jsonString

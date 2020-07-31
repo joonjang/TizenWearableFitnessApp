@@ -6,6 +6,6 @@ namespace FitCompanion.Model
 {
     public class DataArrayModel
     {
-        public string[][] DataArray { get; set; }
+        public List<List<string>> DataArray { get; set; }
     }
 }
