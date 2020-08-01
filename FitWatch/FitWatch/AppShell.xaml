@@ -7,12 +7,20 @@
                  xmlns:local="clr-namespace:FitWatch"
                  mc:Ignorable="d"
                  x:Class="FitWatch.AppShell">
-    <ShellContent Route="MainPage" Title="Sync with phone">
-        <local:MainPage/>
-    </ShellContent>
-    <ShellContent Route="WorkoutPage" Title="Workout">
-        <local:WorkoutPage/>
-    </ShellContent>
+
+
+    <TabBar>
+        <Tab>
+            <ShellContent Route="MainPage" Title="Sync with phone">
+                <local:MainPage/>
+            </ShellContent>
+
+            <ShellContent Route="WorkoutPage" Title="Workout">
+                <local:WorkoutPage/>
+            </ShellContent>
+        </Tab>
+    </TabBar>
+
     
     
     

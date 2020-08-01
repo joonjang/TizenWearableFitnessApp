@@ -15,18 +15,18 @@
             <!--<Label Text="{Binding ReceivedMessage}"
                    VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>-->
-            <Button Text="Connect" 
+            <Button Text="Connect to phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>
-            <Button Text="Send" 
+            <Button Text="Upload workout info" 
                     Command="{Binding SendMessageCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>
-            <Button Text="Parse" 
+            <!--<Button Text="Parse" 
                     Command="{Binding ParseCommand}" 
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>
+                    HorizontalOptions="CenterAndExpand"/>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

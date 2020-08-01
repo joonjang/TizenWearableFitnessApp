@@ -18,11 +18,16 @@
 
         <StackLayout Margin="0, 20, 0, 0">
 
-            <StackLayout IsVisible="{Binding DoneVisible}">
-                <Button Text="Done"
+            <StackLayout IsVisible="{Binding DoneVisible}"
+                         VerticalOptions="CenterAndExpand" 
+                         HorizontalOptions="CenterAndExpand">
+                <Button Text="Save"
                         Command="{Binding DoneCommand}"
                         VerticalOptions="CenterAndExpand" 
                         HorizontalOptions="CenterAndExpand"/>
+                <Label Text="{Binding SaveText}"
+                       VerticalOptions="CenterAndExpand" 
+                       HorizontalOptions="CenterAndExpand"/>
             </StackLayout>
             
             <StackLayout IsVisible="{Binding MasterUIVisible}">
@@ -106,13 +111,15 @@
             
         </StackLayout>
     </w:TwoButtonPage.Content>
-    
+
+
     <w:TwoButtonPage.FirstButton>
         <MenuItem Command="{Binding PreviousCommand}" 
-                  Icon="image/back.png" />
+                  Icon="image/back.png"/>
     </w:TwoButtonPage.FirstButton>
+    
     <w:TwoButtonPage.SecondButton>
         <MenuItem Command="{Binding NextCommand}" 
-                  Icon="image/forward.png"  />
+                  Icon="image/forward.png"/>
     </w:TwoButtonPage.SecondButton>
 </w:TwoButtonPage>

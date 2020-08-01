@@ -27,16 +27,14 @@ namespace FitWatch.ViewModel
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
-        public ICommand ParseCommand { get; }
+        //public ICommand ParseCommand { get; }
 
         public MainViewModel()
         {
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
-            ParseCommand = new Command(ParseFunction);
+            //ParseCommand = new Command(ParseFunction);
 
-            // for debugging
-            // Connect();
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -48,46 +46,49 @@ namespace FitWatch.ViewModel
         {
             //commented out for debugging, this is the final production code for watch to android connection
             try
-                    {
-                        Agent = await Agent.GetAgent("/joonspetproject/fit");
-                        //Agent = await Agent.GetAgent("/sample/hello");
-                        var peers = await Agent.FindPeers();
-                        ChannelId = Agent.Channels.First().Value;
-                        if (peers.Count() > 0)
-                        {
+            {
+                Agent = await Agent.GetAgent("/joonspetproject/fit");
+                //Agent = await Agent.GetAgent("/sample/hello");
+                var peers = await Agent.FindPeers();
+                ChannelId = Agent.Channels.First().Value;
+                if (peers.Count() > 0)
+                {
 
-                            Peer = peers.First();
-                            Connection = Peer.Connection;
-                            Connection.DataReceived -= Connection_DataReceived;
-                            Connection.DataReceived += Connection_DataReceived;
-                            await Connection.Open();
-                        }
-                        else
-                        {
-                            Toast.DisplayText("No peer found");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Toast.DisplayText("Error: " + ex.Message);
-                    }
+                    Peer = peers.First();
+                    Connection = Peer.Connection;
+                    Connection.DataReceived -= Connection_DataReceived;
+                    Connection.DataReceived += Connection_DataReceived;
+                    await Connection.Open();
+                }
+                else
+                {
+                    Toast.DisplayText("No peer found");
+                }
+            }
+            catch (Exception ex)
+            {
+                Toast.DisplayText("Error: " + ex.Message);
+            }
 
 
-            // for debugging goes through the logic of getting json
-            // jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            //jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            
+            //todo: for debugging goes through the logic of getting json
+            //Connection_DataReceived(new object(), null);
         }
 
 
         // broadcaster that looks for messages
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
+            //// for debugging
+            //var receivedInfo = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
+            ////jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
 
-            //Toast.DisplayText(e.Peer.DeviceName);
+            Toast.DisplayText("Workout received");
             var receivedInfo = System.Text.Encoding.ASCII.GetString(e.Data);
 
             ReceivedMessage = receivedInfo;
+            ParseFunction();
+
 
 
         }
@@ -100,22 +101,24 @@ namespace FitWatch.ViewModel
 
         void SendMessage()
         {
-            
-            Log.Debug("WINNING", "MESSAGE SENT SAP sap ENTERED");
+
             try
             {
-                // await Peer.SendMessage(Encoding.UTF8.GetBytes("Hello Message"));
-                Log.Debug("WINNING", "connection send channel id: " + ChannelId);
+                if(Peer != null)
+                {
+                    Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
+                }
+                else
+                {
+                    Toast.DisplayText("Connect to phone first");
+                }
 
-
-
-                Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
             }
             catch (Exception e)
             {
-                Log.Debug("WINNING", "MESSAGE SAP CATCH: " + e);
+                Console.WriteLine("SendMessage error: " + e);
             }
-            Log.Debug("WINNING", "MESSAGE SENT SAP sap EXIT");
+
 
         }
 

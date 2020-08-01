@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Tizen.Wearable.CircularUI.Forms;
 using Xamarin.Forms;
 
 namespace FitWatch.ViewModel
@@ -58,6 +59,9 @@ namespace FitWatch.ViewModel
                 DataArray = DataArrayList
             };
             SendJsonString = JsonConvert.SerializeObject(model);
+
+            SaveText = @"Save successful
+Tap 'Upload' next time connected to phone to update spreadsheet";
         }
 
         public void ParseJson()
@@ -430,6 +434,16 @@ namespace FitWatch.ViewModel
         }
 
         // binding label information -----------------------------
+        private string saveText;
+        public string SaveText
+        {
+            get => saveText;
+            set
+            {
+                saveText = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool doneVisible = false;
         public bool DoneVisible
