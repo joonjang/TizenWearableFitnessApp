@@ -11,32 +11,38 @@
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
 
-    <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40" WidthRequest="400">
-        <!-- Place new controls here -->
 
-        <Button Text="Refresh" Command="{Binding RefreshCommand}" BackgroundColor="White"/>
-        <Label BackgroundColor="LightSkyBlue" Text="{Binding DeviceSocketInfo}"/>
-        <Label BackgroundColor="HotPink" Text="{Binding ReceivedMsg}"/>
+
+    <StackLayout>
         
-        <Entry x:Name="entry" Placeholder="Send Message To Watch"/>
-        <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
-        <Button Text="Send" BackgroundColor="White"
-                Command="{Binding SendMessageCommand}" 
-                CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"/>
+        <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40">
+            <!-- Place new controls here -->
 
-        <Label Text="WORKOUT" FontAttributes="Bold" FontSize="Title"/>
+            <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
+                    Text="{Binding SpreadsheetUrl}"/>
+            <Button Text="Spreadsheet GET and PUSH" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
+                
+
+            <!--<Button Text="Send" BackgroundColor="White"
+                    Command="{Binding SendMessageCommand}" 
+                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"/>-->
+
+
+            <Button Text="Submit" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
+            <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
+
+            <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
+        </StackLayout>
 
         
         
-        <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
-                Text="{Binding SpreadsheetUrl}"/>
-        <Button Text="Spreadsheet GET" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
-
-
-        <Button Text="Submit" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
-        <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
-
-
+        <Label BackgroundColor="{Binding ConnectedColor}" 
+               Text="{Binding ConnectedString}" 
+               HorizontalTextAlignment="Center" 
+               Padding="5" 
+               TextColor="Black" 
+               VerticalOptions="EndAndExpand"/>
+        
     </StackLayout>
 
 </ContentPage>

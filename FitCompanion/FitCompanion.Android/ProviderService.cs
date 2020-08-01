@@ -235,7 +235,7 @@ namespace FitCompanion.Droid
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
                     MainPage.DeviceInfoSocket = mSocketServiceProvider.ToString();
-                    //MainPage.InfoFromAndroid();
+                    MainPage.InfoFromAndroid();
 
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
@@ -296,7 +296,6 @@ namespace FitCompanion.Droid
             {
                 mSocketServiceProvider.Close();
                 mSocketServiceProvider = null;
-                MainPage.DeviceInfoSocket = (mSocketServiceProvider == null ? "Empty" : mSocketServiceProvider.ToString()) ;
 
                 Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
                 Application.Context.StopService(serviceIntent);
@@ -342,12 +341,15 @@ namespace FitCompanion.Droid
 
                 }
 #endif
-            
 
-            protected override void OnServiceConnectionLost(int p0) =>
+
+            protected override void OnServiceConnectionLost(int p0)
+            {
                 // ResetCache();
                 Close();
-
+                MainPage.DeviceInfoSocket = "Empty";
+                MainPage.InfoFromAndroid();
+            }
             public override void OnError(int p0, string p1, int p2)
             {
 

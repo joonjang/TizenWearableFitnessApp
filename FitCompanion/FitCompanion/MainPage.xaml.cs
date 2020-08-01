@@ -25,7 +25,14 @@ namespace FitCompanion
 
         public static void InfoFromAndroid()
         {
-            MessagingCenter.Send<object>(Application.Current, "Update");
+            try
+            {
+                MessagingCenter.Send<object>(Application.Current, "Update");
+            }
+            catch
+            {
+
+            }
         }
     }
 }

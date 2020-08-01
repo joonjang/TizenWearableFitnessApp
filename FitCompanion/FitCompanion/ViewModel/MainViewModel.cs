@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Net;
 using static FitCompanion.Model.SpreadsheetModel;
+using System.Linq;
 
 namespace FitCompanion.ViewModel
 {
@@ -43,7 +44,7 @@ namespace FitCompanion.ViewModel
                 RefreshMsgSocket();
             });
 
-            SubmitJsonCommand = new Command(ApplyJsonToSheet);
+            SubmitJsonCommand = new Command(MakeObjectFromJson);
             GetJsonCommand = new Command(GetSpreadsheetJson);
         }
 
@@ -61,6 +62,49 @@ namespace FitCompanion.ViewModel
 
         }
 
+        private string connectColor = "PaleVioletRed";
+        public string ConnectedColor
+        {
+            get => connectColor;
+            set
+            {
+                connectColor = value;
+            }
+        }
+
+        private bool connectedBool = false;
+        public bool ConnectedBool
+        {
+            get => connectedBool;
+            set
+            {
+                connectedBool = value;
+                if (connectedBool)
+                {
+                    ConnectedColor = "LightGreen";
+                    ConnectedString = "Connected To Watch";
+                }
+                else
+                {
+                    ConnectedColor = "PaleVioletRed";
+                    ConnectedString = "Not Connected To Watch";
+                }
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ConnectedColor));
+                OnPropertyChanged(nameof(ConnectedString));
+            }
+        }
+
+        private string connectedString = "Not Connected To Watch";
+        public string ConnectedString
+        {
+            get => connectedString;
+            set 
+            { 
+                connectedString = value;
+            }
+        }
+
         public string ReceivedMsg
         {
             get => MainPage.ReceivedMessage;
@@ -69,16 +113,25 @@ namespace FitCompanion.ViewModel
 
         void RefreshMsgSocket()
         {
-            OnPropertyChanged(nameof(DeviceSocketInfo));
-            OnPropertyChanged(nameof(ReceivedMsg));
+            if (DeviceSocketInfo != "Empty")
+            {
+                ConnectedBool = true;
+            }
+            else
+            {
+                ConnectedBool = false;
+            }
+            OnPropertyChanged(nameof(ConnectedBool));
 
-            MakeObjectFromJson();
+            // MakeObjectFromJson();
         }
 
         void MakeObjectFromJson()
         {
             dataArrayModel = null;
-            dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(ReceivedMsg);
+            // filter the received watch json empty 8888 to *
+            string filterEmpty = ReceivedMsg.Replace("8888", "*");
+            dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(filterEmpty);
 
             ApplyJsonToSheet();
         }
@@ -119,7 +172,6 @@ namespace FitCompanion.ViewModel
             // todo: for debugging where this Json data is sent to google sheet, make it user entered url
             var uri = "https://script.google.com/macros/s/AKfycby2BGbNJwvzgqp4hay1CR0V3cznlND4u3Ra2-mysvdELCbO3II/exec";
             var jsonString = JsonConvert.SerializeObject(dataArrayModel);
-
 
             // from jsonString
             //string tmp = "{\"DataArray\":[[\"Week 0\",\"DAY 1\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"]]}";
@@ -184,8 +236,9 @@ namespace FitCompanion.ViewModel
         {
             // todo: for debugging, make text user input and saved by preference
             SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=524439697";
-            int sheetPageNumber = 1;
+            int sheetPageNumber = 2;
 
+            // get spreadsheet key url 
             Regex regex = new Regex(@"(?<=d/)(.*)(?=/)");
             MatchCollection matches = regex.Matches(SpreadsheetUrl);
             string spreadsheetCode = matches[0].Value;
@@ -280,12 +333,19 @@ namespace FitCompanion.ViewModel
 
                     watchModel.Workouts.Add(jsonList[i]);
 
-
                 }
 
 
             }
 
+            // to convert stop to empty workout for watch
+            for(int x = 0; x < watchModel.Workouts.Count; x++) 
+            {
+                if(watchModel.Workouts[x].Contains("*"))
+                {
+                    watchModel.Workouts[x] = "8888";
+                }
+            }
 
         }
 
