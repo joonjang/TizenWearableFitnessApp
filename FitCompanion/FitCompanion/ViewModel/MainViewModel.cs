@@ -28,7 +28,7 @@ namespace FitCompanion.ViewModel
         // json object
         string jsonString;
         WatchModel watchModel;
-        DataArrayModel dataArrayModel;
+        
 
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
@@ -39,7 +39,7 @@ namespace FitCompanion.ViewModel
         {
             provider = DependencyService.Get<IProviderService>();
             RefreshCommand = new Command(RefreshMsgSocket);
-            SendMessageCommand = new Command<string>(SendMessage);
+            SendMessageCommand = new Command(PackageForWatch);
             CloseConnectionCommand = new Command(CloseConnection);
 
             MessagingCenter.Subscribe<object>(Application.Current, "Update", (s) =>
@@ -136,12 +136,12 @@ namespace FitCompanion.ViewModel
         // make object from json sent from watch
         void MakeObjectFromJson()
         {
-            dataArrayModel = null;
+            DataArrayModel dataArrayModel;
             // filter the received watch json empty 8888 to *
             string filterEmpty = ReceivedMsg.Replace("8888", "*");
             dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(filterEmpty);
 
-            ApplyJsonToSheet();
+            ApplyJsonToSheet(dataArrayModel);
         }
 
         void CloseConnection()
@@ -153,13 +153,20 @@ namespace FitCompanion.ViewModel
 
         void SendMessage(string msg)
         {
-            try
-            {
-                provider.SendData(msg);
+            if(MainPage.DeviceInfoSocket != "Empty")
+            {      
+                try
+                {
+                    provider.SendData(msg);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("MainViewModel SendMessage error: " + ex);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("MainViewModel SendMessage error: " + ex);
+                ConnectWatchWarning();
             }
         }
 
@@ -172,7 +179,7 @@ namespace FitCompanion.ViewModel
 
 
 
-        async void ApplyJsonToSheet()
+        async void ApplyJsonToSheet(DataArrayModel dataArrayModel)
         {
             var client = new HttpClient();
 
@@ -250,27 +257,54 @@ namespace FitCompanion.ViewModel
             MatchCollection matches = regex.Matches(SpreadsheetUrl);
             string spreadsheetCode = matches[0].Value;
             string jsonUrl = "https://spreadsheets.google.com/feeds/cells/" + spreadsheetCode + "/" + sheetPageNumber + "/public/full?alt=json";
-            using (WebClient wc = new WebClient())
+
+            try
             {
-                jsonString = wc.DownloadString(jsonUrl);
-            }
-            Root jsonObject = JsonConvert.DeserializeObject<Root>(jsonString);
+                using (WebClient wc = new WebClient())
+                {
+                    jsonString = wc.DownloadString(jsonUrl);
+                }
+            
+            
+                Root jsonObject = JsonConvert.DeserializeObject<Root>(jsonString);
 
-            List<string> cellInfoList = new List<string>();
-            foreach (var cell in jsonObject.Feed.Entry)
+                List<string> cellInfoList = new List<string>();
+                foreach (var cell in jsonObject.Feed.Entry)
+                {
+                    cellInfoList.Add(cell.Content.T);
+
+                }
+                FilterThroughJsonList(cellInfoList);
+
+            }
+            catch
             {
-                cellInfoList.Add(cell.Content.T);
-
+                Workouts = new ObservableCollection<WorkoutModel>();
+                Workouts.Add(new WorkoutModel()
+                {
+                    Weight = "Unable to retrieve information"
+                });
+                OnPropertyChanged(nameof(Workouts));
+                return;
             }
 
-            FilterThroughJsonList(cellInfoList);
-            PackageForWatch();
+            
         }
 
+        void ConnectWatchWarning()
+        {
+            Workouts = new ObservableCollection<WorkoutModel>();
+            Workouts.Add(new WorkoutModel()
+            {
+                Weight = "Connect to watch first"
+            });
+            OnPropertyChanged(nameof(Workouts));
+        }
         void PackageForWatch()
         {
             if (watchModel == null)
             {
+                ConnectWatchWarning();
                 return;
             };
 
@@ -405,12 +439,22 @@ namespace FitCompanion.ViewModel
             ListViewWorkouts();
 
             // to convert stop to empty workout for watch
-            for(int x = 0; x < watchModel.Workouts.Count; x++) 
+            if (watchModel.Workouts.Count != 0)
             {
-                if(watchModel.Workouts[x].Contains("*"))
+                for (int x = 0; x < watchModel.Workouts.Count; x++)
                 {
-                    watchModel.Workouts[x] = "8888";
+                    if (watchModel.Workouts[x].Contains("*"))
+                    {
+                        watchModel.Workouts[x] = "8888";
+                    }
                 }
+            }
+            else
+            {
+                Workouts.Add(new WorkoutModel()
+                {
+                    Weight = "Unable to find information"
+                });
             }
 
         }

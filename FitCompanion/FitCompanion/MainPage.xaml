@@ -14,9 +14,9 @@
 
 
 
-    <StackLayout>
+    <StackLayout BackgroundColor="WhiteSmoke">
 
-        <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40">
+        <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40, 40, 40, 0">
             <!-- Place new controls here -->
 
             <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
@@ -41,7 +41,7 @@
 
             <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
 
-            <ListView ItemsSource="{Binding Workouts}" BackgroundColor="White" HasUnevenRows="True">
+            <ListView ItemsSource="{Binding Workouts}" BackgroundColor="White" HasUnevenRows="True" VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -60,7 +60,7 @@
             <Button Text="Send to Watch" BackgroundColor="White" Command="{Binding SendMessageCommand}"/>
 
 
-            <Button Text="Submit" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
+            <Button Text="Upload to Spreadsheet" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
             <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
 
             <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
