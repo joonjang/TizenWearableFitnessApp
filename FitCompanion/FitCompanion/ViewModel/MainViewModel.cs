@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using static FitCompanion.Model.SpreadsheetModel;
 using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace FitCompanion.ViewModel
 {
@@ -32,6 +33,8 @@ namespace FitCompanion.ViewModel
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
 
+        public ObservableCollection<WorkoutModel> Workouts { get; set; }
+
         public MainViewModel()
         {
             provider = DependencyService.Get<IProviderService>();
@@ -46,6 +49,9 @@ namespace FitCompanion.ViewModel
 
             SubmitJsonCommand = new Command(MakeObjectFromJson);
             GetJsonCommand = new Command(GetSpreadsheetJson);
+
+            
+
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -126,6 +132,8 @@ namespace FitCompanion.ViewModel
             // MakeObjectFromJson();
         }
 
+
+        // make object from json sent from watch
         void MakeObjectFromJson()
         {
             dataArrayModel = null;
@@ -182,12 +190,7 @@ namespace FitCompanion.ViewModel
 
             var result = await client.PostAsync(uri, requestContent);
             var resultContent = await result.Content.ReadAsStringAsync();
-
-            ResponseModel response = null;
-
-            response = JsonConvert.DeserializeObject<ResponseModel>(resultContent);
-
-
+            ResponseModel response = JsonConvert.DeserializeObject<ResponseModel>(resultContent);
             ProcessResponse(response);
         }
 
@@ -276,6 +279,58 @@ namespace FitCompanion.ViewModel
             SendMessage(jsonString);
         }
 
+        void ListViewWorkouts()
+        {
+            Workouts = new ObservableCollection<WorkoutModel>();
+
+            bool nextIsRep = false;
+            bool registerWorkout = false;
+
+            WorkoutModel tmpWorkout = new WorkoutModel();
+
+            for(int i = 0; i < watchModel.Workouts.Count; i++)
+            {
+                
+
+                if (!watchModel.Workouts[i].Any(char.IsDigit) && watchModel.Workouts[i] != "*")
+                {
+                    if(i != 0)
+                    {
+                        Workouts.Add(tmpWorkout);
+                    }
+                    
+                    tmpWorkout = new WorkoutModel();
+
+                    registerWorkout = false;
+                    tmpWorkout.Name = "Workout: " + watchModel.Workouts[i];
+                    nextIsRep = true;
+                    continue;
+                }
+
+                if (nextIsRep)
+                {
+                    tmpWorkout.Rep = "Reps: " + watchModel.Workouts[i];
+                    registerWorkout = true;
+                    nextIsRep = false;
+                    continue;
+                }
+                if (registerWorkout)
+                {
+                    tmpWorkout.Weight += watchModel.Workouts[i] + " | ";
+                }
+
+
+                if (i == watchModel.Workouts.Count - 1)
+                {
+                    
+                    Workouts.Add(tmpWorkout);
+
+                }
+            }
+
+            OnPropertyChanged(nameof(Workouts));
+        }
+
         private string userChosenDay;
         public string UserChosenDay
         {
@@ -287,6 +342,7 @@ namespace FitCompanion.ViewModel
             }
         }
 
+        // filters the json from spreadsheet
         void FilterThroughJsonList(List<string> jsonList)
         {
             UserChosenDay = "DAY " + DayStepperVal;
@@ -312,6 +368,11 @@ namespace FitCompanion.ViewModel
             while (workoutLoop)
             {
                 i++;
+                if(i >= jsonList.Count)
+                {
+                    break;
+                }
+
                 if (jsonList[i] == UserChosenDay)
                 {
                     workoutDayFound = true;
@@ -341,6 +402,8 @@ namespace FitCompanion.ViewModel
 
             }
 
+            ListViewWorkouts();
+
             // to convert stop to empty workout for watch
             for(int x = 0; x < watchModel.Workouts.Count; x++) 
             {
@@ -360,11 +423,11 @@ namespace FitCompanion.ViewModel
             set
             {
                 weekStepperVal = value;
-                WeekStepperString = "Week: " + weekStepperVal;
+                WeekStepperString = "Week " + weekStepperVal;
             }
         }
 
-        private string weekStepperString = "Week: 1";
+        private string weekStepperString = "Week 1";
         public string WeekStepperString
         {
             get => weekStepperString;
@@ -382,11 +445,11 @@ namespace FitCompanion.ViewModel
             set
             {
                 dayStepperVal = value;
-                DayStepperString = "DAY: " + dayStepperVal;
+                DayStepperString = "DAY " + dayStepperVal;
             }
         }
 
-        private string dayStepperString = "DAY: 1";
+        private string dayStepperString = "DAY 1";
         public string DayStepperString
         {
             get => dayStepperString;

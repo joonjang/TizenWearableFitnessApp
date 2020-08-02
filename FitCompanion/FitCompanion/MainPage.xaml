@@ -13,6 +13,7 @@
 
 
 
+
     <StackLayout>
 
         <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40">
@@ -40,10 +41,23 @@
 
             <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
 
+            <ListView ItemsSource="{Binding Workouts}" BackgroundColor="White" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout VerticalOptions="CenterAndExpand" Padding="25, 5, 25, 5">
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding Name}"/>
+                                    <Label Text="{Binding Rep}" HorizontalOptions="EndAndExpand"/>
+                                </StackLayout>
+                                <Label Text="{Binding Weight}" HorizontalOptions="CenterAndExpand"/>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
 
-            <!--<Button Text="Send" BackgroundColor="White"
-                    Command="{Binding SendMessageCommand}" 
-                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"/>-->
+            <Button Text="Send to Watch" BackgroundColor="White" Command="{Binding SendMessageCommand}"/>
 
 
             <Button Text="Submit" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
@@ -64,5 +78,5 @@
                VerticalOptions="EndAndExpand"/>
         
     </StackLayout>
-
+    
 </ContentPage>
