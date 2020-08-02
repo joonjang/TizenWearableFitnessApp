@@ -14,14 +14,32 @@
 
 
     <StackLayout>
-        
+
         <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40">
             <!-- Place new controls here -->
 
             <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
                     Text="{Binding SpreadsheetUrl}"/>
-            <Button Text="Spreadsheet GET and PUSH" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
-                
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding WeekStepperString}" FontSize="25" HorizontalTextAlignment="Center"/>
+                <Stepper Minimum="1"
+                         Increment="1"
+                         Value="{Binding WeekStepperVal}"
+                         HorizontalOptions="EndAndExpand"
+                         Scale="0.8"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding DayStepperString}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"/>
+                <Stepper Minimum="1"
+                         Increment="1"
+                         Value="{Binding DayStepperVal}"
+                         HorizontalOptions="EndAndExpand"
+                         Scale="0.8"/>
+            </StackLayout>
+
+            <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
+
 
             <!--<Button Text="Send" BackgroundColor="White"
                     Command="{Binding SendMessageCommand}" 
@@ -33,6 +51,8 @@
 
             <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
         </StackLayout>
+        
+        
 
         
         

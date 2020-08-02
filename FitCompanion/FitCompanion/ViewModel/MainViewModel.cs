@@ -236,7 +236,11 @@ namespace FitCompanion.ViewModel
         {
             // todo: for debugging, make text user input and saved by preference
             SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=524439697";
-            int sheetPageNumber = 2;
+            
+
+
+
+            int sheetPageNumber = WeekStepperVal;
 
             // get spreadsheet key url 
             Regex regex = new Regex(@"(?<=d/)(.*)(?=/)");
@@ -285,8 +289,7 @@ namespace FitCompanion.ViewModel
 
         void FilterThroughJsonList(List<string> jsonList)
         {
-            // todo: for debugging hardcoded the day selections
-            UserChosenDay = "DAY 2";
+            UserChosenDay = "DAY " + DayStepperVal;
 
             watchModel = new WatchModel();
             watchModel.Sets = new List<string>();
@@ -349,5 +352,49 @@ namespace FitCompanion.ViewModel
 
         }
 
+
+        private int weekStepperVal = 1;
+        public int WeekStepperVal
+        {
+            get => weekStepperVal;
+            set
+            {
+                weekStepperVal = value;
+                WeekStepperString = "Week: " + weekStepperVal;
+            }
+        }
+
+        private string weekStepperString = "Week: 1";
+        public string WeekStepperString
+        {
+            get => weekStepperString;
+            set
+            {
+                weekStepperString = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int dayStepperVal = 1;
+        public int DayStepperVal
+        {
+            get => dayStepperVal;
+            set
+            {
+                dayStepperVal = value;
+                DayStepperString = "DAY: " + dayStepperVal;
+            }
+        }
+
+        private string dayStepperString = "DAY: 1";
+        public string DayStepperString
+        {
+            get => dayStepperString;
+            set
+            {
+                dayStepperString = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
