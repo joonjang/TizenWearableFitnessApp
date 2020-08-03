@@ -27,8 +27,9 @@ namespace FitCompanion.ViewModel
 
         // json object
         string jsonString;
-        WatchModel watchModel;
-        
+        WatchModel globalWatchModelHold;
+        DataArrayModel dataArrayModelHold;
+
 
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
@@ -47,10 +48,10 @@ namespace FitCompanion.ViewModel
                 RefreshMsgSocket();
             });
 
-            SubmitJsonCommand = new Command(MakeObjectFromJson);
+            SubmitJsonCommand = new Command(FullSendJsonToSheet);
             GetJsonCommand = new Command(GetSpreadsheetJson);
 
-            
+
 
         }
 
@@ -105,8 +106,8 @@ namespace FitCompanion.ViewModel
         public string ConnectedString
         {
             get => connectedString;
-            set 
-            { 
+            set
+            {
                 connectedString = value;
             }
         }
@@ -127,9 +128,10 @@ namespace FitCompanion.ViewModel
             {
                 ConnectedBool = false;
             }
+
             OnPropertyChanged(nameof(ConnectedBool));
 
-            // MakeObjectFromJson();
+            MakeObjectFromJson();
         }
 
 
@@ -137,11 +139,62 @@ namespace FitCompanion.ViewModel
         void MakeObjectFromJson()
         {
             DataArrayModel dataArrayModel;
+
             // filter the received watch json empty 8888 to *
             string filterEmpty = ReceivedMsg.Replace("8888", "*");
+
+
+            // for debugging
+            //var filterEmpty = "{\"DataArray\":[[\"Week 1\",\"DAY 1\"],[\"0\",\"0\",\"0\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"4\",\"8\",\"4\",\"12\"],[\"Deadlift\",\"Chinups\",\"Rows\",\"Curls\"]]}";
+
+
             dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(filterEmpty);
 
-            ApplyJsonToSheet(dataArrayModel);
+            // get workout name and reps then removes from DataArrayModel
+            List<string> watchWorkoutTitle = dataArrayModel.DataArray[dataArrayModel.DataArray.Count - 1];
+            dataArrayModel.DataArray.RemoveAt(dataArrayModel.DataArray.Count - 1);
+            List<string> watchReps = dataArrayModel.DataArray[dataArrayModel.DataArray.Count - 1];
+            dataArrayModel.DataArray.RemoveAt(dataArrayModel.DataArray.Count - 1);
+
+            ConvertWatchJsonToWatchModel(watchWorkoutTitle, watchReps, dataArrayModel.DataArray);
+
+            dataArrayModelHold = dataArrayModel;
+            
+        }
+
+        void FullSendJsonToSheet()
+        {
+            if(dataArrayModelHold != null)
+            {
+                ApplyJsonToSheet(dataArrayModelHold);
+            }
+            
+        }
+
+        void ConvertWatchJsonToWatchModel(List<string> WorkoutNames, List<string> RepCount, List<List<string>> MasterArray)
+        {
+            WatchModel watchModel = new WatchModel();
+            watchModel.Week = MasterArray[0][0];
+            watchModel.Day = MasterArray[0][1];
+            watchModel.Sets = new List<string>();
+            watchModel.Workouts = new List<string>();
+
+            // populate set count based on first workout amount
+            for(int i = 0; i < MasterArray[1].Count; i++)
+            {
+                watchModel.Sets.Add("Set " + (i + 1));
+            }
+
+            // populate workout list past the first array which is week and day info
+            for(int i = 1; i < MasterArray.Count; i++)
+            {
+                watchModel.Workouts.Add(WorkoutNames[i - 1]);
+                watchModel.Workouts.Add(RepCount[i - 1]);
+                watchModel.Workouts.AddRange(MasterArray[i]);
+            }
+
+            ListViewWorkouts(watchModel);
+
         }
 
         void CloseConnection()
@@ -225,8 +278,12 @@ namespace FitCompanion.ViewModel
 
         private void ProcessResponse(ResponseModel responseModel)
         {
-            ResultResponseBool = true;
-            ResultResponseText = responseModel.Message;
+            Workouts = new ObservableCollection<WorkoutModel>();
+            Workouts.Add(new WorkoutModel()
+            {
+                Weight = responseModel.Message
+        });
+            OnPropertyChanged(nameof(Workouts));
         }
 
 
@@ -300,20 +357,23 @@ namespace FitCompanion.ViewModel
             });
             OnPropertyChanged(nameof(Workouts));
         }
+
+        
+
         void PackageForWatch()
         {
-            if (watchModel == null)
+            if (globalWatchModelHold == null)
             {
                 ConnectWatchWarning();
                 return;
             };
 
-            var jsonString = JsonConvert.SerializeObject(watchModel);
+            var jsonString = JsonConvert.SerializeObject(globalWatchModelHold);
 
             SendMessage(jsonString);
         }
 
-        void ListViewWorkouts()
+        void ListViewWorkouts(WatchModel watchModel)
         {
             Workouts = new ObservableCollection<WorkoutModel>();
 
@@ -381,7 +441,7 @@ namespace FitCompanion.ViewModel
         {
             UserChosenDay = "DAY " + DayStepperVal;
 
-            watchModel = new WatchModel();
+            WatchModel watchModel = new WatchModel();
             watchModel.Sets = new List<string>();
             watchModel.Workouts = new List<string>();
 
@@ -436,7 +496,7 @@ namespace FitCompanion.ViewModel
 
             }
 
-            ListViewWorkouts();
+            ListViewWorkouts(watchModel);
 
             // to convert stop to empty workout for watch
             if (watchModel.Workouts.Count != 0)
@@ -456,6 +516,8 @@ namespace FitCompanion.ViewModel
                     Weight = "Unable to find information"
                 });
             }
+
+            globalWatchModelHold = watchModel;
 
         }
 

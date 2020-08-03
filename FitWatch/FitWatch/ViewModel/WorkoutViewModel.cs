@@ -54,6 +54,10 @@ namespace FitWatch.ViewModel
 
         void DoneFunction()
         {
+            //add rep and workout info so android listview can see it
+            DataArrayList.Add(reps);
+            DataArrayList.Add(workouts);
+
             var model = new DataArrayModel()
             {
                 DataArray = DataArrayList
@@ -64,6 +68,7 @@ namespace FitWatch.ViewModel
 Tap 'Upload' next time connected to phone to update spreadsheet";
         }
 
+        // json from android
         public void ParseJson()
         {
             

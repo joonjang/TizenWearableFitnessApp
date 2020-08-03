@@ -349,6 +349,8 @@ namespace FitCompanion.Droid
                 Close();
                 MainPage.DeviceInfoSocket = "Empty";
                 MainPage.InfoFromAndroid();
+                Intent serviceIntent = new Intent(Application.Context, typeof(ProviderService));
+                Application.Context.StopService(serviceIntent);
             }
             public override void OnError(int p0, string p1, int p2)
             {
