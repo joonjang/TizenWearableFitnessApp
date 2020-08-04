@@ -18,11 +18,11 @@
             <Button Text="Connect to phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>
+                    HorizontalOptions="FillAndExpand"/>
             <Button Text="Upload workout info" 
                     Command="{Binding SendMessageCommand}" 
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>
+                    HorizontalOptions="FillAndExpand"/>
             <!--<Button Text="Parse" 
                     Command="{Binding ParseCommand}" 
                     VerticalOptions="CenterAndExpand" 

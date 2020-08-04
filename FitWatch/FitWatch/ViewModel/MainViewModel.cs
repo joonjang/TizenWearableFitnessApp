@@ -23,17 +23,16 @@ namespace FitWatch.ViewModel
         private Peer Peer;
         private Channel ChannelId;
 
-        public static string jsonString;
+        // todo: debugging
+        public static string jsonString = "{\"Week\":\"Week 1\",\"Day\":\"DAY 1\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Deadlift\",\"4\",\"100\",\"8888\",\"300\",\"400\",\"500\",\"600\",\"Chinups\",\"8\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Rows\",\"4\",\"111\",\"222\",\"333\",\"444\",\"8888\",\"8888\",\"Curls\",\"12\",\"1\",\"20\",\"3\",\"4\",\"5\",\"6\"]}";
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
-        //public ICommand ParseCommand { get; }
 
         public MainViewModel()
         {
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
-            //ParseCommand = new Command(ParseFunction);
 
         }
 
@@ -70,34 +69,26 @@ namespace FitWatch.ViewModel
                 Toast.DisplayText("Error: " + ex.Message);
             }
 
-
-            //todo: for debugging goes through the logic of getting json
-            //Connection_DataReceived(new object(), null);
         }
 
 
         // broadcaster that looks for messages
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            //// for debugging
-            //var receivedInfo = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            ////jsonString = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-
             Toast.DisplayText("Workout received");
-            var receivedInfo = System.Text.Encoding.ASCII.GetString(e.Data);
-
-            ReceivedMessage = receivedInfo;
-            ParseFunction();
+            jsonString = System.Text.Encoding.ASCII.GetString(e.Data);
 
 
+            //ParseFunction();
 
-        }
-
-        void ParseFunction()
-        {
-            jsonString = ReceivedMessage;
             MessagingCenter.Send<object>(Application.Current, "Parse");
+
         }
+
+        //void ParseFunction()
+        //{
+        //    MessagingCenter.Send<object>(Application.Current, "Parse");
+        //}
 
         void SendMessage()
         {

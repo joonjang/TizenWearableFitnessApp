@@ -1,23 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<w:TwoButtonPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="FitWatch.WorkoutPage"
              xmlns:vm="clr-namespace:FitWatch.ViewModel"
-             xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core"
-             xmlns:w="clr-namespace:Tizen.Wearable.CircularUI.Forms;assembly=Tizen.Wearable.CircularUI.Forms">
+             xmlns:tizen="clr-namespace:Xamarin.Forms.PlatformConfiguration.TizenSpecific;assembly=Xamarin.Forms.Core">
 
-    <w:TwoButtonPage.BindingContext>
+    <ContentPage.BindingContext>
         <vm:WorkoutViewModel/>
-    </w:TwoButtonPage.BindingContext>
+    </ContentPage.BindingContext>
 
 
-    <w:TwoButtonPage.Content>
+    <ContentPage.Content>
 
-        <StackLayout Margin="0, 20, 0, 0">
-
+        <StackLayout Orientation="Horizontal">
+            <StackLayout HorizontalOptions="StartAndExpand">
+                <Button Text="&lt;" Command="{Binding PreviousCommand}" VerticalOptions="FillAndExpand" Margin="-5, 0, -5, -5"/>
+            </StackLayout>
+        <StackLayout Margin="0, 20, 0, 0" HorizontalOptions="CenterAndExpand">
+            
             <StackLayout IsVisible="{Binding DoneVisible}"
                          VerticalOptions="CenterAndExpand" 
                          HorizontalOptions="CenterAndExpand">
@@ -109,17 +112,15 @@
                 </StackLayout>
             </StackLayout>
             
+            
         </StackLayout>
-    </w:TwoButtonPage.Content>
+            <StackLayout HorizontalOptions="EndAndExpand">
+                <Button Text="&gt;" Command="{Binding NextCommand}" VerticalOptions="FillAndExpand" Margin="-5, -5, -5, 0"/>
+            </StackLayout>
+        </StackLayout>
+
+    </ContentPage.Content>
 
 
-    <w:TwoButtonPage.FirstButton>
-        <MenuItem Command="{Binding PreviousCommand}" 
-                  Icon="image/back.png"/>
-    </w:TwoButtonPage.FirstButton>
-    
-    <w:TwoButtonPage.SecondButton>
-        <MenuItem Command="{Binding NextCommand}" 
-                  Icon="image/forward.png"/>
-    </w:TwoButtonPage.SecondButton>
-</w:TwoButtonPage>
+
+</ContentPage>

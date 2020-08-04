@@ -1,4 +1,5 @@
 ﻿using FitWatch.Model;
+using FitWatch.Singleton;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,17 @@ namespace FitWatch.ViewModel
 
         public static string SendJsonString;
 
-        WatchModel jsonObject;
-        List<string> workouts;
-        List<string> reps;
-        List<string> weights;
+        //singleton seems unecessary as its a small project
+        WatchSingletonClass watch = WatchSingletonClass.Instance;
+        DataArraySingletonClass dataArray = DataArraySingletonClass.Instance;
+
+        List<string> prevWorkoutName;
+        List<string> prevReps;
+        List<string> prevWeights;
+
+        List<string> newWeightList;
+
+        int globalWeightIndex = 0;
 
         public Command NextCommand { get; }
         public Command PreviousCommand { get; }
@@ -43,6 +51,12 @@ namespace FitWatch.ViewModel
             {
                 ParseJson();
             });
+
+            newWeightList = new List<string>();
+
+
+            // todo: debugging
+            ParseJson();
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -51,38 +65,42 @@ namespace FitWatch.ViewModel
         }
 
         // json logic -----------------------
-
+        // *************************************************************************** refactor list
+        // todo: refactor
         void DoneFunction()
         {
             //add rep and workout info so android listview can see it
-            DataArrayList.Add(reps);
-            DataArrayList.Add(workouts);
+
+            dataArray.DataArrayObject.DataArray.Add(prevReps);
+            dataArray.DataArrayObject.DataArray.Add(prevWorkoutName);
 
             var model = new DataArrayModel()
             {
-                DataArray = DataArrayList
+                DataArray = dataArray.DataArrayObject.DataArray
             };
             SendJsonString = JsonConvert.SerializeObject(model);
 
             SaveText = @"Save successful
 Tap 'Upload' next time connected to phone to update spreadsheet";
+
+
         }
 
         // json from android
         public void ParseJson()
         {
-            
 
-            jsonObject = JsonConvert.DeserializeObject<WatchModel>(MainViewModel.jsonString);
+            watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(MainViewModel.jsonString);
 
-            workouts = new List<string>();
-            reps = new List<string>();
-            weights = new List<string>();
+            // information of android based json info in list
+            prevWorkoutName = new List<string>();
+            prevReps = new List<string>();
+            prevWeights = new List<string>();
 
 
             bool nextRep = false;
 
-            foreach(string item in jsonObject.Workouts)
+            foreach(string item in watch.WatchObject.Workouts)
             {
                 // if subject doesnt have numbers, then its an exercise
                 // second element will always be set
@@ -93,57 +111,44 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 // if name of workout
                 if (!isNotWorkout)
                 {
-                    workouts.Add(item);
+                    prevWorkoutName.Add(item);
                     // next list item will be the rep number
                     nextRep = true;
                 }
                 else if (nextRep)
                 {
-                    reps.Add(item);
+                    prevReps.Add(item);
                     // next list item will workouts and onwards
                     nextRep = false;
                 }
                 else
                 {
-                    weights.Add(item);
+                    prevWeights.Add(item);
                 }
 
             }
 
             // start from the beggining workout after parse
 
-            WorkoutTitletString = workouts[0];
-            RepString = reps[0];
-            WeightString = weights[0];
+            WorkoutTitletString = prevWorkoutName[0];
+            RepString = prevReps[0];
+            PrevWeightString = prevWeights[0];
 
-            // add the starting data array week and day information
-            // first data array 
-            NewWeightList.Add(jsonObject.Week);
-            NewWeightList.Add(jsonObject.Day);
-            DataArrayList.Add(NewWeightList);
+            ///////////////////////////////////////////////////////////// OLD CODE ==============================
 
-            // clear for next array 
-            NewWeightList = new List<string>();
+            //// add the starting data array week and day information
+            //// first data array 
+            //NewWeightList.Add(watch.WatchObject.Week);
+            //NewWeightList.Add(watch.WatchObject.Day);
+            //DataArrayList.Add(NewWeightList);
+
+            //// clear for next array 
+            //NewWeightList = new List<string>();
 
         }
 
         // logic for previous and next workout -------------------
 
-        int workAndRepInt = 0;
-        int weightInt = 0;
-
-        private int newWeightInt;
-        public int NewWeightInt
-        {
-            get => newWeightInt;
-            set
-            {
-                newWeightInt = value;
-                OnPropertyChanged();
-            }
-        }
-
-        
 
         void IncreaseWeight(string i)
         {
@@ -188,244 +193,87 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         }
 
         
-
-        // two button ui logic ===============================
-
-        private void On_NextWorkoutInfo(object obj)
-        {
-            NextWorkoutInfo();
-        }
-
-        private bool canGoNext = true;
-        public bool CanGoNext
-        {
-            get => canGoNext;
-            set
-            {
-                canGoNext = value;
-                ((Command)NextCommand).ChangeCanExecute();
-            }
-        }
-
-        private void On_PreviousWorkoutInfo(object obj)
-        {
-            PreviousWorkoutInfo();
-        }
-
-        private bool canGoBack = false;
-        public bool CanGoBack
-        {
-            get => canGoBack;
-            set
-            {
-                canGoBack = value;
-                ((Command)PreviousCommand).ChangeCanExecute();
-            }
-        }
-
-        private bool uiVisible = true;
-        public bool UiVisible
-        {
-            get => uiVisible;
-            set
-            {
-                uiVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool restVisible = false;
-        public bool RestVisible
-        {
-            get => restVisible;
-            set
-            {
-                restVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        List<List<string>> DataArrayList = new List<List<string>>();
-        List<string> NewWeightList = new List<string>();
-        List<string> SavedNextWeight = new List<string>();
-        void RegisterNewWeight(bool AddOrDelete)
-        {
-
-            if (AddOrDelete)
-            {
-                NewWeightList.Add(NewWeightInt.ToString());
-                oldWeightInt = NewWeightInt;
-            }
-            else
-            {
-                if((NewWeightList.Count - 1 ) >= 0)
-                {
-                    NewWeightList.RemoveAt(NewWeightList.Count - 1);   
-                }
-                //if (SavedNextWeight.ElementAtOrDefault(weightInt) != null)
-                //{
-                //    SavedNextWeight[weightInt] = oldWeightInt.ToString();
-                //}
-            }
-
-
-            
-            HistoryOfEntry();
-        }
-
-        void SetCount()
-        {
-            SetString = ((weightInt % 6)+1).ToString();
-        }
-
-        void HistoryOfEntry()
-        {
-            if(weightInt == SavedNextWeight.Count)
-            {   
-                SavedNextWeight.Add(oldWeightInt.ToString());
-            }
-            if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
-            {
-                
-                SavedNextWeight[weightInt] = oldWeightInt.ToString();
-            }
-        }
         void NextWorkoutInfo()
         {
-            RegisterNewWeight(true);
-
-            weightInt++;
             CanGoBack = true;
+            AddOrReplace(globalWeightIndex);
 
-            // final user input entry
-            if (weightInt == ((jsonObject.Sets.Count * workouts.Count)))
-            {
-                DoneVisible = true;
-                MasterUIVisible = false;
-                DataArrayList.Add(NewWeightList);
-                CanGoNext = false;
-                return;
-            }
+            // show next input view
+            InputView(globalWeightIndex + 1);
 
-            WeightString = weights[weightInt];
-
-            if (weightInt % 6 == 0)
-            {
-                workAndRepInt++;
-                WorkoutTitletString = workouts[workAndRepInt];
-                RepString = reps[workAndRepInt];
-
-                // one array worth loaded up
-                DataArrayList.Add(NewWeightList);
-                NewWeightList = new List<string>();
-                
-            }
-            // start of new weight entry
-            if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
-            {
-                NewWeightInt = Int32.Parse(SavedNextWeight[weightInt]);
-                ShowPrevious(SavedNextWeight[weightInt]);
-            }
-            else
-            {
-                NewWeightInt = 0;
-                OneWeight = 0;
-                TenWeight = 0;
-                HundredWeight = 0;
-            }
-            
-            if (weights[weightInt] == "8888")
-            {
-                UiVisible = false;
-                RestVisible = true;
-                NewWeightInt = 8888;
-            }
-            else
-            {
-                UiVisible = true;
-                RestVisible = false;
-            }
-            SetCount();
+            // every tap changes the index couunt
+            globalWeightIndex++;
         }
 
         void PreviousWorkoutInfo()
         {
-            DoneVisible = false;
-            MasterUIVisible = true;
+            AddOrReplace(globalWeightIndex);
 
-            // populate views
-            if (weightInt % 6 != 0)
-            {
-                ShowPrevious(NewWeightList[NewWeightList.Count - 1]);
-            }
-                
+            InputView(globalWeightIndex - 1);
 
-            RegisterNewWeight(false);
-
-            
-            if (weightInt % 6 == 0)
-            {
-                if (!(workAndRepInt <= 0))
-                {
-                    workAndRepInt--;
-                }
-                WorkoutTitletString = workouts[workAndRepInt];
-                RepString = reps[workAndRepInt];
-
-                // remove previous array item
-                // remove top array item
-                // make removed list the current
-                NewWeightList = DataArrayList[DataArrayList.Count - 1];
-                ShowPrevious(NewWeightList[NewWeightList.Count - 1]);
-                DataArrayList.RemoveAt(DataArrayList.Count - 1);
-                NewWeightList.RemoveAt(NewWeightList.Count - 1);
-            }
-
-            weightInt--;
-            CanGoNext = true;
-
-            if (weightInt <= 0)
-            {
-                
-                CanGoBack = false;
-            }
-
-            WeightString = weights[weightInt];
-
-
-            SetCount();
+            globalWeightIndex--;
         }
 
-        int oldWeightInt;
-
-        void ShowPrevious(string CurrentWeight)
+        void AddOrReplace(int index)
         {
-            string currentWeightInList = CurrentWeight;
 
-            // ui visibility
-            if(currentWeightInList == "8888")
+            if (newWeightList.ElementAtOrDefault(index) != null)
+            {
+                newWeightList[index] = NewWeightInt.ToString();
+            }
+            else
+            {
+                newWeightList.Add(NewWeightInt.ToString());
+            }
+
+            
+        }
+
+        void InputView(int index)
+        {
+            // reset to 0 if no previous information
+            // show previous information if available
+            // disable entry if its designated to be empty
+
+
+            string queueWeight = newWeightList.ElementAtOrDefault(index) != null ? newWeightList[index] : "0";
+
+            if (prevWeights[index] == "8888")
             {
                 UiVisible = false;
                 RestVisible = true;
+
+                NewWeightInt = 8888; 
             }
-            else
-            {  
+            else if(queueWeight == "0")
+            {
                 UiVisible = true;
                 RestVisible = false;
-                oldWeightInt = NewWeightInt;
-                NewWeightInt = Int32.Parse(currentWeightInList);
+                // if new entry in list
+                HundredWeight = 0;
+                TenWeight = 0;
+                OneWeight = 0;
+                NewWeightInt = 0;
+            }
+            else
+            {
+                UiVisible = true;
+                RestVisible = false;
+
+
+                NewWeightInt = Int32.Parse(queueWeight);
                 HundredWeight = (int)Math.Truncate((double)(newWeightInt / 100));
                 try
                 {
-                    TenWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 2].ToString());
-                    OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+                    TenWeight = Int32.Parse(queueWeight[queueWeight.Length - 2].ToString());
+                    OneWeight = Int32.Parse(queueWeight[queueWeight.Length - 1].ToString());
                 }
                 catch
                 {
                     try
                     {
                         TenWeight = 0;
-                        OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+                        OneWeight = Int32.Parse(queueWeight[queueWeight.Length - 1].ToString());
                     }
                     catch
                     {
@@ -435,8 +283,222 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 }
             }
 
-
+            
         }
+
+
+
+        /// OLD CODE ==========================================================================================================
+
+        //void RegisterNewWeight(bool AddOrDelete)
+        //{
+
+        //    if (AddOrDelete)
+        //    {
+        //        NewWeightList.Add(NewWeightInt.ToString());
+        //        // trailing weight to view previous and forward
+        //        oldWeightInt = NewWeightInt;
+        //    }
+        //    else
+        //    {
+        //        if((NewWeightList.Count - 1 ) >= 0)
+        //        {
+        //            NewWeightList.RemoveAt(NewWeightList.Count - 1);   
+        //        }
+        //        //if (SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+        //        //{
+        //        //    SavedNextWeight[weightInt] = oldWeightInt.ToString();
+        //        //}
+        //    }
+
+
+
+        //    HistoryOfEntry();
+        //}
+
+        //void SetCount()
+        //{
+        //    SetString = ((weightInt % 6)+1).ToString();
+        //}
+
+        //void HistoryOfEntry()
+        //{
+        //    if(weightInt == SavedNextWeight.Count)
+        //    {   
+        //        SavedNextWeight.Add(oldWeightInt.ToString());
+        //    }
+        //    if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+        //    {
+
+        //        SavedNextWeight[weightInt] = oldWeightInt.ToString();
+        //    }
+        //}
+        //void NextWorkoutInfo()
+        //{
+        //    RegisterNewWeight(true);
+
+        //    weightInt++;
+        //    CanGoBack = true;
+
+        //    // final user input entry
+        //    if (weightInt == ((watch.WatchObject.Sets.Count * workouts.Count)))
+        //    {
+        //        workAndRepInt++;
+
+        //        DoneVisible = true;
+        //        MasterUIVisible = false;
+        //        DataArrayList.Add(NewWeightList);
+        //        CanGoNext = false;
+        //        maxWorkCountReached = true;
+        //        // add new weight here **********************************************************************************************************
+        //        return;
+        //    }
+
+        //    WeightString = weights[weightInt];
+
+        //    if (weightInt % 6 == 0)
+        //    {
+        //        workAndRepInt++;
+        //        WorkoutTitletString = workouts[workAndRepInt];
+        //        RepString = reps[workAndRepInt];
+
+        //        // one array worth loaded up
+        //        DataArrayList.Add(NewWeightList);
+        //        NewWeightList = new List<string>();
+
+        //    }
+        //    // start of new weight entry
+        //    if(SavedNextWeight.ElementAtOrDefault(weightInt) != null)
+        //    {
+        //        NewWeightInt = Int32.Parse(SavedNextWeight[weightInt]);
+        //        ShowPrevious(SavedNextWeight[weightInt]);
+        //    }
+        //    else
+        //    {
+        //        NewWeightInt = 0;
+        //        OneWeight = 0;
+        //        TenWeight = 0;
+        //        HundredWeight = 0;
+        //    }
+
+        //    if (weights[weightInt] == "8888")
+        //    {
+        //        UiVisible = false;
+        //        RestVisible = true;
+        //        NewWeightInt = 8888;
+        //    }
+        //    else
+        //    {
+        //        UiVisible = true;
+        //        RestVisible = false;
+        //    }
+        //    SetCount();
+        //}
+        //bool maxWorkCountReached = false;
+        //void PreviousWorkoutInfo()
+        //{
+        //    DoneVisible = false;
+        //    MasterUIVisible = true;
+
+        //    // populate views
+        //    if (weightInt % 6 != 0)
+        //    {
+        //        ShowPrevious(NewWeightList[NewWeightList.Count - 1]);
+        //    }
+
+
+        //    RegisterNewWeight(false);
+
+
+        //    if (weightInt % 6 == 0)
+        //    {
+        //        // dont delete index count if at the end 
+        //        if (!(workAndRepInt <= 0))
+        //        {
+        //            workAndRepInt--;
+        //        }
+        //        WorkoutTitletString = workouts[workAndRepInt];
+        //        RepString = reps[workAndRepInt];
+
+        //        // remove previous array item
+        //        // remove top array item
+        //        // make removed list the current
+        //        NewWeightList = DataArrayList[DataArrayList.Count - 1];
+        //        ShowPrevious(SavedNextWeight[weightInt]);
+
+        //        // dont delete if the very last of list
+        //        if(!maxWorkCountReached) 
+        //        { 
+        //            DataArrayList.RemoveAt(DataArrayList.Count - 1);
+        //            //NewWeightList.RemoveAt(NewWeightList.Count - 1);
+        //        }
+        //        maxWorkCountReached = false;
+        //    }
+
+        //    weightInt--;
+        //    CanGoNext = true;
+
+        //    if (weightInt <= 0)
+        //    {
+
+        //        CanGoBack = false;
+        //    }
+
+        //    WeightString = weights[weightInt];
+
+
+        //    SetCount();
+        //}
+
+        //int oldWeightInt;
+
+        //void ShowPrevious(string CurrentWeight)
+        //{
+        //    string currentWeightInList = CurrentWeight;
+
+        //    // ui visibility
+        //    if(currentWeightInList == "8888")
+        //    {
+        //        UiVisible = false;
+        //        RestVisible = true;
+        //    }
+        //    else
+        //    {  
+        //        UiVisible = true;
+        //        RestVisible = false;
+        //        oldWeightInt = NewWeightInt;
+        //        NewWeightInt = Int32.Parse(currentWeightInList);
+        //        HundredWeight = (int)Math.Truncate((double)(newWeightInt / 100));
+        //        try
+        //        {
+        //            TenWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 2].ToString());
+        //            OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+        //        }
+        //        catch
+        //        {
+        //            try
+        //            {
+        //                TenWeight = 0;
+        //                OneWeight = Int32.Parse(currentWeightInList[currentWeightInList.Length - 1].ToString());
+        //            }
+        //            catch
+        //            {
+        //                TenWeight = 0;
+        //                OneWeight = 0;
+        //            }
+        //        }
+        //    }
+
+
+        //}
+
+
+
+        // --------------------------------------------------- OLD CODE ==================================
+
+
+
+
 
         // binding label information -----------------------------
         private string saveText;
@@ -494,13 +556,13 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             }
         }
 
-        private string weightString;
-        public string WeightString
+        private string prevWeightString;
+        public string PrevWeightString
         {
-            get => weightString;
+            get => prevWeightString;
             set
             {
-                weightString = "Previous: " + value;
+                prevWeightString = "Previous: " + value;
                 OnPropertyChanged();
             }
         }
@@ -549,5 +611,70 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             }
         }
 
+
+        private void On_NextWorkoutInfo(object obj)
+        {
+            NextWorkoutInfo();
+        }
+
+        private bool canGoNext = true;
+        public bool CanGoNext
+        {
+            get => canGoNext;
+            set
+            {
+                canGoNext = value;
+                ((Command)NextCommand).ChangeCanExecute();
+            }
+        }
+
+        private void On_PreviousWorkoutInfo(object obj)
+        {
+            PreviousWorkoutInfo();
+        }
+
+        private bool canGoBack = false;
+        public bool CanGoBack
+        {
+            get => canGoBack;
+            set
+            {
+                canGoBack = value;
+                ((Command)PreviousCommand).ChangeCanExecute();
+            }
+        }
+
+        private bool uiVisible = true;
+        public bool UiVisible
+        {
+            get => uiVisible;
+            set
+            {
+                uiVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool restVisible = false;
+        public bool RestVisible
+        {
+            get => restVisible;
+            set
+            {
+                restVisible = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private int newWeightInt;
+        public int NewWeightInt
+        {
+            get => newWeightInt;
+            set
+            {
+                newWeightInt = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
