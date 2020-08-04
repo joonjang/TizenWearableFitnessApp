@@ -195,7 +195,9 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         
         void NextWorkoutInfo()
         {
-            CanGoBack = true;
+            // can go back
+            NavigationButton(5);
+
             AddOrReplace(globalWeightIndex);
 
             // show next input view
@@ -207,11 +209,55 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
 
         void PreviousWorkoutInfo()
         {
+            // can go forward
+            NavigationButton(4);
+
+            if (!MasterUIVisible)
+            {
+                NavigationButton(6);
+                goto ViewEntry;
+            }
+
             AddOrReplace(globalWeightIndex);
+
+        ViewEntry:
 
             InputView(globalWeightIndex - 1);
 
             globalWeightIndex--;
+        }
+
+        void NavigationButton(int i)
+        {
+            switch (i)
+            {
+                // final workout reached
+                case 1:
+                    DoneVisible = true;
+                    MasterUIVisible = false;
+                    break;
+                // next disabled;
+                case 2:
+                    CanGoNext = false;
+                    break;
+                // back disabled
+                case 3:
+                    CanGoBack = false;
+                    break;
+                // next disabled;
+                case 4:
+                    CanGoNext = true;
+                    break;
+                // back disabled
+                case 5:
+                    CanGoBack = true;
+                    break;
+                // enable entry view
+                case 6:
+                    DoneVisible = false;
+                    MasterUIVisible = true;
+                    break;
+            }
         }
 
         void AddOrReplace(int index)
@@ -229,6 +275,28 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             
         }
 
+        bool WorkoutLabelInfo(int index)
+        {
+            // label text of previous weights, rep, and title count
+
+            if((prevReps.Count - 1) < (index / watch.WatchObject.Sets.Count))
+            {
+                NavigationButton(2);
+                return true;
+            }
+
+            int repAndWorkoutIndex = (int)Math.Truncate((double)(index / watch.WatchObject.Sets.Count));
+
+            WorkoutTitletString = prevWorkoutName[repAndWorkoutIndex];
+            RepString = prevReps[repAndWorkoutIndex];
+            PrevWeightString = prevWeights[repAndWorkoutIndex];
+
+            PrevWeightString = prevWeights[index];
+            SetCount(index);
+
+            return false;
+        }
+
         void InputView(int index)
         {
             // reset to 0 if no previous information
@@ -236,10 +304,26 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             // disable entry if its designated to be empty
 
 
+            bool workoutDone = WorkoutLabelInfo(index);
+
+            if (workoutDone)
+            {
+                NavigationButton(1);
+                return;
+            }
+
+
+            if (index == 0)
+            {
+                // disable back if start of list
+                NavigationButton(3);
+            }
+
             string queueWeight = newWeightList.ElementAtOrDefault(index) != null ? newWeightList[index] : "0";
 
             if (prevWeights[index] == "8888")
             {
+                // empty set
                 UiVisible = false;
                 RestVisible = true;
 
@@ -260,7 +344,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 UiVisible = true;
                 RestVisible = false;
 
-
+                // make the entry weight equal to last entered
                 NewWeightInt = Int32.Parse(queueWeight);
                 HundredWeight = (int)Math.Truncate((double)(newWeightInt / 100));
                 try
@@ -281,12 +365,14 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                         OneWeight = 0;
                     }
                 }
-            }
-
-            
+            } 
         }
 
-
+        void SetCount(int index)
+        {
+            // prevRep count should be 6, but it is varaible
+            SetString = ((index % watch.WatchObject.Sets.Count) + 1).ToString();
+        }
 
         /// OLD CODE ==========================================================================================================
 
@@ -316,10 +402,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         //    HistoryOfEntry();
         //}
 
-        //void SetCount()
-        //{
-        //    SetString = ((weightInt % 6)+1).ToString();
-        //}
+
 
         //void HistoryOfEntry()
         //{

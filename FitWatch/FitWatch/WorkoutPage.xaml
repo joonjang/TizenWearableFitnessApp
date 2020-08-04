@@ -93,7 +93,7 @@
                     
                     
                 </StackLayout>
-                <Label Text="{Binding WeightString}" 
+                <Label Text="{Binding PrevWeightString}" 
                        FontSize="8"
                        VerticalOptions="Center" 
                        HorizontalOptions="CenterAndExpand"
