@@ -64,31 +64,36 @@
                                HorizontalTextAlignment="Center"/>
                         <Button Text="-"
                                 Command="{Binding SubtractCommand}"
-                                CommandParameter="100"/>
+                                CommandParameter="100"
+                                IsEnabled="{Binding HundredDownVisible}"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Vertical" 
                                  HorizontalOptions="CenterAndExpand">
                         <Button Text="+"
                                 Command="{Binding AddCommand}" 
-                                CommandParameter="10"/>
+                                CommandParameter="10"
+                                IsEnabled="{Binding TenUpVisible}"/>
                         <Label Text="{Binding TenWeight}" 
                                HorizontalTextAlignment="Center"/>
                         <Button Text="-"
                                 Command="{Binding SubtractCommand}"
-                                CommandParameter="10"/>
+                                CommandParameter="10"
+                                IsEnabled="{Binding TenDownVisible}"/>
                     </StackLayout>
 
                     <StackLayout Orientation="Vertical" 
                                  HorizontalOptions="CenterAndExpand">
                         <Button Text="+"
                                 Command="{Binding AddCommand}" 
-                                CommandParameter="1"/>
+                                CommandParameter="1"
+                                IsEnabled="{Binding OneUpVisible}"/>
                         <Label Text="{Binding OneWeight}" 
                                HorizontalTextAlignment="Center"/>
                         <Button Text="-" 
                                 Command="{Binding SubtractCommand}"
-                                CommandParameter="1"/>
+                                CommandParameter="1"
+                                IsEnabled="{Binding OneDownVisible}"/>
                     </StackLayout>
                     
                     
