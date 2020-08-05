@@ -47,16 +47,17 @@ namespace FitWatch.ViewModel
 
             DoneCommand = new Command(DoneFunction);
 
-            MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
-            {
-                ParseJson();
-            });
+            
 
             newWeightList = new List<string>();
 
 
             // todo: debugging
-            ParseJson();
+            // ParseJson();
+            MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
+            {
+                ParseJson();
+            });
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -122,6 +123,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         // json from android
         public void ParseJson()
         {
+            NavigationButton(7);
 
             watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(MainViewModel.jsonString);
 
@@ -160,6 +162,10 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 }
 
             }
+
+
+
+            MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
 
             // start from the beggining workout after parse
 
@@ -330,6 +336,11 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                     DoneVisible = false;
                     MasterUIVisible = true;
                     break;
+                // show entry info
+                case 7:
+                    MasterUIVisible = true;
+                    CanGoNext = true;
+                    break;
             }
         }
 
@@ -471,7 +482,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             }
         }
 
-        private bool masterUIVisbile = true;
+        private bool masterUIVisbile = false;
         public bool MasterUIVisible
         {
             get => masterUIVisbile;
@@ -565,7 +576,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             NextWorkoutInfo();
         }
 
-        private bool canGoNext = true;
+        private bool canGoNext = false;
         public bool CanGoNext
         {
             get => canGoNext;

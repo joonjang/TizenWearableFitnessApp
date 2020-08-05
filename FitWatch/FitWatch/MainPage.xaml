@@ -10,11 +10,12 @@
     </ContentPage.BindingContext>
     
     <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
 
             <!--<Label Text="{Binding ReceivedMessage}"
                    VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>-->
+            <Label Text="{Binding CurrentAvailableInfo}"/>
             <Button Text="Connect to phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
@@ -23,10 +24,15 @@
                     Command="{Binding SendMessageCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="FillAndExpand"/>
-            <!--<Button Text="Parse" 
+
+            
+            
+            
+            
+            <Button Text="Parse" 
                     Command="{Binding ParseCommand}" 
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>-->
+                    HorizontalOptions="CenterAndExpand"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

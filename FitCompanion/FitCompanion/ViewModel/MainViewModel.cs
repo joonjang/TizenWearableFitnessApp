@@ -171,6 +171,7 @@ namespace FitCompanion.ViewModel
             
         }
 
+        // for when i receive watch json and show to list view
         void ConvertWatchJsonToWatchModel(List<string> WorkoutNames, List<string> RepCount, List<List<string>> MasterArray)
         {
             WatchModel watchModel = new WatchModel();

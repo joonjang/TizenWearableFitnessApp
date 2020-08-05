@@ -29,11 +29,23 @@ namespace FitWatch.ViewModel
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
+        public ICommand ParseCommand { get; }
 
         public MainViewModel()
         {
+
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
+
+            //display current watch workout
+            MessagingCenter.Subscribe<WorkoutViewModel, string>(this, "CurrentInfo", (sender, arg) =>
+            {
+                CurrentAvailableInfo = arg;
+            });
+
+
+            //todo: for debugging
+            ParseCommand = new Command(ParseFunction);
 
         }
 
@@ -86,10 +98,12 @@ namespace FitWatch.ViewModel
 
         }
 
-        //void ParseFunction()
-        //{
-        //    MessagingCenter.Send<object>(Application.Current, "Parse");
-        //}
+
+        //todo: for debugging
+        void ParseFunction()
+        {
+            MessagingCenter.Send<object>(Application.Current, "Parse");
+        }
 
         void SendMessage()
         {
@@ -126,5 +140,16 @@ namespace FitWatch.ViewModel
             }
         }
 
+
+        private string currentAvailableInfo;
+        public string CurrentAvailableInfo
+        {
+            get => currentAvailableInfo;
+            set
+            {
+                currentAvailableInfo = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }
