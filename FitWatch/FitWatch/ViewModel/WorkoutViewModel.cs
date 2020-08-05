@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Tizen.Wearable.CircularUI.Forms;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FitWatch.ViewModel
@@ -47,17 +48,30 @@ namespace FitWatch.ViewModel
 
             DoneCommand = new Command(DoneFunction);
 
-            
 
-            newWeightList = new List<string>();
+            // if previous info exists load ui and list
+            List<string> loadedSavedList = LoadSave();
+            if(loadedSavedList != null)
+            {
+                newWeightList = loadedSavedList;
 
+                LoadStartEntry();
+                
+            }
+            else
+            {
+                newWeightList = new List<string>();
+            }
+
+            // load previously saved json if it exists
+            SendJsonString = Preferences.Get("SendJson", "");
 
             // todo: debugging
             // ParseJson();
-            MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
-            {
-                ParseJson();
-            });
+            //MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
+            //{
+            //    ParseJson();
+            //});
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -66,10 +80,27 @@ namespace FitWatch.ViewModel
         }
 
         // json logic -----------------------
-        // *************************************************************************** refactor list
+
+        void LoadStartEntry()
+        {
+            NavigationButton(7);
+            InputView(0);
+        }
+        
+        List<string> LoadSave()
+        {
+            string SavedListJson = Preferences.Get("SavedList", "");
+            string SavedWatchJson = Preferences.Get("WatchObject", "");
+            List<string> SavedList = JsonConvert.DeserializeObject<List<string>>(SavedListJson);
+            WatchModel SavedWatch = JsonConvert.DeserializeObject<WatchModel>(SavedWatchJson);
+
+            watch.WatchObject = SavedWatch;
+            PopulatePreviousWorkInfo();
+            return SavedList;
+        }
+        
         void DoneFunction()
         {
-            //add rep and workout info so android listview can see it
 
             dataArray.DataArrayObject = new DataArrayModel();
             dataArray.DataArrayObject.DataArray = new List<List<string>>();
@@ -99,6 +130,7 @@ namespace FitWatch.ViewModel
             SaveText = @"Save successful
 Tap 'Upload' next time connected to phone to update spreadsheet";
 
+            Preferences.Set("SendJson", SendJsonString);
 
         }
 
@@ -124,9 +156,23 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         public void ParseJson()
         {
             NavigationButton(7);
-
+            newWeightList = new List<string>();
+            newWeightList.Add("0");
+            InputView(0);
             watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(MainViewModel.jsonString);
 
+
+            PopulatePreviousWorkInfo();
+
+
+            MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
+
+
+        }
+
+        void PopulatePreviousWorkInfo()
+        {
+            // start from the beggining workout after parse
             // information of android based json info in list
             prevWorkoutName = new List<string>();
             prevReps = new List<string>();
@@ -135,7 +181,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
 
             bool nextRep = false;
 
-            foreach(string item in watch.WatchObject.Workouts)
+            foreach (string item in watch.WatchObject.Workouts)
             {
                 // if subject doesnt have numbers, then its an exercise
                 // second element will always be set
@@ -162,18 +208,9 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 }
 
             }
-
-
-
-            MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
-
-            // start from the beggining workout after parse
-
             WorkoutTitletString = prevWorkoutName[0];
             RepString = prevReps[0];
             PrevWeightString = prevWeights[0];
-
-
         }
 
         // logic for previous and next workout -------------------
@@ -344,6 +381,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             }
         }
 
+        // logic that dictates whether new list item or if index item is overwritten
         void AddOrReplace(int index)
         {
 
@@ -355,8 +393,8 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             {
                 newWeightList.Add(NewWeightInt.ToString());
             }
+            SaveChanges();
 
-            
         }
 
         bool WorkoutLabelInfo(int index)
@@ -381,12 +419,23 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             return false;
         }
 
+        void SaveChanges()
+        {
+
+            // serialize and watch object containg set, rep, previous weight info list to json 
+            string listJson = JsonConvert.SerializeObject(newWeightList);
+            string savedWatchJson = JsonConvert.SerializeObject(watch.WatchObject);
+            Preferences.Set("SavedList", listJson);
+            Preferences.Set("WatchObject", savedWatchJson);
+        }
+
         void InputView(int index)
         {
             // reset to 0 if no previous information
             // show previous information if available
             // disable entry if its designated to be empty
 
+            
 
             bool workoutDone = WorkoutLabelInfo(index);
 
@@ -451,6 +500,8 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 }
             }
             AddSubtractVisible();
+
+            /// prototype
         }
 
         void SetCount(int index)

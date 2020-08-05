@@ -10,6 +10,7 @@ using System.Text;
 using System.Windows.Input;
 using Tizen;
 using Tizen.Wearable.CircularUI.Forms;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace FitWatch.ViewModel
@@ -24,12 +25,14 @@ namespace FitWatch.ViewModel
         private Channel ChannelId;
 
         // todo: debugging
-        public static string jsonString = "{\"Week\":\"Home\",\"Day\":\"DAY 1\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\"],\"Workouts\":[\"Bench\",\"4\",\"69\",\"69\",\"69\",\"45x20\",\"Push Ups\",\"8\",\"69\",\"69\",\"169\",\"45x20\",\"Triceps\",\"4\",\"69\",\"69\",\"169\",\"5\"]}";
-            //"{\"Week\":\"Week 1\",\"Day\":\"DAY 1\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Deadlift\",\"4\",\"100\",\"8888\",\"300\",\"400\",\"500\",\"600\",\"Chinups\",\"8\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Rows\",\"4\",\"111\",\"222\",\"333\",\"444\",\"8888\",\"8888\",\"Curls\",\"12\",\"1\",\"20\",\"3\",\"4\",\"5\",\"6\"]}";
+        public static string jsonString; 
+        // = "{\"Week\":\"Week 1\",\"Day\":\"DAY 1\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Deadlift\",\"4\",\"100\",\"8888\",\"300\",\"400\",\"500\",\"600\",\"Chinups\",\"8\",\"1\",\"2\",\"3\",\"4\",\"8888\",\"8888\",\"Rows\",\"4\",\"111\",\"222\",\"333\",\"444\",\"8888\",\"8888\",\"Curls\",\"12\",\"1\",\"20\",\"3\",\"4\",\"5\",\"6\"]}";
+        //"{\"Week\":\"Home\",\"Day\":\"DAY 1\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\"],\"Workouts\":[\"Bench\",\"4\",\"69\",\"69\",\"69\",\"45x20\",\"Push Ups\",\"8\",\"69\",\"69\",\"169\",\"45x20\",\"Triceps\",\"4\",\"69\",\"69\",\"169\",\"5\"]}";
+
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
-        public ICommand ParseCommand { get; }
+        //public ICommand ParseCommand { get; }
 
         public MainViewModel()
         {
@@ -41,11 +44,12 @@ namespace FitWatch.ViewModel
             MessagingCenter.Subscribe<WorkoutViewModel, string>(this, "CurrentInfo", (sender, arg) =>
             {
                 CurrentAvailableInfo = arg;
+                Preferences.Set("CurrentWorkout", arg);
             });
 
-
+            CurrentAvailableInfo = Preferences.Get("CurrentWorkout", "");
             //todo: for debugging
-            ParseCommand = new Command(ParseFunction);
+            //ParseCommand = new Command(ParseFunction);
 
         }
 
@@ -100,10 +104,11 @@ namespace FitWatch.ViewModel
 
 
         //todo: for debugging
-        void ParseFunction()
-        {
-            MessagingCenter.Send<object>(Application.Current, "Parse");
-        }
+        //void ParseFunction()
+        //{
+        //    MessagingCenter.Send<object>(Application.Current, "Parse");
+        //}
+
 
         void SendMessage()
         {

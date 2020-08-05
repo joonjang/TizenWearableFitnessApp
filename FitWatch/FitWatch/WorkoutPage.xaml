@@ -17,108 +17,110 @@
 
         <StackLayout Orientation="Horizontal">
             <StackLayout HorizontalOptions="StartAndExpand">
-                <Button Text="&lt;" Command="{Binding PreviousCommand}" VerticalOptions="FillAndExpand" Margin="-5, 0, -5, -5"/>
+                <Button Text="&lt;" Command="{Binding PreviousCommand}"  VerticalOptions="FillAndExpand" Margin="-5, 0, -5, -5"/>
             </StackLayout>
-        <StackLayout Margin="0, 20, 0, 0" HorizontalOptions="CenterAndExpand">
-            
-            <StackLayout IsVisible="{Binding DoneVisible}"
-                         VerticalOptions="CenterAndExpand" 
-                         HorizontalOptions="CenterAndExpand">
-                <Button Text="Save"
-                        Command="{Binding DoneCommand}"
-                        VerticalOptions="CenterAndExpand" 
-                        HorizontalOptions="CenterAndExpand"/>
-                <Label Text="{Binding SaveText}"
-                       VerticalOptions="CenterAndExpand" 
-                       HorizontalOptions="CenterAndExpand"/>
-            </StackLayout>
-            
-            <StackLayout IsVisible="{Binding MasterUIVisible}">
-                <Label Text="{Binding WorkoutTitletString}"
-                       FontAttributes="Bold"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="CenterAndExpand"/>
+            <StackLayout Margin="0, 20, 0, 0" HorizontalOptions="CenterAndExpand">
 
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="{Binding SetString}"
-                           FontSize="8"
-                           VerticalOptions="Center" 
-                           HorizontalOptions="CenterAndExpand"/>
-                    <Label Text="{Binding RepString}" 
-                           FontSize="8"
-                           VerticalOptions="Center" 
-                           HorizontalOptions="CenterAndExpand"/>
-                </StackLayout>
-
-
-                <StackLayout Orientation="Horizontal" 
-                             HorizontalOptions="CenterAndExpand"
-                             IsVisible="{Binding UiVisible}">
-
-                    <StackLayout Orientation="Vertical" 
-                                 HorizontalOptions="CenterAndExpand">
-                        <Button Text="+" 
-                                Command="{Binding AddCommand}" 
-                                CommandParameter="100"/>
-                        <Label Text="{Binding HundredWeight}" 
-                               HorizontalTextAlignment="Center"/>
-                        <Button Text="-"
-                                Command="{Binding SubtractCommand}"
-                                CommandParameter="100"
-                                IsEnabled="{Binding HundredDownVisible}"/>
-                    </StackLayout>
-
-                    <StackLayout Orientation="Vertical" 
-                                 HorizontalOptions="CenterAndExpand">
-                        <Button Text="+"
-                                Command="{Binding AddCommand}" 
-                                CommandParameter="10"
-                                IsEnabled="{Binding TenUpVisible}"/>
-                        <Label Text="{Binding TenWeight}" 
-                               HorizontalTextAlignment="Center"/>
-                        <Button Text="-"
-                                Command="{Binding SubtractCommand}"
-                                CommandParameter="10"
-                                IsEnabled="{Binding TenDownVisible}"/>
-                    </StackLayout>
-
-                    <StackLayout Orientation="Vertical" 
-                                 HorizontalOptions="CenterAndExpand">
-                        <Button Text="+"
-                                Command="{Binding AddCommand}" 
-                                CommandParameter="1"
-                                IsEnabled="{Binding OneUpVisible}"/>
-                        <Label Text="{Binding OneWeight}" 
-                               HorizontalTextAlignment="Center"/>
-                        <Button Text="-" 
-                                Command="{Binding SubtractCommand}"
-                                CommandParameter="1"
-                                IsEnabled="{Binding OneDownVisible}"/>
-                    </StackLayout>
-                    
-                    
-                </StackLayout>
-                <Label Text="{Binding PrevWeightString}" 
-                       FontSize="8"
-                       VerticalOptions="Center" 
-                       HorizontalOptions="CenterAndExpand"
-                       IsVisible="{Binding UiVisible}"/>
-
-
-
-
-                <StackLayout Orientation="Horizontal" 
-                             HorizontalOptions="CenterAndExpand"
+                <Grid IsVisible="{Binding DoneVisible}"
                              VerticalOptions="CenterAndExpand"
-                             IsVisible="{Binding RestVisible}">
-                    <Label Text="---"
+                             HorizontalOptions="CenterAndExpand">
+                    <StackLayout>
+                        <Button Text="Save"
+                            Command="{Binding DoneCommand}"
+                            VerticalOptions="CenterAndExpand" 
+                            HorizontalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding SaveText}"
+                           HorizontalTextAlignment="Center"
+                           HorizontalOptions="CenterAndExpand"/>
+                    </StackLayout>
+                </Grid>
+
+                <StackLayout IsVisible="{Binding MasterUIVisible}">
+                    <Label Text="{Binding WorkoutTitletString}"
+                           FontAttributes="Bold"
+                           VerticalOptions="Center" 
+                           HorizontalOptions="CenterAndExpand"/>
+
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding SetString}"
+                               FontSize="8"
+                               VerticalOptions="Center" 
+                               HorizontalOptions="CenterAndExpand"/>
+                        <Label Text="{Binding RepString}" 
+                               FontSize="8"
+                               VerticalOptions="Center" 
+                               HorizontalOptions="CenterAndExpand"/>
+                    </StackLayout>
+
+
+                    <StackLayout Orientation="Horizontal" 
+                                 HorizontalOptions="CenterAndExpand"
+                                 IsVisible="{Binding UiVisible}">
+
+                        <StackLayout Orientation="Vertical" 
+                                     HorizontalOptions="CenterAndExpand">
+                            <Button Text="+" 
+                                    Command="{Binding AddCommand}" 
+                                    CommandParameter="100"/>
+                            <Label Text="{Binding HundredWeight}" 
+                                   HorizontalTextAlignment="Center"/>
+                            <Button Text="-"
+                                    Command="{Binding SubtractCommand}"
+                                    CommandParameter="100"
+                                    IsEnabled="{Binding HundredDownVisible}"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Vertical" 
+                                     HorizontalOptions="CenterAndExpand">
+                            <Button Text="+"
+                                    Command="{Binding AddCommand}" 
+                                    CommandParameter="10"
+                                    IsEnabled="{Binding TenUpVisible}"/>
+                            <Label Text="{Binding TenWeight}" 
+                                   HorizontalTextAlignment="Center"/>
+                            <Button Text="-"
+                                    Command="{Binding SubtractCommand}"
+                                    CommandParameter="10"
+                                    IsEnabled="{Binding TenDownVisible}"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Vertical" 
+                                     HorizontalOptions="CenterAndExpand">
+                            <Button Text="+"
+                                    Command="{Binding AddCommand}" 
+                                    CommandParameter="1"
+                                    IsEnabled="{Binding OneUpVisible}"/>
+                            <Label Text="{Binding OneWeight}" 
+                                   HorizontalTextAlignment="Center"/>
+                            <Button Text="-" 
+                                    Command="{Binding SubtractCommand}"
+                                    CommandParameter="1"
+                                    IsEnabled="{Binding OneDownVisible}"/>
+                        </StackLayout>
+
+
+                    </StackLayout>
+                    <Label Text="{Binding PrevWeightString}" 
+                           FontSize="8"
+                           VerticalOptions="Center" 
                            HorizontalOptions="CenterAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
+                           IsVisible="{Binding UiVisible}"/>
+
+
+
+
+                    <StackLayout Orientation="Horizontal" 
+                                 HorizontalOptions="CenterAndExpand"
+                                 VerticalOptions="CenterAndExpand"
+                                 IsVisible="{Binding RestVisible}">
+                        <Label Text="---"
+                               HorizontalOptions="CenterAndExpand"
+                               VerticalOptions="CenterAndExpand"/>
+                    </StackLayout>
                 </StackLayout>
+
+
             </StackLayout>
-            
-            
-        </StackLayout>
             <StackLayout HorizontalOptions="EndAndExpand">
                 <Button Text="&gt;" Command="{Binding NextCommand}" VerticalOptions="FillAndExpand" Margin="-5, -5, -5, 0"/>
             </StackLayout>

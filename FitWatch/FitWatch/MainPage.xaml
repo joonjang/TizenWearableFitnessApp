@@ -15,7 +15,7 @@
             <!--<Label Text="{Binding ReceivedMessage}"
                    VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="CenterAndExpand"/>-->
-            <Label Text="{Binding CurrentAvailableInfo}"/>
+            <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
             <Button Text="Connect to phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
@@ -29,10 +29,10 @@
             
             
             
-            <Button Text="Parse" 
+            <!--<Button Text="Parse" 
                     Command="{Binding ParseCommand}" 
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>
+                    HorizontalOptions="CenterAndExpand"/>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
