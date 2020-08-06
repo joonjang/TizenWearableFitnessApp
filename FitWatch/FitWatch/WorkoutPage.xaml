@@ -17,7 +17,7 @@
 
         <StackLayout Orientation="Horizontal">
             <StackLayout HorizontalOptions="StartAndExpand">
-                <Button Text="&lt;" Command="{Binding PreviousCommand}"  VerticalOptions="FillAndExpand" Margin="-5, 0, -5, -5"/>
+                <Button Text="&lt;" Command="{Binding PreviousCommand}"  VerticalOptions="FillAndExpand" Padding="-5, 0, -5, -5"/>
             </StackLayout>
             <StackLayout Margin="0, 20, 0, 0" HorizontalOptions="CenterAndExpand">
 
@@ -122,7 +122,7 @@
 
             </StackLayout>
             <StackLayout HorizontalOptions="EndAndExpand">
-                <Button Text="&gt;" Command="{Binding NextCommand}" VerticalOptions="FillAndExpand" Margin="-5, -5, -5, 0"/>
+                <Button Text="&gt;" Command="{Binding NextCommand}" VerticalOptions="FillAndExpand" Padding="-5, -5, -5, 0"/>
             </StackLayout>
         </StackLayout>
 

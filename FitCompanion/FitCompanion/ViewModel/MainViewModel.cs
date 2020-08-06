@@ -12,16 +12,18 @@ using System.Net;
 using static FitCompanion.Model.SpreadsheetModel;
 using System.Linq;
 using System.Collections.ObjectModel;
+using Xamarin.Essentials;
+using GalaSoft.MvvmLight;
 
 namespace FitCompanion.ViewModel
 {
 
-    class MainViewModel : INotifyPropertyChanged
+    class MainViewModel : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public ICommand RefreshCommand { get; }
+        //public event PropertyChangedEventHandler PropertyChanged;
         public ICommand SendMessageCommand { get; }
         public ICommand CloseConnectionCommand { get; }
+        public ICommand ModalUrlPageCommand { get; }
 
         public IProviderService provider { get; set; }
 
@@ -39,7 +41,6 @@ namespace FitCompanion.ViewModel
         public MainViewModel()
         {
             provider = DependencyService.Get<IProviderService>();
-            RefreshCommand = new Command(RefreshMsgSocket);
             SendMessageCommand = new Command(PackageForWatch);
             CloseConnectionCommand = new Command(CloseConnection);
 
@@ -52,14 +53,13 @@ namespace FitCompanion.ViewModel
             GetJsonCommand = new Command(GetSpreadsheetJson);
 
 
-
+            ListViewHeaderMessage(Preferences.Get("LastSentInfo", ""));
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+        //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
 
         public string DeviceSocketInfo
@@ -96,9 +96,9 @@ namespace FitCompanion.ViewModel
                     ConnectedColor = "PaleVioletRed";
                     ConnectedString = "Not Connected To Watch";
                 }
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(ConnectedColor));
-                OnPropertyChanged(nameof(ConnectedString));
+                RaisePropertyChanged();
+                RaisePropertyChanged(nameof(ConnectedColor));
+                RaisePropertyChanged(nameof(ConnectedString));
             }
         }
 
@@ -129,7 +129,7 @@ namespace FitCompanion.ViewModel
                 ConnectedBool = false;
             }
 
-            OnPropertyChanged(nameof(ConnectedBool));
+            RaisePropertyChanged(nameof(ConnectedBool));
 
             MakeObjectFromJson();
         }
@@ -194,6 +194,7 @@ namespace FitCompanion.ViewModel
                 watchModel.Workouts.AddRange(MasterArray[i]);
             }
 
+            ListViewHeaderMessage("Received from watch: " + watchModel.Week + ", " + watchModel.Day, 1);
             ListViewWorkouts(watchModel);
 
         }
@@ -212,6 +213,8 @@ namespace FitCompanion.ViewModel
                 try
                 {
                     provider.SendData(msg);
+                    ListViewHeaderMessage("Sent to watch", 1);
+                    Preferences.Set("LastSentInfo", "Last workout: Sheet " + WeekStepperVal + " (" + globalWatchModelHold.Week + ") " + globalWatchModelHold.Day);
                 }
                 catch (Exception ex)
                 {
@@ -220,7 +223,7 @@ namespace FitCompanion.ViewModel
             }
             else
             {
-                ConnectWatchWarning();
+                ListViewHeaderMessage("Connect to watch first", 2);
             }
         }
 
@@ -262,7 +265,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 resultResponseBool = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -273,7 +276,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 resultResponseText = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -284,18 +287,18 @@ namespace FitCompanion.ViewModel
             {
                 Weight = responseModel.Message
         });
-            OnPropertyChanged(nameof(Workouts));
+            RaisePropertyChanged(nameof(Workouts));
         }
 
 
-        private string spreadsheetUrl;
+        private string spreadsheetUrl = Preferences.Get("SavedURL", "");
         public string SpreadsheetUrl
         {
             get => spreadsheetUrl;
             set
             {
                 spreadsheetUrl = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -303,9 +306,15 @@ namespace FitCompanion.ViewModel
         private void GetSpreadsheetJson()
         {
             // todo: for debugging, make text user input and saved by preference
-            SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=524439697";
-            
+            // SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=524439697";
 
+            if(SpreadsheetUrl == null || SpreadsheetUrl == "")
+            {
+                ListViewHeaderMessage("URL is empty", 2);
+                return;
+            }
+
+            Preferences.Set("SavedURL", SpreadsheetUrl);
 
 
             int sheetPageNumber = WeekStepperVal;
@@ -337,35 +346,39 @@ namespace FitCompanion.ViewModel
             }
             catch
             {
-                Workouts = new ObservableCollection<WorkoutModel>();
-                Workouts.Add(new WorkoutModel()
-                {
-                    Weight = "Unable to retrieve information"
-                });
-                OnPropertyChanged(nameof(Workouts));
-                return;
+                ListViewHeaderMessage("Unable to retrieve information", 2);
+                
             }
 
             
         }
 
-        void ConnectWatchWarning()
+        void ListViewHeaderMessage(string message, int i = 0)
         {
-            Workouts = new ObservableCollection<WorkoutModel>();
-            Workouts.Add(new WorkoutModel()
+            ListViewHeader = message;
+            switch (i)
             {
-                Weight = "Connect to watch first"
-            });
-            OnPropertyChanged(nameof(Workouts));
+            // no issue
+                case 0:
+                    ListViewHeaderColor = "White";
+                    break;
+            // success
+                case 1:
+                    ListViewHeaderColor = "LightGreen";
+                    break;
+            // error
+                case 2:
+                    ListViewHeaderColor = "PaleVioletRed";
+                    break;
+            }
         }
-
         
 
         void PackageForWatch()
         {
             if (globalWatchModelHold == null)
             {
-                ConnectWatchWarning();
+                ListViewHeaderMessage("Connect to watch first", 2);
                 return;
             };
 
@@ -423,7 +436,7 @@ namespace FitCompanion.ViewModel
                 }
             }
 
-            OnPropertyChanged(nameof(Workouts));
+            RaisePropertyChanged(nameof(Workouts));
         }
 
         private string userChosenDay;
@@ -433,7 +446,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 userChosenDay = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -450,7 +463,7 @@ namespace FitCompanion.ViewModel
             watchModel.Week = jsonList[0];
             // we already know which day is chosen based off user input
             watchModel.Day = UserChosenDay;
-
+            ListViewHeaderMessage(watchModel.Week + ", " + watchModel.Day);
             int i = 0;
 
             // master loop bool, determines if loop is iterated
@@ -512,14 +525,33 @@ namespace FitCompanion.ViewModel
             }
             else
             {
-                Workouts.Add(new WorkoutModel()
-                {
-                    Weight = "Unable to find information"
-                });
+                ListViewHeaderMessage("Unable to find information", 2);
             }
 
             globalWatchModelHold = watchModel;
 
+        }
+
+        private string listViewHeader;
+        public string ListViewHeader
+        {
+            get => listViewHeader;
+            set
+            {
+                listViewHeader = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string listViewHeaderColor;
+        public string ListViewHeaderColor
+        {
+            get => listViewHeaderColor;
+            set
+            {
+                listViewHeaderColor = value;
+                RaisePropertyChanged();
+            }
         }
 
 
@@ -530,18 +562,18 @@ namespace FitCompanion.ViewModel
             set
             {
                 weekStepperVal = value;
-                WeekStepperString = "Week " + weekStepperVal;
+                WeekStepperString = "Sheet " + weekStepperVal;
             }
         }
 
-        private string weekStepperString = "Week 1";
+        private string weekStepperString = "Sheet 1";
         public string WeekStepperString
         {
             get => weekStepperString;
             set
             {
                 weekStepperString = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
@@ -563,7 +595,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 dayStepperString = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
     }

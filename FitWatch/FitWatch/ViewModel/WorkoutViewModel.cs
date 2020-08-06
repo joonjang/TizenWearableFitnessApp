@@ -49,29 +49,30 @@ namespace FitWatch.ViewModel
             DoneCommand = new Command(DoneFunction);
 
 
-            // if previous info exists load ui and list
+            //// if previous info exists load ui and list
             List<string> loadedSavedList = LoadSave();
-            if(loadedSavedList != null)
+            if (loadedSavedList != null)
             {
                 newWeightList = loadedSavedList;
 
                 LoadStartEntry();
-                
+
             }
             else
             {
                 newWeightList = new List<string>();
             }
 
+
             // load previously saved json if it exists
             SendJsonString = Preferences.Get("SendJson", "");
 
             // todo: debugging
             // ParseJson();
-            //MessagingCenter.Subscribe<object>(Application.Current, "Parse", (s) =>
-            //{
-            //    ParseJson();
-            //});
+            MessagingCenter.Subscribe<MainViewModel, string>(this, "Parse", (sender, arg) =>
+            {
+                ParseJson(arg);
+            });
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -86,7 +87,7 @@ namespace FitWatch.ViewModel
             NavigationButton(7);
             InputView(0);
         }
-        
+
         List<string> LoadSave()
         {
             string SavedListJson = Preferences.Get("SavedList", "");
@@ -95,10 +96,13 @@ namespace FitWatch.ViewModel
             WatchModel SavedWatch = JsonConvert.DeserializeObject<WatchModel>(SavedWatchJson);
 
             watch.WatchObject = SavedWatch;
-            PopulatePreviousWorkInfo();
+            if (watch.WatchObject != null)
+            {
+                PopulatePreviousWorkInfo();
+            }
             return SavedList;
         }
-        
+
         void DoneFunction()
         {
 
@@ -112,7 +116,7 @@ namespace FitWatch.ViewModel
             dataArray.DataArrayObject.DataArray.Add(firstIndexObject);
 
             List<List<string>> orderedWorkoutWeight = DivideWorkout();
-            foreach(List<string> item in orderedWorkoutWeight)
+            foreach (List<string> item in orderedWorkoutWeight)
             {
                 dataArray.DataArrayObject.DataArray.Add(item);
             }
@@ -139,10 +143,10 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             List<List<string>> tmpMaster = new List<List<string>>();
             List<string> tmpSegment = new List<string>();
 
-            for(int i = 1; i <= newWeightList.Count; i++)
+            for (int i = 1; i <= newWeightList.Count; i++)
             {
-                tmpSegment.Add(newWeightList[i-1]);
-                if(i % (watch.WatchObject.Sets.Count) == 0)
+                tmpSegment.Add(newWeightList[i - 1]);
+                if (i % (watch.WatchObject.Sets.Count) == 0)
                 {
                     tmpMaster.Add(tmpSegment);
                     tmpSegment = new List<string>();
@@ -153,18 +157,15 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         }
 
         // json from android
-        public void ParseJson()
+        public void ParseJson(string json)
         {
             NavigationButton(7);
             newWeightList = new List<string>();
             newWeightList.Add("0");
-            InputView(0);
-            watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(MainViewModel.jsonString);
-
-
+            watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(json);
             PopulatePreviousWorkInfo();
-
-
+            InputView(0);
+            
             MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
 
 
@@ -264,7 +265,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
 
         void AddSubtractVisible()
         {
-            
+
 
             if (HundredWeight <= 0)
             {
@@ -401,7 +402,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         {
             // label text of previous weights, rep, and title count
 
-            if((prevReps.Count - 1) < (index / watch.WatchObject.Sets.Count))
+            if ((prevReps.Count - 1) < (index / watch.WatchObject.Sets.Count))
             {
                 NavigationButton(2);
                 return true;
@@ -435,7 +436,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             // show previous information if available
             // disable entry if its designated to be empty
 
-            
+
 
             bool workoutDone = WorkoutLabelInfo(index);
 
@@ -460,9 +461,9 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 UiVisible = false;
                 RestVisible = true;
 
-                NewWeightInt = 8888; 
+                NewWeightInt = 8888;
             }
-            else if(queueWeight == "0")
+            else if (queueWeight == "0")
             {
                 UiVisible = true;
                 RestVisible = false;

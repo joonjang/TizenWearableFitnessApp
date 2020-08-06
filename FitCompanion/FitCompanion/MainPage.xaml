@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:FitCompanion.ViewModel"
              mc:Ignorable="d"
-             x:Class="FitCompanion.MainPage">
+             x:Class="FitCompanion.MainPage"
+             x:Name="MainContentPage">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
@@ -19,11 +20,16 @@
         <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40, 40, 40, 0">
             <!-- Place new controls here -->
 
+            <!--<Button Text="URL" Command=""/>-->
             <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
                     Text="{Binding SpreadsheetUrl}"/>
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="{Binding WeekStepperString}" FontSize="25" HorizontalTextAlignment="Center"/>
+                <Label Text="{Binding WeekStepperString}" 
+                       VerticalOptions="CenterAndExpand"
+                       FontSize="25" 
+                       HorizontalTextAlignment="Center" 
+                       HorizontalOptions="StartAndExpand"/>
                 <Stepper Minimum="1"
                          Increment="1"
                          Value="{Binding WeekStepperVal}"
@@ -31,7 +37,12 @@
                          Scale="0.8"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
-                <Label Text="{Binding DayStepperString}" FontSize="25" FontAttributes="Bold" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand"/>
+                <Label Text="{Binding DayStepperString}" 
+                       FontSize="25" 
+                       FontAttributes="Bold" 
+                       HorizontalTextAlignment="Center" 
+                       VerticalOptions="CenterAndExpand"
+                       HorizontalOptions="StartAndExpand"/>
                 <Stepper Minimum="1"
                          Increment="1"
                          Value="{Binding DayStepperVal}"
@@ -41,7 +52,25 @@
 
             <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
 
-            <ListView ItemsSource="{Binding Workouts}" BackgroundColor="White" HasUnevenRows="True" VerticalOptions="FillAndExpand">
+            <ListView ItemsSource="{Binding Workouts}" 
+                      BackgroundColor="White" 
+                      HasUnevenRows="True" 
+                      VerticalOptions="FillAndExpand"
+                      Header="">
+                <ListView.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Label 
+                                Text="{Binding BindingContext.ListViewHeader, 
+                                Source={x:Reference Name=MainContentPage}}" 
+                                   HorizontalTextAlignment="Center" 
+                                   Padding="10" 
+                                   FontAttributes="Bold"
+                                BackgroundColor="{Binding BindingContext.ListViewHeaderColor, 
+                                Source={x:Reference Name=MainContentPage}}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.HeaderTemplate>
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -65,18 +94,18 @@
 
             <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
         </StackLayout>
-        
-        
 
-        
-        
+
+
+
+
         <Label BackgroundColor="{Binding ConnectedColor}" 
                Text="{Binding ConnectedString}" 
                HorizontalTextAlignment="Center" 
                Padding="5" 
                TextColor="Black" 
                VerticalOptions="EndAndExpand"/>
-        
+
     </StackLayout>
-    
+
 </ContentPage>
