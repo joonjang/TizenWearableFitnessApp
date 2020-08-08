@@ -20,9 +20,13 @@
         <StackLayout HorizontalOptions="CenterAndExpand"  Padding="40, 40, 40, 0">
             <!-- Place new controls here -->
 
-            <!--<Button Text="URL" Command=""/>-->
-            <Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
-                    Text="{Binding SpreadsheetUrl}"/>
+            <StackLayout Orientation="Horizontal">
+            
+            <Button Text="Enter URL" BackgroundColor="White" Command="{Binding ModalUrlPageCommand}"/>
+                <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}"  HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <!--<Entry Placeholder="Enter Spreadsheet URL" ReturnType="Send" 
+                    Text="{Binding SpreadsheetUrl}"/>-->
 
             <StackLayout Orientation="Horizontal">
                 <Label Text="{Binding WeekStepperString}" 
@@ -50,7 +54,7 @@
                          Scale="0.8"/>
             </StackLayout>
 
-            <Button Text="Get Workout" BackgroundColor="White" Command="{Binding GetJsonCommand}" />
+            
 
             <ListView ItemsSource="{Binding Workouts}" 
                       BackgroundColor="White" 
@@ -80,19 +84,30 @@
                                     <Label Text="{Binding Rep}" HorizontalOptions="EndAndExpand"/>
                                 </StackLayout>
                                 <Label Text="{Binding Weight}" HorizontalOptions="CenterAndExpand"/>
+                                <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.EditCommand,
+                                            Source={x:Reference Name=MainContentPage}}"
+                                                              CommandParameter="{Binding .}"/>
+                                    </StackLayout.GestureRecognizers>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Button Text="Send to Watch" BackgroundColor="White" Command="{Binding SendMessageCommand}"/>
+            <Button Text="Send to Watch" 
+                    BackgroundColor="White" 
+                    Command="{Binding SendMessageCommand}" 
+                    IsEnabled="{Binding SendWatchBool}"/>
+            <Button Text="Upload to Spreadsheet" 
+                    BackgroundColor="White" 
+                    Command="{Binding SubmitJsonCommand}"
+                    IsEnabled="{Binding UploadButtonBool}"/>
+            <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
 
-
-            <Button Text="Upload to Spreadsheet" BackgroundColor="White" Command="{Binding SubmitJsonCommand}"/>
             <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
 
-            <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
+            
         </StackLayout>
 
 

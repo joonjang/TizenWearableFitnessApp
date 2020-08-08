@@ -156,7 +156,8 @@ namespace FitCompanion.Droid
 
             bool isFeatureEnabled = mAccessory.IsFeatureEnabled(SA.DeviceAccessory);
 
-
+            MainPage.DeviceInfoSocket = "Connected";
+            MainPage.InfoFromAndroid();
 
         }
 
@@ -234,8 +235,7 @@ namespace FitCompanion.Droid
                 if ((socket != null))
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
-                    MainPage.DeviceInfoSocket = mSocketServiceProvider.ToString();
-                    MainPage.InfoFromAndroid();
+                    
 
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }

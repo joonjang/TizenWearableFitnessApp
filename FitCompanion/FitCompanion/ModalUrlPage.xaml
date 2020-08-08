@@ -2,14 +2,32 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:vm="clr-namespace:FitCompanion.ViewModel"
              mc:Ignorable="d"
              x:Class="FitCompanion.ModalUrlPage">
+
+    <ContentPage.BindingContext>
+        <vm:ModalUrlViewModel/>
+    </ContentPage.BindingContext>
+
     <ContentPage.Content>
+
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout VerticalOptions="CenterAndExpand" Padding="40">
+            <Label Text="Google Sheets URL" FontSize="25"/>
+            <Entry Text="{Binding SheetUrl}" Placeholder="Enter Google Sheets URL"/>
+            <Label Text="Script URL" FontSize="25" Padding="0, 50, 0, 0"/>
+            <Entry Text="{Binding ScriptUrl}" Placeholder="Enter Script URL"/>
+
+                <Label Text="{Binding ErrorString}" TextColor="Red"/>
+            </StackLayout>
+
+            <StackLayout Padding="40">
+                <Button Text="Save" Command="{Binding SaveCommand}" BackgroundColor="White"/>
+                <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="White"/>
+            </StackLayout>
         </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>

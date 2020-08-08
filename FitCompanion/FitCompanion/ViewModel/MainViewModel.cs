@@ -13,19 +13,20 @@ using static FitCompanion.Model.SpreadsheetModel;
 using System.Linq;
 using System.Collections.ObjectModel;
 using Xamarin.Essentials;
-using GalaSoft.MvvmLight;
 
 namespace FitCompanion.ViewModel
 {
 
-    class MainViewModel : ViewModelBase
+    class MainViewModel : INotifyPropertyChanged
     {
         //public event PropertyChangedEventHandler PropertyChanged;
         public ICommand SendMessageCommand { get; }
         public ICommand CloseConnectionCommand { get; }
         public ICommand ModalUrlPageCommand { get; }
+        public ICommand EditCommand { get; }
 
         public IProviderService provider { get; set; }
+
 
         // json object
         string jsonString;
@@ -39,85 +40,60 @@ namespace FitCompanion.ViewModel
         public ObservableCollection<WorkoutModel> Workouts { get; set; }
 
         public MainViewModel()
-        {
+        {      
             provider = DependencyService.Get<IProviderService>();
             SendMessageCommand = new Command(PackageForWatch);
             CloseConnectionCommand = new Command(CloseConnection);
+
+            SubmitJsonCommand = new Command(FullSendJsonToSheet);
+            GetJsonCommand = new Command(GetSpreadsheetJson);
+            ModalUrlPageCommand = new Command(ShowModalPage);
+            EditCommand = new Command<WorkoutModel>( (obj) => EdiWorkoutFunction(obj));
+
+            ListViewHeaderMessage(Preferences.Get("LastSentInfo", ""));
 
             MessagingCenter.Subscribe<object>(Application.Current, "Update", (s) =>
             {
                 RefreshMsgSocket();
             });
 
-            SubmitJsonCommand = new Command(FullSendJsonToSheet);
-            GetJsonCommand = new Command(GetSpreadsheetJson);
-
-
-            ListViewHeaderMessage(Preferences.Get("LastSentInfo", ""));
-        }
-
-        //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
-
-
-        public string DeviceSocketInfo
-        {
-            get => MainPage.DeviceInfoSocket;
-
-
-        }
-
-        private string connectColor = "PaleVioletRed";
-        public string ConnectedColor
-        {
-            get => connectColor;
-            set
+            MessagingCenter.Subscribe<ModalUrlViewModel, string>(this, "SavedUrlInfo", (sender, args) =>
             {
-                connectColor = value;
-            }
-        }
+                string[] urlArray = args.Split(',');
+                SpreadsheetUrl = urlArray[0];
+                ScriptUrl = urlArray[1];
 
-        private bool connectedBool = false;
-        public bool ConnectedBool
-        {
-            get => connectedBool;
-            set
+                Preferences.Set("SavedUrl", SpreadsheetUrl);
+                Preferences.Set("SavedScriptUrl", ScriptUrl);
+            });
+
+            MessagingCenter.Subscribe<ModalEditViewModel, WorkoutModel>(this, "EditWorkout", (sender, obj) =>
             {
-                connectedBool = value;
-                if (connectedBool)
-                {
-                    ConnectedColor = "LightGreen";
-                    ConnectedString = "Connected To Watch";
-                }
-                else
-                {
-                    ConnectedColor = "PaleVioletRed";
-                    ConnectedString = "Not Connected To Watch";
-                }
-                RaisePropertyChanged();
-                RaisePropertyChanged(nameof(ConnectedColor));
-                RaisePropertyChanged(nameof(ConnectedString));
-            }
+                ChangedWorkoutCell(obj);
+            });
+
+
+            // todo: for debugging, delete after
+            SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=783419625";
+            ScriptUrl = "https://script.google.com/macros/s/AKfycby2BGbNJwvzgqp4hay1CR0V3cznlND4u3Ra2-mysvdELCbO3II/exec";
         }
 
-        private string connectedString = "Not Connected To Watch";
-        public string ConnectedString
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            get => connectedString;
-            set
-            {
-                connectedString = value;
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public string ReceivedMsg
+        
+
+        async void ShowModalPage()
         {
-            get => MainPage.ReceivedMessage;
-
+            await Shell.Current.Navigation.PushModalAsync(new ModalUrlPage());
+            MessagingCenter.Send<MainViewModel, string>(this, "SendingSavedUrl", SpreadsheetUrl + "," + ScriptUrl);
         }
 
+        // where info from watch is received
         void RefreshMsgSocket()
         {
             if (DeviceSocketInfo != "Empty")
@@ -129,7 +105,7 @@ namespace FitCompanion.ViewModel
                 ConnectedBool = false;
             }
 
-            RaisePropertyChanged(nameof(ConnectedBool));
+            OnPropertyChanged(nameof(ConnectedBool));
 
             MakeObjectFromJson();
         }
@@ -159,6 +135,8 @@ namespace FitCompanion.ViewModel
             ConvertWatchJsonToWatchModel(watchWorkoutTitle, watchReps, dataArrayModel.DataArray);
 
             dataArrayModelHold = dataArrayModel;
+
+            UploadButtonBool = true;
             
         }
 
@@ -172,6 +150,7 @@ namespace FitCompanion.ViewModel
         }
 
         // for when i receive watch json and show to list view
+        // last watch received json function processed before manually pressing send to sheet
         void ConvertWatchJsonToWatchModel(List<string> WorkoutNames, List<string> RepCount, List<List<string>> MasterArray)
         {
             WatchModel watchModel = new WatchModel();
@@ -227,22 +206,13 @@ namespace FitCompanion.ViewModel
             }
         }
 
-
-
-        /// <summary>
-        /// /////////////// JSON LOGIC ////////////////////////////// JSON LOGIC //////////////////// JSON LOGIC ///////////////// JSON LOGIC ////////////////////////////
-        /// </summary>
-
-
-
-
         async void ApplyJsonToSheet(DataArrayModel dataArrayModel)
         {
             var client = new HttpClient();
 
 
-            // todo: for debugging where this Json data is sent to google sheet, make it user entered url
-            var uri = "https://script.google.com/macros/s/AKfycby2BGbNJwvzgqp4hay1CR0V3cznlND4u3Ra2-mysvdELCbO3II/exec";
+            
+            var uri = ScriptUrl;
             var jsonString = JsonConvert.SerializeObject(dataArrayModel);
 
             // from jsonString
@@ -258,28 +228,7 @@ namespace FitCompanion.ViewModel
             ProcessResponse(response);
         }
 
-        private bool resultResponseBool = false;
-        public bool ResultResponseBool
-        {
-            get => resultResponseBool;
-            set
-            {
-                resultResponseBool = value;
-                RaisePropertyChanged();
-            }
-        }
-
-        private string resultResponseText;
-        public string ResultResponseText
-        {
-            get => resultResponseText;
-            set
-            {
-                resultResponseText = value;
-                RaisePropertyChanged();
-            }
-        }
-
+        // successfully sent to spreadsheet response
         private void ProcessResponse(ResponseModel responseModel)
         {
             Workouts = new ObservableCollection<WorkoutModel>();
@@ -287,34 +236,18 @@ namespace FitCompanion.ViewModel
             {
                 Weight = responseModel.Message
         });
-            RaisePropertyChanged(nameof(Workouts));
-        }
-
-
-        private string spreadsheetUrl = Preferences.Get("SavedURL", "");
-        public string SpreadsheetUrl
-        {
-            get => spreadsheetUrl;
-            set
-            {
-                spreadsheetUrl = value;
-                RaisePropertyChanged();
-            }
+            OnPropertyChanged(nameof(Workouts));
         }
 
 
         private void GetSpreadsheetJson()
         {
-            // todo: for debugging, make text user input and saved by preference
-            // SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=524439697";
-
+           
             if(SpreadsheetUrl == null || SpreadsheetUrl == "")
             {
                 ListViewHeaderMessage("URL is empty", 2);
                 return;
             }
-
-            Preferences.Set("SavedURL", SpreadsheetUrl);
 
 
             int sheetPageNumber = WeekStepperVal;
@@ -350,6 +283,8 @@ namespace FitCompanion.ViewModel
                 
             }
 
+            SendWatchBool = true;
+
             
         }
 
@@ -373,7 +308,7 @@ namespace FitCompanion.ViewModel
             }
         }
         
-
+        // first method for the process of sending to watch
         void PackageForWatch()
         {
             if (globalWatchModelHold == null)
@@ -382,10 +317,42 @@ namespace FitCompanion.ViewModel
                 return;
             };
 
+            // todo: change this after set edit
             var jsonString = JsonConvert.SerializeObject(globalWatchModelHold);
 
             SendMessage(jsonString);
         }
+
+
+
+
+
+
+
+
+
+
+
+        // change globalWatchModelHold to apply edit change
+
+
+
+
+
+
+
+
+
+
+
+
+
+        void ChangedWorkoutCell(WorkoutModel watchObject)
+        {
+
+        }
+
+        // replace edited workout with this list
 
         void ListViewWorkouts(WatchModel watchModel)
         {
@@ -436,19 +403,10 @@ namespace FitCompanion.ViewModel
                 }
             }
 
-            RaisePropertyChanged(nameof(Workouts));
+            OnPropertyChanged(nameof(Workouts));
         }
 
-        private string userChosenDay;
-        public string UserChosenDay
-        {
-            get => userChosenDay;
-            set
-            {
-                userChosenDay = value;
-                RaisePropertyChanged();
-            }
-        }
+        
 
         // filters the json from spreadsheet
         void FilterThroughJsonList(List<string> jsonList)
@@ -512,7 +470,7 @@ namespace FitCompanion.ViewModel
 
             ListViewWorkouts(watchModel);
 
-            // to convert stop to empty workout for watch
+            // to convert * to empty workout for watch
             if (watchModel.Workouts.Count != 0)
             {
                 for (int x = 0; x < watchModel.Workouts.Count; x++)
@@ -532,6 +490,54 @@ namespace FitCompanion.ViewModel
 
         }
 
+        async void EdiWorkoutFunction(WorkoutModel obj)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new ModalEditPage());
+            MessagingCenter.Send<MainViewModel, WorkoutModel>(this, "EditWorkoutInfo", obj);
+        }
+
+        public string DeviceSocketInfo
+        {
+            get => MainPage.DeviceInfoSocket;
+        }
+
+        private string userChosenDay;
+        public string UserChosenDay
+        {
+            get => userChosenDay;
+            set
+            {
+                userChosenDay = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string connectColor = "PaleVioletRed";
+        public string ConnectedColor
+        {
+            get => connectColor;
+            set
+            {
+                connectColor = value;
+            }
+        }
+
+        private string connectedString = "Not Connected To Watch";
+        public string ConnectedString
+        {
+            get => connectedString;
+            set
+            {
+                connectedString = value;
+            }
+        }
+
+        public string ReceivedMsg
+        {
+            get => MainPage.ReceivedMessage;
+
+        }
+
         private string listViewHeader;
         public string ListViewHeader
         {
@@ -539,7 +545,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 listViewHeader = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -550,7 +556,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 listViewHeaderColor = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -573,7 +579,7 @@ namespace FitCompanion.ViewModel
             set
             {
                 weekStepperString = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -595,7 +601,95 @@ namespace FitCompanion.ViewModel
             set
             {
                 dayStepperString = value;
-                RaisePropertyChanged();
+                OnPropertyChanged();
+            }
+        }
+
+        private bool resultResponseBool = false;
+        public bool ResultResponseBool
+        {
+            get => resultResponseBool;
+            set
+            {
+                resultResponseBool = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string resultResponseText;
+        public string ResultResponseText
+        {
+            get => resultResponseText;
+            set
+            {
+                resultResponseText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string spreadsheetUrl = Preferences.Get("SavedUrl", "");
+        public string SpreadsheetUrl
+        {
+            get => spreadsheetUrl;
+            set
+            {
+                spreadsheetUrl = value;
+
+            }
+        }
+
+        private string scriptUrl = Preferences.Get("SavedScriptUrl", "");
+        public string ScriptUrl
+        {
+            get => scriptUrl;
+            set
+            {
+                scriptUrl = value;
+            }
+        }
+
+        private bool sendWatchBool = false;
+        public bool SendWatchBool
+        {
+            get => sendWatchBool;
+            set
+            {
+                sendWatchBool = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool uploadButtonBool = false;
+        public bool UploadButtonBool
+        {
+            get => uploadButtonBool;
+            set
+            {
+                uploadButtonBool = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool connectedBool = false;
+        public bool ConnectedBool
+        {
+            get => connectedBool;
+            set
+            {
+                connectedBool = value;
+                if (connectedBool)
+                {
+                    ConnectedColor = "LightGreen";
+                    ConnectedString = "Connected To Watch";
+                }
+                else
+                {
+                    ConnectedColor = "PaleVioletRed";
+                    ConnectedString = "Not Connected To Watch";
+                }
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(ConnectedColor));
+                OnPropertyChanged(nameof(ConnectedString));
             }
         }
     }

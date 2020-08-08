@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:vm="clr-namespace:FitCompanion.ViewModel"
+             mc:Ignorable="d"
+             x:Class="FitCompanion.ModalEditPage">
+
+    <ContentPage.BindingContext>
+        <vm:ModalEditViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout VerticalOptions="StartAndExpand" Padding="40">
+                <Label 
+                    Text="{Binding WorkoutName, StringFormat='Edit {0}'}" 
+                    FontAttributes="Bold" 
+                    FontSize="25"/>
+                <StackLayout Orientation="Horizontal" Padding="0,20,0,20">
+                    <Label Text="Rep Count: " 
+                           VerticalOptions="Center" 
+                           FontSize="20" 
+                           HorizontalOptions="StartAndExpand"/>
+                    <Entry Text="{Binding RepString}" 
+                           Placeholder="Rep Count"
+                           WidthRequest="100"
+                           HorizontalTextAlignment="End"
+                           Keyboard="Numeric"/>
+                </StackLayout>
+                <ListView ItemsSource="{Binding tempList}"
+                          HasUnevenRows="True" >
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal">
+                                    <Label Text="{Binding SetCount, StringFormat='Set {0}'}" 
+                                           HorizontalOptions="StartAndExpand"
+                                           FontSize="20"/>
+                                    <Entry Text="{Binding WeightAmount}"
+                                           FontSize="20"
+                                           WidthRequest="100"
+                                           HorizontalTextAlignment="End"
+                                           Keyboard="Numeric"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+            <StackLayout Padding="40">
+                <Button Text="Save" Command="{Binding SaveCommand}" BackgroundColor="White"/>
+                <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="White"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
