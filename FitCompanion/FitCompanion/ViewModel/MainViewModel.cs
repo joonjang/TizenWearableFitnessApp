@@ -156,7 +156,7 @@ namespace FitCompanion.ViewModel
             List<string> tmpWeights = new List<string>();
 
 
-            int lastIndex = globalWatchModelHold.Workouts.Count;
+            // starts at workout string list index 2 to get past workout name and rep
             int index = 2;
 
 
@@ -167,6 +167,7 @@ namespace FitCompanion.ViewModel
                 convertedFromWatch.DataArray.Add(tmpWeights);
                 tmpWeights = new List<string>();
 
+                // skips to next set count plus 2 because of name and rep 
                 index = index + globalWatchModelHold.Sets.Count + 2;
             }
 
@@ -341,6 +342,7 @@ namespace FitCompanion.ViewModel
             };
 
             // todo: change this after set edit
+            globalWatchModelHold = ConvertStarCellToRestNumber(globalWatchModelHold);
             var jsonString = JsonConvert.SerializeObject(globalWatchModelHold);
 
             SendMessage(jsonString);

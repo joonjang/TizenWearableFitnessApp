@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Tizen.Wearable.CircularUI.Forms;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -134,8 +135,16 @@ namespace FitWatch.ViewModel
             SaveText = @"Save successful
 Tap 'Upload' next time connected to phone to update spreadsheet";
 
+            ShowSavedMessage();
+
             Preferences.Set("SendJson", SendJsonString);
 
+        }
+
+        async void ShowSavedMessage()
+        {
+            await Task.Delay(6000);
+            SaveText = "";
         }
 
         List<List<string>> DivideWorkout()
@@ -159,6 +168,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         // json from android
         public void ParseJson(string json)
         {
+            globalWeightIndex = 0;
             NavigationButton(7);
             newWeightList = new List<string>();
             newWeightList.Add("0");
@@ -167,8 +177,6 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             InputView(0);
             
             MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
-
-
         }
 
         void PopulatePreviousWorkInfo()
@@ -185,7 +193,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             foreach (string item in watch.WatchObject.Workouts)
             {
                 // if subject doesnt have numbers, then its an exercise
-                // second element will always be set
+                // second element will alws be set
                 // anything beyond is weights until condition of no numbers
 
                 bool isNotWorkout = Regex.IsMatch(item, @"[0-9]+");
@@ -377,6 +385,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
                 // show entry info
                 case 7:
                     MasterUIVisible = true;
+                    DoneVisible = false;
                     CanGoNext = true;
                     break;
             }
@@ -402,7 +411,8 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
         {
             // label text of previous weights, rep, and title count
 
-            if ((prevReps.Count - 1) < (index / watch.WatchObject.Sets.Count))
+            // checks if index is past amount of reps 
+            if (globalWeightIndex + 1 >= watch.WatchObject.Workouts.Count - (prevReps.Count * 2))
             {
                 NavigationButton(2);
                 return true;
