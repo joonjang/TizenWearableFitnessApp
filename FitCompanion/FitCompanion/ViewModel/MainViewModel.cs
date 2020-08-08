@@ -31,8 +31,6 @@ namespace FitCompanion.ViewModel
         // json object
         string jsonString;
         WatchModel globalWatchModelHold;
-        DataArrayModel dataArrayModelHold;
-
 
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
@@ -45,7 +43,7 @@ namespace FitCompanion.ViewModel
             SendMessageCommand = new Command(PackageForWatch);
             CloseConnectionCommand = new Command(CloseConnection);
 
-            SubmitJsonCommand = new Command(FullSendJsonToSheet);
+            SubmitJsonCommand = new Command(ConvertWatchModelToDataArry);
             GetJsonCommand = new Command(GetSpreadsheetJson);
             ModalUrlPageCommand = new Command(ShowModalPage);
             EditCommand = new Command<WorkoutModel>( (obj) => EdiWorkoutFunction(obj));
@@ -137,19 +135,72 @@ namespace FitCompanion.ViewModel
             globalWatchModelHold = watchModel;
             ListViewWorkouts(watchModel);
 
-            dataArrayModelHold = dataArrayModel;
-
+           
             UploadButtonBool = true;
             
         }
 
-        void FullSendJsonToSheet()
+        void ConvertWatchModelToDataArry()
         {
-            if(dataArrayModelHold != null)
+            globalWatchModelHold = ConvertRestNumberCellToRestStar(globalWatchModelHold);
+
+            DataArrayModel convertedFromWatch = new DataArrayModel();
+            convertedFromWatch.DataArray = new List<List<string>>();
+
+            List<string> WeekAndDay = new List<string>();
+            WeekAndDay.Add(globalWatchModelHold.Week);
+            WeekAndDay.Add(globalWatchModelHold.Day);
+
+            convertedFromWatch.DataArray.Add(WeekAndDay);
+
+            List<string> tmpWeights = new List<string>();
+
+
+            int lastIndex = globalWatchModelHold.Workouts.Count;
+            int index = 2;
+
+
+            while (index < globalWatchModelHold.Workouts.Count)
             {
-                ApplyJsonToSheet(dataArrayModelHold);
+                tmpWeights.AddRange(globalWatchModelHold.Workouts.GetRange(index, globalWatchModelHold.Sets.Count));
+
+                convertedFromWatch.DataArray.Add(tmpWeights);
+                tmpWeights = new List<string>();
+
+                index = index + globalWatchModelHold.Sets.Count + 2;
             }
-            
+
+            ApplyJsonToSheet(convertedFromWatch);
+        }
+
+        async void ApplyJsonToSheet(DataArrayModel dataArrayModel)
+        {
+            var client = new HttpClient();
+            var uri = ScriptUrl;
+            var jsonString = JsonConvert.SerializeObject(dataArrayModel);
+
+            // from jsonString
+            //string tmp = "{\"DataArray\":[[\"Week 0\",\"DAY 1\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"]]}";
+            //var requestContent = new StringContent(tmp);
+            //
+
+            var requestContent = new StringContent(jsonString);
+
+            var result = await client.PostAsync(uri, requestContent);
+            var resultContent = await result.Content.ReadAsStringAsync();
+            ResponseModel response = JsonConvert.DeserializeObject<ResponseModel>(resultContent);
+            ProcessResponse(response);
+        }
+
+        // successfully sent to spreadsheet response
+        private void ProcessResponse(ResponseModel responseModel)
+        {
+            Workouts = new ObservableCollection<WorkoutModel>();
+            Workouts.Add(new WorkoutModel()
+            {
+                Weight = responseModel.Message
+            });
+            OnPropertyChanged(nameof(Workouts));
         }
 
         // for when i receive watch json and show to list view
@@ -209,38 +260,7 @@ namespace FitCompanion.ViewModel
             }
         }
 
-        async void ApplyJsonToSheet(DataArrayModel dataArrayModel)
-        {
-            var client = new HttpClient();
-
-
-            
-            var uri = ScriptUrl;
-            var jsonString = JsonConvert.SerializeObject(dataArrayModel);
-
-            // from jsonString
-            //string tmp = "{\"DataArray\":[[\"Week 0\",\"DAY 1\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"]]}";
-            //var requestContent = new StringContent(tmp);
-            //
-
-            var requestContent = new StringContent(jsonString);
-
-            var result = await client.PostAsync(uri, requestContent);
-            var resultContent = await result.Content.ReadAsStringAsync();
-            ResponseModel response = JsonConvert.DeserializeObject<ResponseModel>(resultContent);
-            ProcessResponse(response);
-        }
-
-        // successfully sent to spreadsheet response
-        private void ProcessResponse(ResponseModel responseModel)
-        {
-            Workouts = new ObservableCollection<WorkoutModel>();
-            Workouts.Add(new WorkoutModel()
-            {
-                Weight = responseModel.Message
-        });
-            OnPropertyChanged(nameof(Workouts));
-        }
+        
 
 
         private void GetSpreadsheetJson()
@@ -442,7 +462,7 @@ namespace FitCompanion.ViewModel
                 tmpWatchModel.Workouts.AddRange(workoutArray);
             }
 
-            globalWatchModelHold = ConvertRestCellToRestNumber(tmpWatchModel);
+            globalWatchModelHold = ConvertStarCellToRestNumber(tmpWatchModel);
 
         }
 
@@ -515,7 +535,7 @@ namespace FitCompanion.ViewModel
             // creates global watch if given watchModel is not empty
             if (watchModel.Workouts.Count != 0)
             {
-                globalWatchModelHold = ConvertRestCellToRestNumber(watchModel);
+                globalWatchModelHold = ConvertStarCellToRestNumber(watchModel);
             }
             else
             {
@@ -526,13 +546,26 @@ namespace FitCompanion.ViewModel
 
         }
 
-        WatchModel ConvertRestCellToRestNumber(WatchModel watchModel)
+        WatchModel ConvertStarCellToRestNumber(WatchModel watchModel)
         {
             for (int x = 0; x < watchModel.Workouts.Count; x++)
             {
                 if (watchModel.Workouts[x].Contains("*"))
                 {
                     watchModel.Workouts[x] = "8888";
+                }
+            }
+
+            return watchModel;
+        }
+
+        WatchModel ConvertRestNumberCellToRestStar(WatchModel watchModel)
+        {
+            for (int x = 0; x < watchModel.Workouts.Count; x++)
+            {
+                if (watchModel.Workouts[x].Contains("8888"))
+                {
+                    watchModel.Workouts[x] = "*";
                 }
             }
 
