@@ -23,11 +23,10 @@
                            VerticalOptions="Center" 
                            FontSize="20" 
                            HorizontalOptions="StartAndExpand"/>
-                    <Entry Text="{Binding RepString}" 
-                           Placeholder="Rep Count"
+                    <Label Text="{Binding RepString}" 
                            WidthRequest="100"
                            HorizontalTextAlignment="End"
-                           Keyboard="Numeric"/>
+                           FontSize="20"/>
                 </StackLayout>
                 <ListView ItemsSource="{Binding tempList}"
                           HasUnevenRows="True" >
@@ -42,7 +41,7 @@
                                            FontSize="20"
                                            WidthRequest="100"
                                            HorizontalTextAlignment="End"
-                                           Keyboard="Numeric"/>
+                                           Keyboard="Telephone"/>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>
