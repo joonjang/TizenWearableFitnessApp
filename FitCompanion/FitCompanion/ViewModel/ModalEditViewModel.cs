@@ -104,6 +104,10 @@ namespace FitCompanion.ViewModel
             set
             {
                 repString = value;
+                if (string.IsNullOrEmpty(repString))
+                {
+                    repString = "0";
+                }
                 OnPropertyChanged();
             }
         }

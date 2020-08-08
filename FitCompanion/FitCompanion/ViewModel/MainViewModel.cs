@@ -346,10 +346,18 @@ namespace FitCompanion.ViewModel
 
 
 
-
+        // receives the changed workout and updates current listview and sendable object
         void ChangedWorkoutCell(WorkoutModel watchObject)
         {
-
+            for(int i = 0; i < Workouts.Count; i++)
+            {
+                if(Workouts[i].Name == watchObject.Name)
+                {
+                    Workouts.RemoveAt(i);
+                    Workouts.Insert(i, watchObject);
+                    return;
+                }
+            }
         }
 
         // replace edited workout with this list
