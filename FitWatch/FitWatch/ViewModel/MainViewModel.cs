@@ -97,9 +97,6 @@ namespace FitWatch.ViewModel
             Toast.DisplayText("Workout received");
             string receivedJson = System.Text.Encoding.ASCII.GetString(e.Data);
 
-
-            //ParseFunction();
-
             MessagingCenter.Send<MainViewModel, string>(this, "Parse", receivedJson);
 
         }
@@ -110,36 +107,33 @@ namespace FitWatch.ViewModel
         {
             Shell.Current.Navigation.PushAsync(new AppShell());
             Tizen.System.Display.StateChanged -= OnDisplayOn;
+            //System.Environment.Exit(0);
         }
 
         void RunInForegroundMethod()
         {
+            Shell.Current.Navigation.PushAsync(new AppShellForeground());
             Tizen.System.Display.StateChanged += OnDisplayOn;
+            appControl = new AppControl
+            {
+                Operation = AppControlOperations.Default,
+                //ApplicationId = "org.tizen.joonspetproject.ServiceApp"
+                ApplicationId = "org.tizen.joonspetproject.FitWatch"
+            };
         }
 
 
 
-
-        public void OnDisplayOn(object sender, DisplayStateChangedEventArgs args)
+        AppControl appControl;
+        private void OnDisplayOn(object sender, DisplayStateChangedEventArgs args)
         {
             if (args.State == DisplayState.Normal)
             {
-                AppControl appControl = new AppControl
-                {
-                    Operation = AppControlOperations.Default,
-                    ApplicationId = "org.tizen.joonspetproject.ServiceApp"
-                };
+                
 
                 try
                 {
-                    //AppControl.SendLaunchRequest(appControl);
-                    AppControl.SendLaunchRequest(appControl, (launchRequest, replyRequest, result) =>
-                        {
-                            if (result == AppControlReplyResult.Succeeded)
-                            {
-                                Shell.Current.Navigation.PushAsync(new AppShellForeground());
-                            }
-                        });
+                    AppControl.SendLaunchRequest(appControl);
                 }
                 catch (Exception e)
                 {

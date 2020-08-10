@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="lib\"/>
-    <Folder Include="res\"/>
+    <Folder Include="lib\" />
+    <Folder Include="res\" />
   </ItemGroup>
 
 </Project>
