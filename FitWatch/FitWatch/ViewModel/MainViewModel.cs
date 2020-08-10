@@ -9,6 +9,8 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
 using Tizen;
+using Tizen.Applications;
+using Tizen.System;
 using Tizen.Wearable.CircularUI.Forms;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -34,6 +36,7 @@ namespace FitWatch.ViewModel
         public ICommand ConnectCommand { get; }
         //public ICommand ParseCommand { get; }
 
+
         public MainViewModel()
         {
 
@@ -48,6 +51,9 @@ namespace FitWatch.ViewModel
             });
 
             CurrentAvailableInfo = Preferences.Get("CurrentWorkout", "");
+            Tizen.System.Display.StateChanged += OnDisplayOn;
+
+
             //todo: for debugging
             //ParseCommand = new Command(ParseFunction);
 
@@ -103,6 +109,56 @@ namespace FitWatch.ViewModel
         }
 
 
+
+
+
+
+
+
+
+
+        public void OnDisplayOn(object sender, DisplayStateChangedEventArgs args)
+        {
+            if (args.State == DisplayState.Normal)
+            {
+
+
+
+                AppControl appControl = new AppControl();
+                appControl.Operation = AppControlOperations.Default;
+                //appControl.LaunchMode = AppControlLaunchMode.Group;
+                appControl.ApplicationId = "org.tizen.joonspetproject.ServiceApp";
+                //appControl.ApplicationId = Tizen.Applications.Application.Current.ApplicationInfo.ApplicationId;
+                // appControl.ApplicationId = "org.tizen.w-home";
+
+
+
+                try
+                {
+                    //AppControl.SendLaunchRequest(appControl);
+                    AppControl.SendLaunchRequest(appControl, (launchRequest, replyRequest, result) =>
+                        {
+                            if (result == AppControlReplyResult.Succeeded)
+                            {
+                                Shell.Current.Navigation.PushAsync(new WorkoutPage());
+                            }
+                        });
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("CONSOLE ERROR: " + e);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
         //todo: for debugging
         //void ParseFunction()
         //{
@@ -115,7 +171,7 @@ namespace FitWatch.ViewModel
 
             try
             {
-                if(Peer != null)
+                if (Peer != null)
                 {
                     Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
                 }

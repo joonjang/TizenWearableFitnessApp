@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30225.117
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FitWatch", "FitWatch\FitWatch.csproj", "{D73CF326-500A-4C87-B71B-0A9103AC721B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FitWatch", "FitWatch\FitWatch.csproj", "{D73CF326-500A-4C87-B71B-0A9103AC721B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceApp", "ServiceApp\ServiceApp.csproj", "{AE4CFCEB-3413-456C-8A16-E2852377FAD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{D73CF326-500A-4C87-B71B-0A9103AC721B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D73CF326-500A-4C87-B71B-0A9103AC721B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D73CF326-500A-4C87-B71B-0A9103AC721B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE4CFCEB-3413-456C-8A16-E2852377FAD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE4CFCEB-3413-456C-8A16-E2852377FAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE4CFCEB-3413-456C-8A16-E2852377FAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE4CFCEB-3413-456C-8A16-E2852377FAD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -10,13 +10,12 @@ using Xamarin.Forms.Xaml;
 namespace FitWatch
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class App : Application
+    public partial class App : Xamarin.Forms.Application
     {
         public WorkoutPage workoutPage;
         public App()
         {
             InitializeComponent();
-
             MainPage = new AppShell();
         }
 
@@ -34,6 +33,7 @@ namespace FitWatch
         {
             // Handle when your app resumes
         }
+
     }
 }
 
