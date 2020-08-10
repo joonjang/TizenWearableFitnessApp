@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V4.App;
@@ -34,7 +35,7 @@ namespace FitCompanion.Droid
         private Context _context;
         private readonly Task _task;
         private static readonly int CHANNEL_ID = 104;
-        
+
 
         [Export(SuperArgumentsString = "\"ProviderService\", ProviderService_ProviderServiceSocket.class")]
         public ProviderService() : base("ProviderService", SASOCKET_CLASS)
@@ -80,6 +81,45 @@ namespace FitCompanion.Droid
         }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+        const int pendingIntentId = 0;
+        const string channelId = "fit_channel_01";
+        const string channelName = "Accessory_SDK_Fit";
+
+        NotificationManager manager;
+        bool channelInitialized = false;
+
+        void CreateNotificationChannel()
+        {
+
+            
+            manager = (NotificationManager)Application.Context.GetSystemService(Application.NotificationService);
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+
+                var channelNameJava = new Java.Lang.String(channelName);
+                var channel = new NotificationChannel(channelId, channelNameJava, NotificationImportance.Default)
+                {
+                    Description = "TEST TEST TEST"
+                };
+                manager.CreateNotificationChannel(channel);
+            }
+
+            channelInitialized = true;
+        }
+
         public override void OnCreate()
         {
             base.OnCreate();
@@ -87,45 +127,59 @@ namespace FitCompanion.Droid
             //the reason the notification wont go away
             //https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/foreground-services
 
-            if ((Build.VERSION.SdkInt >= BuildVersionCodes.O))
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                NotificationManager notificationManager = null;
-                string channel_id = "sample_channel_01";
-                if ((notificationManager == null))
+                if (!channelInitialized)
                 {
-                    string channel_name = "Accessory_SDK_Sample";
-                    notificationManager = ((NotificationManager)(GetSystemService(Context.NotificationService)));
-                    var notiChannel = new NotificationChannel(channel_id, channel_name, Android.App.NotificationImportance.Low);
-                    notificationManager.CreateNotificationChannel(notiChannel);
-
-                    if (notificationManager.GetNotificationChannel(channel_id) == null)
-                    {
-                        var channel = new NotificationChannel(
-                            channel_id,
-                           new Java.Lang.String("Channel"),
-                            NotificationImportance.Max
-                        );
-                        string d = "";
-                        if (!string.IsNullOrWhiteSpace(d))
-                        {
-                            channel.Description = d;
-                        }
-
-                        notificationManager.CreateNotificationChannel(channel);
-                    }
+                    CreateNotificationChannel();
                 }
+
 
                 int notifyID = 1;
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channel_id)
-                .SetChannelId(channel_id)
-                .SetAutoCancel(true)
-                .SetContentTitle(TAG)
-                .SetContentText("connected to your watch")
-                .SetPriority(1)
-                .SetVisibility(1)
-                .SetCategory(Android.App.Notification.CategoryEvent);
+                Intent intent = new Intent(Application.Context, typeof(MainActivity));
+
+                PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.UpdateCurrent);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
+
+                    .SetAutoCancel(true)
+
+                    //todo: change name
+                    .SetContentTitle(TAG)
+                    .SetContentText("connected to your watch")
+
+                    .SetContentIntent(pendingIntent)
+
+                    // todo: check icon
+                    .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_mtrl_chip_checked_circle))
+                    .SetSmallIcon(Resource.Drawable.ic_mtrl_chip_close_circle)
+                    .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
+
+                    .SetChannelId(channelId)
+                    .SetPriority(1)
+                    .SetVisibility(1)
+                    .SetCategory(Android.App.Notification.CategoryService);
+
+                //StartForeground(notifyID, builder.Build());
+                //var notification = builder.Build();
+                //manager.Notify(notifyID, notification);
+
+
                 StartForeground(notifyID, builder.Build());
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
 
 
@@ -152,7 +206,7 @@ namespace FitCompanion.Droid
                 */
                 StopSelf();
             }
-            
+
 
             bool isFeatureEnabled = mAccessory.IsFeatureEnabled(SA.DeviceAccessory);
 
@@ -190,13 +244,13 @@ namespace FitCompanion.Droid
                 {
                     mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(msg));
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine("SendData error: " + e);
                 }
             }
         }
-        
+
 
         protected override void OnFindPeerAgentsResponse(SAPeerAgent[] p0, int result)
         {
@@ -210,7 +264,7 @@ namespace FitCompanion.Droid
                 {
                     //  Cache(peerAgent);
                     RequestServiceConnection(peerAgent);
-                  
+
                 }
             }
         }
@@ -220,7 +274,7 @@ namespace FitCompanion.Droid
             if (p0 != null)
             {
                 AcceptServiceConnectionRequest(p0);
-                
+
             }
         }
 
@@ -235,7 +289,7 @@ namespace FitCompanion.Droid
                 if ((socket != null))
                 {
                     mSocketServiceProvider = (ProviderServiceSocket)(socket);
-                    
+
 
                     // mSocketServiceProvider.Send(CHANNEL_ID, System.Text.Encoding.ASCII.GetBytes(Message));
                 }
@@ -309,7 +363,7 @@ namespace FitCompanion.Droid
 
         }
 
-        
+
 
         public class AgentBinder : Binder
         {
@@ -324,7 +378,7 @@ namespace FitCompanion.Droid
             [Export(SuperArgumentsString = "\"ProviderServiceSocket\"")]
             public ProviderServiceSocket() : base(p0: "ProviderServiceSocket")
             {
-                
+
             }
 
 
@@ -339,7 +393,7 @@ namespace FitCompanion.Droid
 #if DEBUG
                 Console.WriteLine("Received: ", message);
 
-                }
+            }
 #endif
 
 

@@ -35,10 +35,10 @@ namespace FitCompanion.ViewModel
         public ICommand SubmitJsonCommand { get; }
         public ICommand GetJsonCommand { get; }
 
-        
+
 
         public MainViewModel()
-        {      
+        {
             provider = DependencyService.Get<IProviderService>();
             SendMessageCommand = new Command(PackageForWatch);
             CloseConnectionCommand = new Command(CloseConnection);
@@ -46,10 +46,11 @@ namespace FitCompanion.ViewModel
             SubmitJsonCommand = new Command(ConvertWatchModelToDataArry);
             GetJsonCommand = new Command(GetSpreadsheetJson);
             ModalUrlPageCommand = new Command(ShowModalPage);
-            EditCommand = new Command<WorkoutModel>( (obj) => EdiWorkoutFunction(obj));
+            EditCommand = new Command<WorkoutModel>((obj) => EdiWorkoutFunction(obj));
 
             ListViewHeaderMessage(Preferences.Get("LastSentInfo", ""));
 
+            RefreshMsgSocket();
             MessagingCenter.Subscribe<object>(Application.Current, "Update", (s) =>
             {
                 RefreshMsgSocket();
@@ -83,7 +84,7 @@ namespace FitCompanion.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        
+
 
         async void ShowModalPage()
         {
@@ -97,6 +98,10 @@ namespace FitCompanion.ViewModel
             if (DeviceSocketInfo != "Empty")
             {
                 ConnectedBool = true;
+                if (!string.IsNullOrEmpty(jsonString)) 
+                { 
+                    MakeObjectFromJson();
+                }
             }
             else
             {
@@ -105,7 +110,7 @@ namespace FitCompanion.ViewModel
 
             OnPropertyChanged(nameof(ConnectedBool));
 
-            MakeObjectFromJson();
+
         }
 
 
@@ -135,9 +140,9 @@ namespace FitCompanion.ViewModel
             globalWatchModelHold = watchModel;
             ListViewWorkouts(watchModel);
 
-           
+
             UploadButtonBool = true;
-            
+
         }
 
         void ConvertWatchModelToDataArry()
@@ -215,20 +220,20 @@ namespace FitCompanion.ViewModel
             watchModel.Workouts = new List<string>();
 
             // populate set count based on first workout amount
-            for(int i = 0; i < MasterArray[1].Count; i++)
+            for (int i = 0; i < MasterArray[1].Count; i++)
             {
                 watchModel.Sets.Add("Set " + (i + 1));
             }
 
             // populate workout list past the first array which is week and day info
-            for(int i = 1; i < MasterArray.Count; i++)
+            for (int i = 1; i < MasterArray.Count; i++)
             {
                 watchModel.Workouts.Add(WorkoutNames[i - 1]);
                 watchModel.Workouts.Add(RepCount[i - 1]);
                 watchModel.Workouts.AddRange(MasterArray[i]);
             }
 
-            ListViewHeaderMessage("Received from watch: " + watchModel.Week + ", " + watchModel.Day, 1);
+            ListViewHeaderMessage("Received from watch: " + watchModel.Week + ", " + watchModel.Day, 3);
 
             return watchModel;
         }
@@ -236,14 +241,16 @@ namespace FitCompanion.ViewModel
         void CloseConnection()
         {
             provider.CloseConnection();
+            ListViewHeaderMessage("");
+            ListViewBodyMessage("");
             //RefreshMsgSocket();
         }
 
 
         void SendMessage(string msg)
         {
-            if(MainPage.DeviceInfoSocket != "Empty")
-            {      
+            if (MainPage.DeviceInfoSocket != "Empty")
+            {
                 try
                 {
                     provider.SendData(msg);
@@ -261,13 +268,13 @@ namespace FitCompanion.ViewModel
             }
         }
 
-        
+
 
 
         private void GetSpreadsheetJson()
         {
-           
-            if(SpreadsheetUrl == null || SpreadsheetUrl == "")
+
+            if (SpreadsheetUrl == null || SpreadsheetUrl == "")
             {
                 ListViewHeaderMessage("URL is empty", 2);
                 return;
@@ -288,8 +295,8 @@ namespace FitCompanion.ViewModel
                 {
                     jsonString = wc.DownloadString(jsonUrl);
                 }
-            
-            
+
+
                 Root jsonObject = JsonConvert.DeserializeObject<Root>(jsonString);
 
                 List<string> cellInfoList = new List<string>();
@@ -304,12 +311,26 @@ namespace FitCompanion.ViewModel
             catch
             {
                 ListViewHeaderMessage("Unable to retrieve information", 2);
-                
+
             }
 
             SendWatchBool = true;
 
-            
+
+        }
+
+        void ListViewBodyMessage(string message)
+        {
+            Workouts = new ObservableCollection<WorkoutModel>();
+            if (!string.IsNullOrEmpty(message))
+            {
+                Workouts.Add(new WorkoutModel()
+                {
+                    Weight = message
+                });
+                
+            }
+            OnPropertyChanged(nameof(Workouts));
         }
 
         void ListViewHeaderMessage(string message, int i = 0)
@@ -317,21 +338,24 @@ namespace FitCompanion.ViewModel
             ListViewHeader = message;
             switch (i)
             {
-            // no issue
+                // no issue
                 case 0:
                     ListViewHeaderColor = "White";
                     break;
-            // success
+                // success
                 case 1:
                     ListViewHeaderColor = "LightGreen";
                     break;
-            // error
+                // error
                 case 2:
                     ListViewHeaderColor = "PaleVioletRed";
                     break;
+                case 3:
+                    ListViewHeaderColor = "DeepSkyBlue";
+                    break;
             }
         }
-        
+
         // first method for the process of sending to watch
         void PackageForWatch()
         {
@@ -348,39 +372,12 @@ namespace FitCompanion.ViewModel
             SendMessage(jsonString);
         }
 
-
-
-
-
-
-
-
-
-
-
-        // change globalWatchModelHold to apply edit change
-
-
-
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!! use list view as the hub between the sending to spreadsheet and sending to watch
-
-
-
-
-
-
-
-
-
-
-
         // receives the changed workout and updates current listview and sendable object
         void ChangedWorkoutCell(WorkoutModel watchObject)
         {
-            for(int i = 0; i < Workouts.Count; i++)
+            for (int i = 0; i < Workouts.Count; i++)
             {
-                if(Workouts[i].Name == watchObject.Name)
+                if (Workouts[i].Name == watchObject.Name)
                 {
                     Workouts.RemoveAt(i);
                     Workouts.Insert(i, watchObject);
@@ -401,17 +398,17 @@ namespace FitCompanion.ViewModel
 
             WorkoutModel tmpWorkout = new WorkoutModel();
 
-            for(int i = 0; i < watchModel.Workouts.Count; i++)
+            for (int i = 0; i < watchModel.Workouts.Count; i++)
             {
-                
+
 
                 if (!watchModel.Workouts[i].Any(char.IsDigit) && watchModel.Workouts[i] != "*")
                 {
-                    if(i != 0)
+                    if (i != 0)
                     {
                         Workouts.Add(tmpWorkout);
                     }
-                    
+
                     tmpWorkout = new WorkoutModel();
 
                     registerWorkout = false;
@@ -435,7 +432,7 @@ namespace FitCompanion.ViewModel
 
                 if (i == watchModel.Workouts.Count - 1)
                 {
-                    
+
                     Workouts.Add(tmpWorkout);
 
                 }
@@ -454,7 +451,7 @@ namespace FitCompanion.ViewModel
             tmpWatchModel.Sets = oldWatchModel.Sets;
             tmpWatchModel.Workouts = new List<string>();
 
-            for(int i = 0; i < workoutList.Count; i++)
+            for (int i = 0; i < workoutList.Count; i++)
             {
                 string rawName = workoutList[i].Name.Replace("Workout: ", "");
                 tmpWatchModel.Workouts.Add(rawName);
@@ -468,7 +465,7 @@ namespace FitCompanion.ViewModel
 
         }
 
-        
+
 
         // filters the json from spreadsheet
         void FilterThroughJsonList(List<string> jsonList)
@@ -496,7 +493,7 @@ namespace FitCompanion.ViewModel
             while (workoutLoop)
             {
                 i++;
-                if(i >= jsonList.Count)
+                if (i >= jsonList.Count)
                 {
                     break;
                 }
@@ -530,7 +527,7 @@ namespace FitCompanion.ViewModel
 
             }
 
-           
+
             ListViewWorkouts(watchModel);
 
             // to convert * to empty workout for watch

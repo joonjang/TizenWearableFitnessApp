@@ -35,5 +35,6 @@ namespace FitCompanion.Droid
             var intent = new Android.Content.Intent(this, typeof(ProviderService));
             StartService(intent);
         }
+
     }
 }
