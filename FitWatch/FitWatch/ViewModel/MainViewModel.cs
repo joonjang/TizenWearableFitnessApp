@@ -117,7 +117,6 @@ namespace FitWatch.ViewModel
             appControl = new AppControl
             {
                 Operation = AppControlOperations.Default,
-                //ApplicationId = "org.tizen.joonspetproject.ServiceApp"
                 ApplicationId = "org.tizen.joonspetproject.FitWatch"
             };
         }
@@ -129,8 +128,6 @@ namespace FitWatch.ViewModel
         {
             if (args.State == DisplayState.Normal)
             {
-                
-
                 try
                 {
                     AppControl.SendLaunchRequest(appControl);

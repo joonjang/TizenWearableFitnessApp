@@ -8,25 +8,28 @@
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
     </ContentPage.BindingContext>
-    
-    <ContentPage.Content>
-        <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
 
-            <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
-            <Button Text="Connect To Phone" 
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0, 80, 0, 0">
+                <Button Text="Connect To Phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="FillAndExpand"/>
-            
-            <Button Text="Run In Foreground"
-                    Command="{Binding RunForegroundCommand}" 
-                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="FillAndExpand"/>
-            
-            <Button Text="Upload Workout Info" 
+
+                <Button Text="Upload Workout Info" 
                     Command="{Binding SendMessageCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="FillAndExpand"/>
+                <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
+            </StackLayout>
+            <StackLayout  VerticalOptions="EndAndExpand" HorizontalOptions="Center" Padding="0, 0, 0, 80">
+                <Button Text="Start Workout"
+                    Command="{Binding RunForegroundCommand}" 
+                    VerticalOptions="EndAndExpand" 
+                    HorizontalOptions="Center"
+                        BackgroundColor="Green"/>
+            </StackLayout>
 
         </StackLayout>
     </ContentPage.Content>

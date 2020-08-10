@@ -14,10 +14,11 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
             
-            <Button Text="Stop Foreground"
+            <Button Text="End Workout"
                     Command="{Binding StopForegroundCommand}"
                     VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="FillAndExpand"/>
+                    HorizontalOptions="Center"
+                    BackgroundColor="DarkRed"/>
             
         </StackLayout>
     </ContentPage.Content>
