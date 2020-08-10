@@ -173,7 +173,8 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             watch.WatchObject = JsonConvert.DeserializeObject<WatchModel>(json);
             PopulatePreviousWorkInfo();
             InputView(0);
-            
+
+            SaveChanges();
             MessagingCenter.Send<WorkoutViewModel, string>(this, "CurrentInfo", (watch.WatchObject.Week + ", " + watch.WatchObject.Day));
         }
 
