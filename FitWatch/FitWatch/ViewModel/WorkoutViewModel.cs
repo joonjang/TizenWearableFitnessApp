@@ -68,8 +68,6 @@ namespace FitWatch.ViewModel
             // load previously saved json if it exists
             SendJsonString = Preferences.Get("SendJson", "");
 
-            // todo: debugging
-            // ParseJson();
             MessagingCenter.Subscribe<MainViewModel, string>(this, "Parse", (sender, arg) =>
             {
                 ParseJson(arg);
