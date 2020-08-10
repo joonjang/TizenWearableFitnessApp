@@ -6,10 +6,11 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Android.Content;
 
 namespace FitCompanion.Droid
 {
-    [Activity(Label = "FitCompanion", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(LaunchMode = LaunchMode.SingleTop, Label = "FitCompanion", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -34,6 +35,16 @@ namespace FitCompanion.Droid
         {
             var intent = new Android.Content.Intent(this, typeof(ProviderService));
             StartService(intent);
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            
+            //Intent launchIntent = new Intent(Application.Context, typeof(MainActivity));
+            //launchIntent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
+            //StartActivity(launchIntent);
+
         }
 
     }

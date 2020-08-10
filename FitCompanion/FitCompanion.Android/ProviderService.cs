@@ -124,6 +124,8 @@ namespace FitCompanion.Droid
         {
             base.OnCreate();
 
+            
+
             //the reason the notification wont go away
             //https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/foreground-services
 
@@ -138,6 +140,27 @@ namespace FitCompanion.Droid
                 int notifyID = 1;
 
                 Intent intent = new Intent(Application.Context, typeof(MainActivity));
+
+
+
+
+
+
+
+
+
+                intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
+
+
+
+
+
+
+
+
+
+
+
 
                 PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.UpdateCurrent);
 

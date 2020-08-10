@@ -98,7 +98,7 @@ namespace FitCompanion.ViewModel
             if (DeviceSocketInfo != "Empty")
             {
                 ConnectedBool = true;
-                if (!string.IsNullOrEmpty(jsonString)) 
+                if (!string.IsNullOrEmpty(ReceivedMsg)) 
                 { 
                     MakeObjectFromJson();
                 }
@@ -201,12 +201,15 @@ namespace FitCompanion.ViewModel
         // successfully sent to spreadsheet response
         private void ProcessResponse(ResponseModel responseModel)
         {
-            Workouts = new ObservableCollection<WorkoutModel>();
-            Workouts.Add(new WorkoutModel()
-            {
-                Weight = responseModel.Message
-            });
-            OnPropertyChanged(nameof(Workouts));
+            //Workouts = new ObservableCollection<WorkoutModel>();
+            //Workouts.Add(new WorkoutModel()
+            //{
+            //    Weight = responseModel.Message
+            //});
+            //OnPropertyChanged(nameof(Workouts));
+
+            ListViewBodyMessage("");
+            ListViewHeaderMessage(responseModel.Message);
         }
 
         // for when i receive watch json and show to list view
@@ -754,7 +757,7 @@ namespace FitCompanion.ViewModel
             }
         }
 
-        private bool connectedBool = false;
+        private static bool connectedBool = false;
         public bool ConnectedBool
         {
             get => connectedBool;
