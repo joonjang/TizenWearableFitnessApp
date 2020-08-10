@@ -12,27 +12,22 @@
     <ContentPage.Content>
         <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="20">
 
-            <!--<Label Text="{Binding ReceivedMessage}"
-                   VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>-->
             <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
-            <Button Text="Connect to phone" 
+            <Button Text="Connect To Phone" 
                     Command="{Binding ConnectCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="FillAndExpand"/>
-            <Button Text="Upload workout info" 
+            
+            <Button Text="Run In Foreground"
+                    Command="{Binding RunForegroundCommand}" 
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="FillAndExpand"/>
+            
+            <Button Text="Upload Workout Info" 
                     Command="{Binding SendMessageCommand}" 
                     VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="FillAndExpand"/>
 
-            
-            
-            
-            
-            <!--<Button Text="Parse" 
-                    Command="{Binding ParseCommand}" 
-                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="CenterAndExpand"/>-->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

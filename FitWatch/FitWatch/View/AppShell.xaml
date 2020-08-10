@@ -11,13 +11,9 @@
 
     <TabBar>
         <Tab>
-            <ShellContent Route="MainPage" Title="Sync with phone">
-                <local:MainPage/>
-            </ShellContent>
+            <ShellContent ContentTemplate="{DataTemplate local:MainPage}"/>
 
-            <ShellContent Route="WorkoutPage" Title="Workout">
-                <local:WorkoutPage/>
-            </ShellContent>
+            <ShellContent ContentTemplate="{DataTemplate local:WorkoutPage}"/>
         </Tab>
     </TabBar>
 

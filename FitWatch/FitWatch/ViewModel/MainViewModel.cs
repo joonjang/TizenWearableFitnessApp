@@ -34,7 +34,7 @@ namespace FitWatch.ViewModel
 
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
-        //public ICommand ParseCommand { get; }
+        public ICommand RunForegroundCommand { get; }
 
 
         public MainViewModel()
@@ -42,6 +42,7 @@ namespace FitWatch.ViewModel
 
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
+            RunForegroundCommand = new Command(RunInForegroundMethod);
 
             //display current watch workout
             MessagingCenter.Subscribe<WorkoutViewModel, string>(this, "CurrentInfo", (sender, arg) =>
@@ -51,7 +52,12 @@ namespace FitWatch.ViewModel
             });
 
             CurrentAvailableInfo = Preferences.Get("CurrentWorkout", "");
-            Tizen.System.Display.StateChanged += OnDisplayOn;
+
+            // disables the foreground shell from showing
+            MessagingCenter.Subscribe<ForegroundButtonViewModel>(this, "StopForeground", (sender) =>
+            {
+                StopForegroundMethod();
+            });
 
 
             //todo: for debugging
@@ -110,9 +116,16 @@ namespace FitWatch.ViewModel
 
 
 
+        void StopForegroundMethod()
+        {
+            Shell.Current.Navigation.PushAsync(new AppShell());
+            Tizen.System.Display.StateChanged -= OnDisplayOn;
+        }
 
-
-
+        void RunInForegroundMethod()
+        {
+            Tizen.System.Display.StateChanged += OnDisplayOn;
+        }
 
 
 
@@ -121,17 +134,11 @@ namespace FitWatch.ViewModel
         {
             if (args.State == DisplayState.Normal)
             {
-
-
-
-                AppControl appControl = new AppControl();
-                appControl.Operation = AppControlOperations.Default;
-                //appControl.LaunchMode = AppControlLaunchMode.Group;
-                appControl.ApplicationId = "org.tizen.joonspetproject.ServiceApp";
-                //appControl.ApplicationId = Tizen.Applications.Application.Current.ApplicationInfo.ApplicationId;
-                // appControl.ApplicationId = "org.tizen.w-home";
-
-
+                AppControl appControl = new AppControl
+                {
+                    Operation = AppControlOperations.Default,
+                    ApplicationId = "org.tizen.joonspetproject.ServiceApp"
+                };
 
                 try
                 {
@@ -140,7 +147,7 @@ namespace FitWatch.ViewModel
                         {
                             if (result == AppControlReplyResult.Succeeded)
                             {
-                                Shell.Current.Navigation.PushAsync(new WorkoutPage());
+                                Shell.Current.Navigation.PushAsync(new AppShellForeground());
                             }
                         });
                 }
@@ -148,13 +155,9 @@ namespace FitWatch.ViewModel
                 {
                     Console.WriteLine("CONSOLE ERROR: " + e);
                 }
+
             }
         }
-
-
-
-
-
 
 
 
