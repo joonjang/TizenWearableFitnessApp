@@ -98,8 +98,8 @@ namespace FitCompanion.ViewModel
             if (DeviceSocketInfo != "Empty")
             {
                 ConnectedBool = true;
-                if (!string.IsNullOrEmpty(ReceivedMsg)) 
-                { 
+                if (!string.IsNullOrEmpty(ReceivedMsg))
+                {
                     MakeObjectFromJson();
                 }
             }
@@ -331,7 +331,7 @@ namespace FitCompanion.ViewModel
                 {
                     Weight = message
                 });
-                
+
             }
             OnPropertyChanged(nameof(Workouts));
         }
@@ -368,7 +368,6 @@ namespace FitCompanion.ViewModel
                 return;
             };
 
-            // todo: change this after set edit
             globalWatchModelHold = ConvertStarCellToRestNumber(globalWatchModelHold);
             var jsonString = JsonConvert.SerializeObject(globalWatchModelHold);
 
@@ -579,6 +578,24 @@ namespace FitCompanion.ViewModel
             await Shell.Current.Navigation.PushModalAsync(new ModalEditPage());
             MessagingCenter.Send<MainViewModel, WorkoutModel>(this, "EditWorkoutInfo", obj);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public ObservableCollection<WorkoutModel> Workouts { get; set; }

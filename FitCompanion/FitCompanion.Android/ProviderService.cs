@@ -27,7 +27,7 @@ namespace FitCompanion.Droid
     [Service(Exported = true, Name = "FitCompanion.Droid.ProviderService")]
     public class ProviderService : SAAgent, IProviderService
     {
-        public static readonly string TAG = typeof(ProviderService).Name;
+        public static readonly string TAG = "FitWatch";
         public static IBinder mBinder { get; private set; }
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
         public static ProviderServiceSocket mSocketServiceProvider;
@@ -35,6 +35,13 @@ namespace FitCompanion.Droid
         private Context _context;
         private readonly Task _task;
         private static readonly int CHANNEL_ID = 104;
+
+        const int pendingIntentId = 0;
+        const string channelId = "fit_channel_01";
+        const string channelName = "Accessory_SDK_Fit";
+
+        NotificationManager manager;
+        bool channelInitialized = false;
 
 
         [Export(SuperArgumentsString = "\"ProviderService\", ProviderService_ProviderServiceSocket.class")]
@@ -81,34 +88,12 @@ namespace FitCompanion.Droid
         }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-        const int pendingIntentId = 0;
-        const string channelId = "fit_channel_01";
-        const string channelName = "Accessory_SDK_Fit";
-
-        NotificationManager manager;
-        bool channelInitialized = false;
-
         void CreateNotificationChannel()
         {
-
-            
             manager = (NotificationManager)Application.Context.GetSystemService(Application.NotificationService);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-
                 var channelNameJava = new Java.Lang.String(channelName);
                 var channel = new NotificationChannel(channelId, channelNameJava, NotificationImportance.Default)
                 {
@@ -116,15 +101,13 @@ namespace FitCompanion.Droid
                 };
                 manager.CreateNotificationChannel(channel);
             }
-
             channelInitialized = true;
         }
+
 
         public override void OnCreate()
         {
             base.OnCreate();
-
-            
 
             //the reason the notification wont go away
             //https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/foreground-services
@@ -136,75 +119,29 @@ namespace FitCompanion.Droid
                     CreateNotificationChannel();
                 }
 
-
                 int notifyID = 1;
 
                 Intent intent = new Intent(Application.Context, typeof(MainActivity));
-
-
-
-
-
-
-
-
-
                 intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.SingleTop);
-
-
-
-
-
-
-
-
-
-
-
 
                 PendingIntent pendingIntent = PendingIntent.GetActivity(Application.Context, pendingIntentId, intent, PendingIntentFlags.UpdateCurrent);
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
-
-                    .SetAutoCancel(true)
-
-                    //todo: change name
+                    .SetAutoCancel(true)  
                     .SetContentTitle(TAG)
-                    .SetContentText("connected to your watch")
-
+                    .SetContentText("Connected to your watch")
                     .SetContentIntent(pendingIntent)
 
-                    // todo: check icon
-                    .SetLargeIcon(BitmapFactory.DecodeResource(Application.Context.Resources, Resource.Drawable.ic_mtrl_chip_checked_circle))
                     .SetSmallIcon(Resource.Drawable.ic_mtrl_chip_close_circle)
-                    .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
 
+                    .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
                     .SetChannelId(channelId)
                     .SetPriority(1)
                     .SetVisibility(1)
                     .SetCategory(Android.App.Notification.CategoryService);
 
-                //StartForeground(notifyID, builder.Build());
-                //var notification = builder.Build();
-                //manager.Notify(notifyID, notification);
-
-
                 StartForeground(notifyID, builder.Build());
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
-
 
             _context = this;
             _isRunning = false;
@@ -237,30 +174,8 @@ namespace FitCompanion.Droid
             MainPage.InfoFromAndroid();
 
         }
-
-        //private void DoWork(string msg)
-        //{
-        //    try
-        //    {
-        //        FindPeers(msg);
-
-
-        //    }
-        //    catch (Exception e)
-        //    {
-
-        //    }
-        //    finally
-        //    {
-        //        StopSelf();
-        //    }
-        //}
-
         public void SendData(string msg)
         {
-
-            //mSocketServiceProvider = (ProviderServiceSocket) MainPage.deviceSocketInfo ;
-
             if (mSocketServiceProvider != null)
             {
                 try
@@ -325,8 +240,6 @@ namespace FitCompanion.Droid
 #endif
 
             }
-
-            // var socketConnection = mSocketServiceProvider.IsConnected;
 
         }
 

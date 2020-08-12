@@ -6,7 +6,8 @@
              xmlns:vm="clr-namespace:FitCompanion.ViewModel"
              mc:Ignorable="d"
              x:Class="FitCompanion.MainPage"
-             x:Name="MainContentPage">
+             x:Name="MainContentPage"
+             xmlns:local="clr-namespace:FitCompanion">
 
     <ContentPage.BindingContext>
         <vm:MainViewModel/>
@@ -38,7 +39,8 @@
                          Increment="1"
                          Value="{Binding WeekStepperVal}"
                          HorizontalOptions="EndAndExpand"
-                         Scale="0.8"/>
+                         Scale="0.8"
+                         local:StepperColorEffect.Color="White"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="{Binding DayStepperString}" 
@@ -51,7 +53,8 @@
                          Increment="1"
                          Value="{Binding DayStepperVal}"
                          HorizontalOptions="EndAndExpand"
-                         Scale="0.8"/>
+                         Scale="0.8"
+                         local:StepperColorEffect.Color="White"/>
             </StackLayout>
 
             
@@ -103,7 +106,7 @@
                     BackgroundColor="White" 
                     Command="{Binding SubmitJsonCommand}"
                     IsEnabled="{Binding UploadButtonBool}"/>
-            <Button Text="Close Connection" BackgroundColor="White" Command="{Binding CloseConnectionCommand}" />
+            
 
             <Label IsVisible="{Binding ResultResponseBool}" Text="{Binding ResultResponseText}"/>
 
@@ -111,16 +114,25 @@
         </StackLayout>
 
 
-
-
-
+        <Grid>
         <Label BackgroundColor="{Binding ConnectedColor}" 
                Text="{Binding ConnectedString}" 
                HorizontalTextAlignment="Center" 
                Padding="5" 
                TextColor="Black" 
-               VerticalOptions="EndAndExpand"/>
-
+               VerticalOptions="EndAndExpand"
+               HorizontalOptions="FillAndExpand"
+               HeightRequest="60"/>
+            <Button Text="End" 
+                    Padding="0"
+                    Margin="0"
+                    BackgroundColor="IndianRed" 
+                    Command="{Binding CloseConnectionCommand}"
+                    HorizontalOptions="EndAndExpand"
+                    HeightRequest="60"
+                    WidthRequest="40"
+                    IsVisible="{Binding ConnectedBool}"/>
+        </Grid>
     </StackLayout>
 
 </ContentPage>
