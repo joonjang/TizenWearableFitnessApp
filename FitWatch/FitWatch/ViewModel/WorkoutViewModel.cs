@@ -65,9 +65,41 @@ namespace FitWatch.ViewModel
             }
 
 
+            
             // load previously saved json if it exists
             SendJsonString = Preferences.Get("SendJson", "");
 
+
+
+
+
+
+
+
+
+
+
+
+
+            // todo: debugging
+            string tmp = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
+            ParseJson(tmp);
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             MessagingCenter.Subscribe<MainViewModel, string>(this, "Parse", (sender, arg) =>
             {
                 ParseJson(arg);
@@ -325,7 +357,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             AddOrReplace(globalWeightIndex);
 
             // show next input view
-            InputView(globalWeightIndex + 1);
+            InputView(globalWeightIndex + 1, true);
 
             // every tap changes the index couunt
             globalWeightIndex++;
@@ -336,6 +368,8 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             // can go forward
             NavigationButton(4);
 
+
+            // if the enter weight is not visible then show entry UI and disable finish and skip adding weight
             if (!MasterUIVisible)
             {
                 NavigationButton(6);
@@ -406,12 +440,12 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
 
         }
 
-        bool WorkoutLabelInfo(int index)
+        bool WorkoutLabelInfo(int index, bool goingForward)
         {
             // label text of previous weights, rep, and title count
 
             // checks if index is past amount of reps 
-            if (globalWeightIndex + 1 >= watch.WatchObject.Workouts.Count - (prevReps.Count * 2))
+            if ((globalWeightIndex + 1 == watch.WatchObject.Workouts.Count - (prevReps.Count * 2)) && goingForward)
             {
                 NavigationButton(2);
                 return true;
@@ -439,7 +473,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
             Preferences.Set("WatchObject", savedWatchJson);
         }
 
-        void InputView(int index)
+        void InputView(int index, bool goingForward = false)
         {
             // reset to 0 if no previous information
             // show previous information if available
@@ -447,7 +481,7 @@ Tap 'Upload' next time connected to phone to update spreadsheet";
 
 
 
-            bool workoutDone = WorkoutLabelInfo(index);
+            bool workoutDone = WorkoutLabelInfo(index, goingForward);
 
             if (workoutDone)
             {
