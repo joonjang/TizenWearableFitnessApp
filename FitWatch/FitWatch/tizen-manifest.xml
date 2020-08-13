@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest package="org.tizen.joonspetproject.FitWatch" version="1.0.0" api-version="4" xmlns="http://tizen.org/ns/packages">
+<manifest package="org.joonspetproject.FitWatch" version="1.0.0" api-version="4" xmlns="http://tizen.org/ns/packages">
+    <author email="w.joon.jang@gmail.com">Joon</author>
+    <description>Tizen wearable application complimented by an Android companion application. Allows you to transfer a spreadsheet to a Samsung smart watch to be edited. Then can be synced back to the phone to update the old spreadsheet with the newly modified spreadsheet information from the smart watch. Main purpose of this app is to allow the use of a workout spreadsheet on the watch without bringing the phone to the gym.</description>
     <profile name="wearable" />
-    <ui-application appid="org.tizen.joonspetproject.FitWatch" exec="FitWatch.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" launch_mode="single">
+    <ui-application appid="org.joonspetproject.FitWatch" exec="FitWatch.dll" multiple="false" nodisplay="false" taskmanage="true" type="dotnet" launch_mode="single">
         <label>FitWatch</label>
-        <icon>FitWatch.png</icon>
+        <icon>wearable-icon-tizen.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
         <metadata key="accessory-services-location" value="/res/xml/accessoryservices.xml" />
         <splash-screens />

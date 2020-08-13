@@ -11,6 +11,7 @@ using Android.Runtime;
 using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
+using AndroidX.Core.App;
 
 // https://docs.microsoft.com/en-us/xamarin/android/platform/binding-java-library/
 // https://xamarinhelp.com/creating-xamarin-android-binding-library/
@@ -327,11 +328,9 @@ namespace FitCompanion.Droid
                 MainPage.ReceivedMessage = message;
                 MainPage.InfoFromAndroid();
 #if DEBUG
-                Console.WriteLine("Received: ", message);
-
-            }
+                Console.WriteLine("Received: ", message); 
 #endif
-
+            }
 
             protected override void OnServiceConnectionLost(int p0)
             {

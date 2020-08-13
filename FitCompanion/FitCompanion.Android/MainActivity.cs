@@ -12,7 +12,7 @@ namespace FitCompanion.Droid
 {
     [Activity(LaunchMode = LaunchMode.SingleTop, 
         Label = "FitCompanion", 
-        Icon = "@mipmap/icon", 
+        Icon = "@drawable/androidIcon", 
         Theme = "@style/MainTheme", 
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity

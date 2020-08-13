@@ -68,38 +68,7 @@ namespace FitWatch.ViewModel
             
             // load previously saved json if it exists
             SendJsonString = Preferences.Get("SendJson", "");
-
-
-
-
-
-
-
-
-
-
-
-
-
-            // todo: debugging
-            string tmp = "{\"Week\":\"Week 0\",\"Day\":\"DAY 2\",\"Sets\":[\"Set 1\",\"Set 2\",\"Set 3\",\"Set 4\",\"Set 5\",\"Set 6\"],\"Workouts\":[\"Bench\",\"4\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Incline Press\",\"8\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Flies\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\",\"Tricep Ext\",\"12\",\"1\",\"2\",\"3\",\"4\",\"5\",\"6\"]}";
-            ParseJson(tmp);
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+     
             MessagingCenter.Subscribe<MainViewModel, string>(this, "Parse", (sender, arg) =>
             {
                 ParseJson(arg);
