@@ -71,10 +71,6 @@ namespace FitCompanion.ViewModel
                 ChangedWorkoutCell(obj);
             });
 
-
-            // todo: for debugging, delete after
-            SpreadsheetUrl = "https://docs.google.com/spreadsheets/d/1XWQNN76FJgt3X_213zwqblrOu2eSI0Tss1Zt1jPNLi0/edit#gid=783419625";
-            ScriptUrl = "https://script.google.com/macros/s/AKfycby2BGbNJwvzgqp4hay1CR0V3cznlND4u3Ra2-mysvdELCbO3II/exec";
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -121,10 +117,6 @@ namespace FitCompanion.ViewModel
 
             // filter the received watch json empty 8888 to *
             string filterEmpty = ReceivedMsg.Replace("8888", "*");
-
-
-            // for debugging
-            //var filterEmpty = "{\"DataArray\":[[\"Week 1\",\"DAY 1\"],[\"0\",\"0\",\"0\",\"0\",\"0\",\"0\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"0\",\"0\",\"0\",\"0\",\"*\",\"*\"],[\"4\",\"8\",\"4\",\"12\"],[\"Deadlift\",\"Chinups\",\"Rows\",\"Curls\"]]}";
 
 
             dataArrayModel = JsonConvert.DeserializeObject<DataArrayModel>(filterEmpty);
@@ -185,10 +177,6 @@ namespace FitCompanion.ViewModel
             var uri = ScriptUrl;
             var jsonString = JsonConvert.SerializeObject(dataArrayModel);
 
-            // from jsonString
-            //string tmp = "{\"DataArray\":[[\"Week 0\",\"DAY 1\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"],[\"69\",\"69\",\"420\",\"420\",\"42069\",\"6969\"]]}";
-            //var requestContent = new StringContent(tmp);
-            //
 
             var requestContent = new StringContent(jsonString);
 
@@ -201,12 +189,6 @@ namespace FitCompanion.ViewModel
         // successfully sent to spreadsheet response
         private void ProcessResponse(ResponseModel responseModel)
         {
-            //Workouts = new ObservableCollection<WorkoutModel>();
-            //Workouts.Add(new WorkoutModel()
-            //{
-            //    Weight = responseModel.Message
-            //});
-            //OnPropertyChanged(nameof(Workouts));
 
             ListViewBodyMessage("");
             ListViewHeaderMessage(responseModel.Message);
@@ -246,7 +228,6 @@ namespace FitCompanion.ViewModel
             provider.CloseConnection();
             ListViewHeaderMessage("");
             ListViewBodyMessage("");
-            //RefreshMsgSocket();
         }
 
 
@@ -440,9 +421,6 @@ namespace FitCompanion.ViewModel
                 }
             }
             OnPropertyChanged(nameof(Workouts));
-
-            // updates old watch model to new watch model based of changed collection
-            // CollectionToNewWatchModel(Workouts, watchModel);
         }
 
         void CollectionToNewWatchModel(ObservableCollection<WorkoutModel> workoutList, WatchModel oldWatchModel)
@@ -542,8 +520,6 @@ namespace FitCompanion.ViewModel
             {
                 ListViewHeaderMessage("Unable to find information", 2);
             }
-
-            //globalWatchModelHold = watchModel;
 
         }
 

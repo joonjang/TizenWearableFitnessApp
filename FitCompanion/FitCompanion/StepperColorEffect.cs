@@ -4,6 +4,7 @@ using Xamarin.Forms;
 
 namespace FitCompanion
 {
+    //https://github.com/brminnick/CustomStepper
     public static class StepperColorEffect
     {
         public static readonly BindableProperty ColorProperty =
@@ -12,6 +13,7 @@ namespace FitCompanion
             typeof(Stepper),
             GetDefaultColor(),
             propertyChanged: OnStepperColorChanged);
+
 
 
         public static Color GetColor(BindableObject view) => (Color)view.GetValue(ColorProperty);
@@ -40,6 +42,7 @@ namespace FitCompanion
             Device.Android => Color.Gray,
             _ => throw new System.NotSupportedException(),
         };
+
     }
 
     class StepperColorRoutingEffect : RoutingEffect

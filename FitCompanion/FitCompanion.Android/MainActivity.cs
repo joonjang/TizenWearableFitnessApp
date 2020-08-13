@@ -10,7 +10,11 @@ using Android.Content;
 
 namespace FitCompanion.Droid
 {
-    [Activity(LaunchMode = LaunchMode.SingleTop, Label = "FitCompanion", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(LaunchMode = LaunchMode.SingleTop, 
+        Label = "FitCompanion", 
+        Icon = "@mipmap/icon", 
+        Theme = "@style/MainTheme", 
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static int taskId;

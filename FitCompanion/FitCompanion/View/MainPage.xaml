@@ -39,7 +39,6 @@
                          Increment="1"
                          Value="{Binding WeekStepperVal}"
                          HorizontalOptions="EndAndExpand"
-                         Scale="0.8"
                          local:StepperColorEffect.Color="White"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
@@ -53,7 +52,6 @@
                          Increment="1"
                          Value="{Binding DayStepperVal}"
                          HorizontalOptions="EndAndExpand"
-                         Scale="0.8"
                          local:StepperColorEffect.Color="White"/>
             </StackLayout>
 

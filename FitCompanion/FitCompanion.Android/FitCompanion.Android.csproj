@@ -66,6 +66,7 @@
     <Compile Include="ProviderService.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SplashActivity.cs" />
     <Compile Include="StepperColorEffect.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -92,9 +93,6 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Resources\drawable\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FitCompanion\FitCompanion.csproj">
       <Project>{D8FBC2B4-73C4-4FAF-A075-1EA99CFECA74}</Project>
       <Name>FitCompanion</Name>
@@ -102,6 +100,15 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\xml\accessoryservices.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\splash_screen.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\dumbbell.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\fitwatch_splash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
