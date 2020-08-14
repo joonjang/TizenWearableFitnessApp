@@ -25,5 +25,6 @@ namespace FitCompanion
         protected override void OnResume()
         {
         }
+
     }
 }

@@ -110,6 +110,7 @@ namespace FitCompanion.Droid
         {
             base.OnCreate();
 
+
             //the reason the notification wont go away
             //https://docs.microsoft.com/en-us/xamarin/android/app-fundamentals/services/foreground-services
 

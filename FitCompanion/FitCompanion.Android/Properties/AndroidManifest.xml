@@ -10,7 +10,7 @@
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="com.samsung.WATCH_APP_TYPE.Companion" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-	<application android:label="Fit Watch Companion" android:icon="@drawable/androidIcon">
+	<application android:label="FitWatch Companion" android:icon="@drawable/androidIcon">
 		<service android:name="FitCompanion.Droid.ProviderService" />
 		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
 			<intent-filter>
