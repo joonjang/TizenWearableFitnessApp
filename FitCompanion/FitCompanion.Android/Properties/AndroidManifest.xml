@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="3" android:versionName="1.1.1" package="com.joonspetproject.fitcompanion" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="4" android:versionName="1.2" package="com.joonspetproject.fitcompanion" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="29" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="com.samsung.android.providers.context.permission.WRITE_USE_APP_FEATURE_SURVEY" />
@@ -12,20 +12,23 @@
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<application android:label="FitWatch Companion" android:icon="@drawable/androidIcon">
 		<service android:name="FitCompanion.Droid.ProviderService" />
-		
 		<!--<activity 
 			android:name=".MainActivity"
             android:screenOrientation="portrait">
-			--><!--<intent-filter>
+			-->
+		<!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>--><!--
+            </intent-filter>-->
+		<!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
 				
-				--><!--<action android:name="android.intent.action.CALL" />
-				<action android:name="android.intent.action.CALL_PRIVILEGED" />--><!--
+				-->
+		<!--<action android:name="android.intent.action.CALL" />
+				<action android:name="android.intent.action.CALL_PRIVILEGED" />-->
+		<!--
 				
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
@@ -33,7 +36,6 @@
                     android:scheme="joonspetproject" />
             </intent-filter>
 		</activity>-->
-			
 		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
 			<intent-filter>
 				<action android:name="com.samsung.accessory.action.REGISTER_AGENT" />

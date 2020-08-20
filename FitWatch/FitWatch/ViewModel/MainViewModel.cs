@@ -228,6 +228,7 @@ namespace FitWatch.ViewModel
                 if (Peer != null)
                 {
                     Connection.Send(ChannelId, Encoding.UTF8.GetBytes(WorkoutViewModel.SendJsonString));
+                    ShowMessage("Sent to phone");
                 }
                 else
                 {
