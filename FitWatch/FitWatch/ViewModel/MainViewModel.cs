@@ -29,6 +29,8 @@ namespace FitWatch.ViewModel
         public ICommand SendMessageCommand { get; }
         public ICommand ConnectCommand { get; }
         public ICommand RunForegroundCommand { get; }
+        public ICommand StoreCommand { get; }
+        public ICommand CloseCommand { get; }
 
 
         public MainViewModel()
@@ -37,6 +39,13 @@ namespace FitWatch.ViewModel
             SendMessageCommand = new Command(SendMessage);
             ConnectCommand = new Command(Connect);
             RunForegroundCommand = new Command(RunInForegroundMethod);
+
+            StoreCommand = new Command(LaunchStore);
+            CloseCommand = new Command(() => 
+            {
+                MasterUI = true;
+                StoreUI = false;
+            });
 
             //display current watch workout
             MessagingCenter.Subscribe<WorkoutViewModel, string>(this, "CurrentInfo", (sender, arg) =>
@@ -60,32 +69,102 @@ namespace FitWatch.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private void LaunchStore()
+        {
+            AppControl launchStore = new AppControl();
+            string storeUrl = @"https://play.google.com/store/apps/details?id=com.joonspetproject.fitcompanion";
+            launchStore.Operation = AppControlOperations.Default;
+            launchStore.ApplicationId = "com.samsung.w-manager-service";
+            launchStore.ExtraData.Add("deeplink", storeUrl);
+            launchStore.ExtraData.Add("type", "phone");
+
+            try
+            {
+                AppControl.SendLaunchRequest(launchStore);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Store launch error: " + e);
+            }
+
+            ShowMasterUI(true);
+
+        }
+
+
+        private void LaunchApp()
+        {
+            AppControl launchControl = new AppControl();
+            launchControl.Operation = AppControlOperations.Default;
+            launchControl.ApplicationId = "com.samsung.w-manager-service";
+            launchControl.ExtraData.Add("deeplink", "joonspetproject://fit");
+            //launchControl.ExtraData.Add("uri", "market://details?id=com.joonspetproject.fitcompanion");
+            launchControl.ExtraData.Add("type", "phone");
+
+            // market://details?id=com.joonspetproject.fitcompanion
+            // https://play.google.com/store/apps/details?id=com.joonspetproject.fitcompanion
+            // com.samsung.w-manager-service
+            try
+            {
+                AppControl.SendLaunchRequest(launchControl);
+                Console.WriteLine("Send Launch Request SENT");
+            }
+            catch (Exception e)
+            {
+                //ShowMessage("APPLAUNCH", "APP NOT FOUND ?");
+                Console.WriteLine("LaunchApp error: " + e);
+            }
+        }
+        private void ShowMessage(string message, string debugLog = null)
+        {
+            Toast.DisplayText(message, 1000);
+            if (debugLog != null)
+            {
+                debugLog = message;
+            }
+            Console.WriteLine("[DEBUG] " + message);
+        }
+
+        private void ShowMasterUI(bool param)
+        {
+            MasterUI = param;
+            StoreUI = !param;
+        }
+
         private async void Connect()
         {
+            
+
             //commented out for debugging, this is the final production code for watch to android connection
             try
             {
                 Agent = await Agent.GetAgent("/joonspetproject/fit");
-                //Agent = await Agent.GetAgent("/sample/hello");
                 var peers = await Agent.FindPeers();
                 ChannelId = Agent.Channels.First().Value;
                 if (peers.Count() > 0)
                 {
-
+                    Console.WriteLine("Peer found");
                     Peer = peers.First();
                     Connection = Peer.Connection;
                     Connection.DataReceived -= Connection_DataReceived;
                     Connection.DataReceived += Connection_DataReceived;
                     await Connection.Open();
+                    ShowMessage("Connected");
+                    LaunchApp();
                 }
                 else
                 {
-                    Toast.DisplayText("No peer found");
+                    Console.WriteLine("Peer not found");
+
+                    ShowMasterUI(false);
+
                 }
+
+                
             }
             catch (Exception ex)
             {
-                Toast.DisplayText("Error: " + ex.Message);
+                ShowMessage("Error: " + ex.Message);
             }
 
         }
@@ -94,7 +173,7 @@ namespace FitWatch.ViewModel
         // broadcaster that looks for messages
         private void Connection_DataReceived(object sender, DataReceivedEventArgs e)
         {
-            Toast.DisplayText("Workout received");
+            ShowMessage("Workout received");
             string receivedJson = System.Text.Encoding.ASCII.GetString(e.Data);
 
             MessagingCenter.Send<MainViewModel, string>(this, "Parse", receivedJson);
@@ -152,7 +231,7 @@ namespace FitWatch.ViewModel
                 }
                 else
                 {
-                    Toast.DisplayText("Connect to phone first");
+                    ShowMessage("Connect to phone first");
                 }
 
             }
@@ -184,6 +263,28 @@ namespace FitWatch.ViewModel
             set
             {
                 currentAvailableInfo = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool masterUI = true;
+        public bool MasterUI
+        {
+            get => masterUI;
+            set
+            {
+                masterUI = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool storeUI = false;
+        public bool StoreUI
+        {
+            get => storeUI;
+            set
+            {
+                storeUI = value;
                 OnPropertyChanged();
             }
         }

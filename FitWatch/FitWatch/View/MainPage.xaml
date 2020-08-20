@@ -11,26 +11,42 @@
 
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0, 80, 0, 0">
-                <Button Text="Connect To Phone" 
-                    Command="{Binding ConnectCommand}" 
-                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="FillAndExpand"/>
+            
+            <StackLayout IsVisible="{Binding MasterUI}">
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0, 80, 0, 0">
+                    <Button Text="Connect To Phone" 
+                        Command="{Binding ConnectCommand}" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalOptions="FillAndExpand"/>
 
-                <Button Text="Upload Workout Info" 
-                    Command="{Binding SendMessageCommand}" 
-                    VerticalOptions="CenterAndExpand" 
-                    HorizontalOptions="FillAndExpand"/>
-                <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
+                    <Button Text="Upload Workout Info" 
+                        Command="{Binding SendMessageCommand}" 
+                        VerticalOptions="CenterAndExpand" 
+                        HorizontalOptions="FillAndExpand"/>
+                    <Label Text="{Binding CurrentAvailableInfo}" HorizontalTextAlignment="Center"/>
+                </StackLayout>
+                <StackLayout  VerticalOptions="EndAndExpand" HorizontalOptions="Center" Padding="0, 0, 0, 80">
+                    <Button Text="Start Workout"
+                        Command="{Binding RunForegroundCommand}" 
+                        VerticalOptions="EndAndExpand" 
+                        HorizontalOptions="Center"
+                            BackgroundColor="Green"/>
+                </StackLayout>
             </StackLayout>
-            <StackLayout  VerticalOptions="EndAndExpand" HorizontalOptions="Center" Padding="0, 0, 0, 80">
-                <Button Text="Start Workout"
-                    Command="{Binding RunForegroundCommand}" 
-                    VerticalOptions="EndAndExpand" 
+
+            <StackLayout IsVisible="{Binding StoreUI}" VerticalOptions="Center" HorizontalOptions="Center" Padding="30, 40, 30, 0">
+                <Label Text="Companion app not found on phone, install or connect to phone"
+                    VerticalOptions="CenterAndExpand" 
                     HorizontalOptions="Center"
-                        BackgroundColor="Green"/>
+                    HorizontalTextAlignment="Center"/>
+                <Button Text="Store" Command="{Binding StoreCommand}" 
+                    VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="Fill"/>
+                <Button Text="Close" Command="{Binding CloseCommand}"
+                    VerticalOptions="CenterAndExpand" />
             </StackLayout>
 
+            
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

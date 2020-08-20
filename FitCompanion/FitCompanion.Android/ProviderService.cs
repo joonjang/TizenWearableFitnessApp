@@ -28,7 +28,7 @@ namespace FitCompanion.Droid
     [Service(Exported = true, Name = "FitCompanion.Droid.ProviderService")]
     public class ProviderService : SAAgent, IProviderService
     {
-        public static readonly string TAG = "FitWatch";
+        public static readonly string TAG = typeof(ProviderService).Name;
         public static IBinder mBinder { get; private set; }
         public static readonly Java.Lang.Class SASOCKET_CLASS = Java.Lang.Class.FromType(typeof(ProviderServiceSocket)).Class;
         public static ProviderServiceSocket mSocketServiceProvider;
@@ -130,7 +130,7 @@ namespace FitCompanion.Droid
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(Application.Context, channelId)
                     .SetAutoCancel(true)  
-                    .SetContentTitle(TAG)
+                    .SetContentTitle("FitWatch")
                     .SetContentText("Connected to your watch")
                     .SetContentIntent(pendingIntent)
 

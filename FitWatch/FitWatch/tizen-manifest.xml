@@ -8,6 +8,7 @@
         <icon>wearable-icon-tizen.png</icon>
         <metadata key="http://tizen.org/metadata/prefer_dotnet_aot" value="true" />
         <metadata key="accessory-services-location" value="/res/xml/accessoryservices.xml" />
+		<!--<metadata key="master_app_playstore_deeplink" value="market://details?id=com.joonspetproject.fitcompanion"/>-->
         <splash-screens />
     </ui-application>
     <shortcut-list />
