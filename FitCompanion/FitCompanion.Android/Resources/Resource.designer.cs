@@ -8696,28 +8696,28 @@ namespace FitCompanion.Droid
 			public const int design_snackbar_background = 2131165292;
 			
 			// aapt resource value: 0x7F07006D
-			public const int dumbbell = 2131165293;
+			public const int fitwatch_splash = 2131165293;
 			
 			// aapt resource value: 0x7F07006E
-			public const int fitwatch_splash = 2131165294;
+			public const int ic_mtrl_chip_checked_black = 2131165294;
 			
 			// aapt resource value: 0x7F07006F
-			public const int ic_mtrl_chip_checked_black = 2131165295;
+			public const int ic_mtrl_chip_checked_circle = 2131165295;
 			
 			// aapt resource value: 0x7F070070
-			public const int ic_mtrl_chip_checked_circle = 2131165296;
+			public const int ic_mtrl_chip_close_circle = 2131165296;
 			
 			// aapt resource value: 0x7F070071
-			public const int ic_mtrl_chip_close_circle = 2131165297;
+			public const int mtrl_snackbar_background = 2131165297;
 			
 			// aapt resource value: 0x7F070072
-			public const int mtrl_snackbar_background = 2131165298;
+			public const int mtrl_tabs_default_indicator = 2131165298;
 			
 			// aapt resource value: 0x7F070073
-			public const int mtrl_tabs_default_indicator = 2131165299;
+			public const int navigation_empty_icon = 2131165299;
 			
 			// aapt resource value: 0x7F070074
-			public const int navigation_empty_icon = 2131165300;
+			public const int notiDumbbellWhite = 2131165300;
 			
 			// aapt resource value: 0x7F070075
 			public const int notification_action_background = 2131165301;

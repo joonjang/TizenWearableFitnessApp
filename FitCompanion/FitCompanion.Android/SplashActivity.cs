@@ -13,7 +13,10 @@ using Android.Widget;
 
 namespace FitCompanion.Droid
 {
-    [Activity(LaunchMode = LaunchMode.SingleTop,  Theme = "@style/MyTheme.Splash", MainLauncher = true, NoHistory = true)]
+    [Activity(LaunchMode = LaunchMode.SingleTop, 
+        Theme = "@style/MyTheme.Splash",
+        MainLauncher = true, 
+        NoHistory = true)]
     public class SplashActivity : Activity
     {
         static readonly string TAG = "X:" + typeof(SplashActivity).Name;

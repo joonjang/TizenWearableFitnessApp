@@ -134,7 +134,7 @@ namespace FitCompanion.Droid
                     .SetContentText("Connected to your watch")
                     .SetContentIntent(pendingIntent)
 
-                    .SetSmallIcon(Resource.Drawable.ic_mtrl_chip_close_circle)
+                    .SetSmallIcon(Resource.Drawable.notiDumbbellWhite)
 
                     .SetDefaults((int)NotificationDefaults.Sound | (int)NotificationDefaults.Vibrate)
                     .SetChannelId(channelId)

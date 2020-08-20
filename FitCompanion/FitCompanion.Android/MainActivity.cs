@@ -15,6 +15,11 @@ namespace FitCompanion.Droid
         Icon = "@drawable/androidIcon", 
         Theme = "@style/MainTheme", 
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [IntentFilter(
+        new[] { Intent.ActionMain, Intent.ActionView },
+        Categories = new[] { Intent.CategoryDefault },
+        DataScheme = "joonspetproject",
+        DataHost = "fit")]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         public static int taskId;

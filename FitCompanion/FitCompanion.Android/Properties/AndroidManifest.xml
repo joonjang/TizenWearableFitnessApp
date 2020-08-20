@@ -13,22 +13,26 @@
 	<application android:label="FitWatch Companion" android:icon="@drawable/androidIcon">
 		<service android:name="FitCompanion.Droid.ProviderService" />
 		
-		<activity 
-			android:name="com.joonspetproject.fitcompanion.MainActivity"
+		<!--<activity 
+			android:name=".MainActivity"
             android:screenOrientation="portrait">
-			<!--<intent-filter>
+			--><!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>--><!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+				
+				--><!--<action android:name="android.intent.action.CALL" />
+				<action android:name="android.intent.action.CALL_PRIVILEGED" />--><!--
+				
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
                     android:host="fit"
                     android:scheme="joonspetproject" />
             </intent-filter>
-		</activity>
+		</activity>-->
 			
 		<receiver android:name="com.samsung.android.sdk.accessory.RegisterUponInstallReceiver">
 			<intent-filter>
