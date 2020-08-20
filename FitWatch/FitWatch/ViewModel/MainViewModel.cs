@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Input;
@@ -182,24 +183,7 @@ namespace FitWatch.ViewModel
 
 
 
-        void StopForegroundMethod()
-        {
-            Shell.Current.Navigation.PushAsync(new AppShell());
-            Tizen.System.Display.StateChanged -= OnDisplayOn;
-            //System.Environment.Exit(0);
-        }
-
-        void RunInForegroundMethod()
-        {
-            Shell.Current.Navigation.PushAsync(new AppShellForeground());
-            Tizen.System.Display.StateChanged += OnDisplayOn;
-            appControl = new AppControl
-            {
-                Operation = AppControlOperations.Default,
-                ApplicationId = "org.tizen.joonspetproject.FitWatch"
-            };
-        }
-
+        
 
 
         AppControl appControl;
@@ -218,6 +202,25 @@ namespace FitWatch.ViewModel
 
             }
         }
+
+        void StopForegroundMethod()
+        {
+            Shell.Current.Navigation.PushAsync(new AppShell());
+            Display.StateChanged -= OnDisplayOn;
+            //System.Environment.Exit(0);
+        }
+
+        void RunInForegroundMethod()
+        {
+            Shell.Current.Navigation.PushAsync(new AppShellForeground());
+            Tizen.System.Display.StateChanged += OnDisplayOn;
+            appControl = new AppControl
+            {
+                Operation = AppControlOperations.Default,
+                ApplicationId = "org.tizen.joonspetproject.FitWatch"
+            };
+        }
+
 
 
         void SendMessage()
